@@ -3,7 +3,7 @@
 import PromptArea from "@/components/prompt-area";
 import { CounterClockwiseClockIcon, GearIcon, PersonIcon } from "@radix-ui/react-icons";
 
-export function getPeriod(): 'morning' | 'afternoon' | 'evening' {
+function getPeriod(): 'morning' | 'afternoon' | 'evening' {
   const now = new Date();
   const hours = now.getHours();
   if (hours < 12) return 'morning';
