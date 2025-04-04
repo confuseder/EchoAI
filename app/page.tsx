@@ -1,7 +1,10 @@
 'use client'
 
+import createChat from "@/apis/create";
 import PromptArea from "@/components/prompt-area";
+import { useState } from "react";
 import { CounterClockwiseClockIcon, GearIcon, PersonIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 function getPeriod(): 'morning' | 'afternoon' | 'evening' {
   const now = new Date();
@@ -11,25 +14,20 @@ function getPeriod(): 'morning' | 'afternoon' | 'evening' {
   return 'evening';
 }
 
-export default function Home() {  
+export default function Home() {
+  const router = useRouter()
+  const [prompt, setPrompt] = useState()
+  async function start() {
+    console.log(prompt)
+    const { chat_id } = await createChat(prompt)
+    router.push(`/chat/${chat_id}`)
+  }
+
   return (
-    <div className="w-screen h-screen">
-      <div className="w-full h-full flex flex-row p-3">
-        <div className="h-full w-16 flex flex-col justify-between p-3">
-          <div>
-            <CounterClockwiseClockIcon className="w-5 h-5 hover:cursor-pointer hover:text-gray-500"/>
-          </div>
-          <div className="flex flex-col gap-6 mt-auto">
-            <GearIcon className="w-5 h-5 hover:cursor-pointer hover:text-gray-500"/>
-            <PersonIcon className="w-5 h-5 hover:cursor-pointer hover:text-gray-500"/>
-          </div>
-        </div>
-        <div className="flex-grow flex flex-col p-3 w-full pt-48">
-          <div className="text-4xl flex self-center">Good { getPeriod() }, let's get started!</div>
-          <div className="w-full px-56 py-10">
-            <PromptArea next={true}/>
-          </div>
-        </div>
+    <div className="flex flex-col w-full h-full pt-48">
+      <div className="text-4xl flex self-center">Good { getPeriod() }, let's get started!</div>
+      <div className="w-full h-72 px-56 py-10">
+        <PromptArea next={true} setPrompt={setPrompt} onSend={start}/>
       </div>
     </div>
   );

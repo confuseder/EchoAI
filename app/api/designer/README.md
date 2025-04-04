@@ -7,6 +7,7 @@
   "chat_id": "the-chat-id",
   "refs": "info-for-references",
   "prompt": "the-user-prompt",
+  "step": "the-step-user-doubt"
 }
 ```
 
