@@ -7,7 +7,7 @@
   "chat_id": "the-chat-id",
   "prompt": "prompt-from-layout",
   "components": [],
-  "document": "<root>the entire sciux document</root>",
+  "document": "<root></root>",
   "tool_call_id": "the-tool-call-id"
 }
 ```

@@ -32,23 +32,35 @@ export default function ChatPage() {
                 {
                   avatar: '/images/profile.png',
                   role: 'user',
-                  content: 'Hello, how are you?',
+                  content: 'Hello, please teach me ....',
+                },
+                {
+                  content: 'designing...',
+                  isLoading: true,
+                },{
+                  avatar: '/images/profile.png',
+                  role: 'assistant',
+                  content: 'step1， xxxxxx',
                 },
                 {
                   avatar: '/images/profile.png',
                   role: 'assistant',
-                  content: 'I am fine, thank you!',
+                  content: 'step2， xxxxxx',
                 },
                 {
-                  content: 'Loading...',
-                  isLoading: true,
+                  avatar: '/images/profile.png',
+                  role: 'assistant',
+                  content: 'step3， xxxxxx',
                 },
+                {
+                  content: 'Designing...'
+                }
               ].map((message, index) => message.role ? <MessageBox key={index} {...message} /> : <ToolBox key={index} {...message} />)
             }
           </div>
         </div>
         <div className="flex flex-2/10 w-full">
-          <PromptArea next={false}/>
+          <PromptArea next={true}/>
         </div>
       </div>
     </div>
