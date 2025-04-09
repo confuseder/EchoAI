@@ -176,6 +176,8 @@ export function ChatGraph({
 
       // Draw connections to child nodes
       ctx.beginPath()
+      // Set dashed line for parent-child connections
+      ctx.setLineDash([5, 3])
       const mainNodeIds = new Set(
         nodes.filter((n) => n.isMain).map((n) => n.step.id),
       )
@@ -201,6 +203,8 @@ export function ChatGraph({
       ctx.strokeStyle = '#D1D5DB' // gray-300
       ctx.lineWidth = 2
       ctx.stroke()
+      // Reset line dash to solid for other elements
+      ctx.setLineDash([])
 
       // Draw nodes
       nodes.forEach((node) => {
