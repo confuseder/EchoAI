@@ -4,16 +4,26 @@ import { DesignerStep } from '@/app/types/designer'
 export function ChatGraph({ steps }: { steps: DesignerStep[] }) {
   return (
     <div className="w-full bg-gray-100 rounded-xl px-6 py-10">
-      <div className="relative mx-auto max-w-5xl">
+      <div className="relative mx-auto max-w-5xl overflow-x-auto">
         {/* Timeline line */}
         {steps.length > 0 && (
-          <div className="absolute left-0 right-0 h-1 top-1/2 -translate-y-1/2 bg-gray-300" />
+          <div
+            className="absolute left-0 right-0 h-1 top-1/2 -translate-y-1/2 bg-gray-300"
+            style={{ width: `${steps.length * 180}px` }}
+          />
         )}
 
         {/* Steps */}
-        <div className="relative flex justify-between">
+        <div
+          className="relative flex"
+          style={{ width: `${steps.length * 180}px`, minWidth: '100%' }}
+        >
           {steps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center">
+            <div
+              key={index}
+              className="flex flex-col items-center"
+              style={{ width: '180px' }}
+            >
               {/* Step label */}
               <div className="mb-8 text-center">
                 <div className="font-medium text-gray-800 text-lg">
