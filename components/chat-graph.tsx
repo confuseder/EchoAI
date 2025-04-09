@@ -31,6 +31,49 @@ export function ChatGraph({
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
 
+  // Center view on latest node when steps update
+  useEffect(() => {
+    if (
+      steps.length > 0 &&
+      canvasRef.current &&
+      containerRef.current &&
+      nodes.length > 0
+    ) {
+      // Find the latest step (last main node)
+      const latestStep = steps[steps.length - 1]
+
+      // Find the corresponding node
+      const latestNode = nodes.find(
+        (node) => node.step.id === latestStep.id && node.isMain,
+      )
+
+      if (latestNode) {
+        const container = containerRef.current
+        const { width, height } = container.getBoundingClientRect()
+
+        // Calculate node position in screen space
+        const nodeScreenX = latestNode.x * scale + offset.x
+        const nodeScreenY = latestNode.y * scale + offset.y
+
+        // Check if node is outside visible area (with some padding)
+        const padding = 50
+        const isOutsideX =
+          nodeScreenX < padding || nodeScreenX > width - padding
+        const isOutsideY =
+          nodeScreenY < padding || nodeScreenY > height - padding
+
+        // Center if the node is outside the visible area
+        if (isOutsideX || isOutsideY) {
+          // Calculate new offset to center the node
+          const newOffsetX = width / 2 - latestNode.x * scale
+          const newOffsetY = height / 2 - latestNode.y * scale
+
+          setOffset({ x: newOffsetX, y: newOffsetY })
+        }
+      }
+    }
+  }, [steps, nodes, scale])
+
   // Calculate nodes positions
   useEffect(() => {
     if (!steps.length) return
