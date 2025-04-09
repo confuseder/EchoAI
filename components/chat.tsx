@@ -1,6 +1,6 @@
 'use client'
 
-import { DesignerResponse } from '@/app/types/designer'
+import { DesignerResponse, DesignerStep } from '@/app/types/designer'
 import { useState, useEffect } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
@@ -23,6 +23,7 @@ export function Chat({
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState<MessageBoxType[]>(initialMessages)
+  const [steps, setSteps] = useState<DesignerStep[]>([])
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -37,12 +38,15 @@ export function Chat({
         })
         const data: DesignerResponse = await response.json()
         const { steps } = data
+        const [step, ...rest] = steps
+        setSteps(rest)
+        const msg = step
         const messages = [
-          ...steps.map((step) => ({
+          {
             avatar: 'https://picsum.photos/200/300',
             role: 'assistant' as const,
-            content: step.content,
-          })),
+            content: msg.content,
+          },
         ]
         setMessages((msg) => [...msg, ...messages])
         setIsLoading(false)
@@ -50,6 +54,19 @@ export function Chat({
     }
     fetchMessages()
   }, [chatId])
+
+  function handleNext() {
+    const step = steps[0]
+    setSteps(steps.slice(1))
+    setMessages((msg) => [
+      ...msg,
+      {
+        avatar: 'https://picsum.photos/200/300',
+        role: 'assistant' as const,
+        content: step.content,
+      },
+    ])
+  }
 
   return (
     <div className="flex flex-row w-full h-full gap-2">
@@ -73,7 +90,7 @@ export function Chat({
           </div>
         </div>
         <div className="flex flex-2/10 w-full">
-          <PromptArea next={true} />
+          <PromptArea next={steps.length > 0} onNext={handleNext} />
         </div>
       </div>
     </div>
