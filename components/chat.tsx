@@ -74,12 +74,16 @@ export function Chat({
     ])
   }
 
+  function handleStepClick(step: DesignerStep) {
+    console.log('clicked', step)
+  }
+
   return (
     <div className="grid grid-cols-3 w-full h-full gap-2">
       <div className="col-span-2 flex h-full flex-col gap-2">
         <div className="flex flex-3/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg"></div>
         <div className="flex flex-1/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg h-[400px]">
-          <ChatGraph steps={steps} />
+          <ChatGraph steps={steps} onStepClick={handleStepClick} />
         </div>
       </div>
       <div className="col-span-1 flex flex-col h-full bg-[rgba(255,255,255,0.5)] p-3 rounded-lg">

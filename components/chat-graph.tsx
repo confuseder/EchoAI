@@ -30,6 +30,7 @@ export function ChatGraph({
   const containerRef = useRef<HTMLDivElement>(null)
   const [nodes, setNodes] = useState<StepNode[]>([])
   const [hoveredNode, setHoveredNode] = useState<number | null>(null)
+  const [selectedNode, setSelectedNode] = useState<number | null>(null)
   const [scale, setScale] = useState(1)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
@@ -171,7 +172,7 @@ export function ChatGraph({
         if (node.id === hoveredNode) {
           ctx.fillStyle = '#6B7280' // gray-500
           ctx.strokeStyle = '#1F2937' // gray-800
-        } else if (node.isMain && node.step.step === 1) {
+        } else if (node.id === selectedNode) {
           ctx.fillStyle = '#1F2937' // gray-800
           ctx.strokeStyle = '#1F2937' // gray-800
         } else {
@@ -213,7 +214,7 @@ export function ChatGraph({
     return () => {
       window.removeEventListener('resize', resizeCanvas)
     }
-  }, [nodes, hoveredNode, scale, offset, steps])
+  }, [nodes, hoveredNode, selectedNode, scale, offset, steps])
 
   // Handle mouse interactions
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -269,24 +270,62 @@ export function ChatGraph({
     const mouseY = (e.clientY - rect.top - offset.y) / scale
 
     // Check if clicking on any node
+    let clickedOnNode = false
     for (const node of nodes) {
       const distance = Math.sqrt(
         Math.pow(mouseX - node.x, 2) + Math.pow(mouseY - node.y, 2),
       )
       if (distance <= node.radius) {
-        if (onStepClick) onStepClick(node.step)
-        return
+        clickedOnNode = true
+        if (onStepClick) {
+          onStepClick(node.step)
+          setSelectedNode(node.id)
+        }
+        break
       }
     }
 
-    // Start dragging
-    setIsDragging(true)
-    setDragStart({ x: e.clientX, y: e.clientY })
+    // Only start dragging if not clicking on a node
+    if (!clickedOnNode) {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX, y: e.clientY })
+    }
   }
 
   const handleMouseUp = () => {
     setIsDragging(false)
   }
+
+  // Clear selected node when steps change
+  useEffect(() => {
+    if (steps.length > 0) {
+      // 找到最新的step（假设是数组中的最后一个主节点）
+      const latestStep = steps[steps.length - 1]
+      // 找到对应的node并选中它
+      const latestNode = nodes.find((node) => node.step.id === latestStep.id)
+      if (latestNode) {
+        setSelectedNode(latestNode.id)
+      }
+    } else {
+      setSelectedNode(null)
+    }
+  }, [steps, nodes])
+
+  // Debug node positions
+  useEffect(() => {
+    if (nodes.length) {
+      console.log(
+        'Nodes:',
+        nodes.map((n) => ({
+          id: n.id,
+          x: n.x,
+          y: n.y,
+          radius: n.radius,
+          isMain: n.isMain,
+        })),
+      )
+    }
+  }, [nodes])
 
   return (
     <div ref={containerRef} className="bg-gray-100 rounded-xl size-full p-4">
