@@ -15,39 +15,38 @@ interface MessageBoxType {
 export function Chat({
   chatId,
   initialMessages,
+  status,
 }: {
   chatId: string
   initialMessages: MessageBoxType[]
+  status: 'submitted' | 'streaming' | 'ready' | 'error'
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState<MessageBoxType[]>(initialMessages)
 
   useEffect(() => {
     const fetchMessages = async () => {
-      setIsLoading(true)
-      const response = await fetch(`/api/designer`, {
-        method: 'POST',
-        body: JSON.stringify({
-          chatId,
-          prompt: 'Hello, please teach me ....',
-        }),
-      })
-      const data: DesignerResponse = await response.json()
-      const { steps, input } = data
-      const messages = [
-        {
-          avatar: 'https://picsum.photos/200/300',
-          role: 'user' as const,
-          content: input,
-        },
-        ...steps.map((step) => ({
-          avatar: 'https://picsum.photos/200/300',
-          role: 'assistant' as const,
-          content: step.content,
-        })),
-      ]
-      setMessages(messages)
-      setIsLoading(false)
+      if (status === 'submitted') {
+        setIsLoading(true)
+        const response = await fetch(`/api/designer`, {
+          method: 'POST',
+          body: JSON.stringify({
+            chatId,
+            prompt: 'Hello, please teach me ....',
+          }),
+        })
+        const data: DesignerResponse = await response.json()
+        const { steps } = data
+        const messages = [
+          ...steps.map((step) => ({
+            avatar: 'https://picsum.photos/200/300',
+            role: 'assistant' as const,
+            content: step.content,
+          })),
+        ]
+        setMessages((msg) => [...msg, ...messages])
+        setIsLoading(false)
+      }
     }
     fetchMessages()
   }, [chatId])

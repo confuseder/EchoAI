@@ -10,6 +10,7 @@ async function getChatData(chatId: string) {
       },
     ],
     chatId,
+    status: 'submitted' as const,
   })
 }
 
@@ -20,5 +21,7 @@ export default async function ChatPage(props: {
   const { id } = params
   const chat = await getChatData(id)
 
-  return <Chat chatId={id} initialMessages={chat.messages} />
+  return (
+    <Chat chatId={id} initialMessages={chat.messages} status={chat.status} />
+  )
 }
