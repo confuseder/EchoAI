@@ -3,13 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { DesignerStep } from '@/app/types/designer'
 
-interface Point {
-  x: number
-  y: number
-}
-
 interface StepNode {
-  id: number
+  id: string
   x: number
   y: number
   width: number
@@ -29,8 +24,8 @@ export function ChatGraph({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [nodes, setNodes] = useState<StepNode[]>([])
-  const [hoveredNode, setHoveredNode] = useState<number | null>(null)
-  const [selectedNode, setSelectedNode] = useState<number | null>(null)
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+  const [selectedNode, setSelectedNode] = useState<string | null>(null)
   const [scale, setScale] = useState(1)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)

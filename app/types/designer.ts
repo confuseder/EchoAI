@@ -1,5 +1,5 @@
 export interface DesignerStep {
-  id: number
+  id: string
   type: string
   content: string
   timestamp: string
