@@ -349,22 +349,6 @@ export function ChatGraph({
     }
   }, [steps, nodes])
 
-  // Debug node positions
-  useEffect(() => {
-    if (nodes.length) {
-      console.log(
-        'Nodes:',
-        nodes.map((n) => ({
-          id: n.id,
-          x: n.x,
-          y: n.y,
-          radius: n.radius,
-          isMain: n.isMain,
-        })),
-      )
-    }
-  }, [nodes])
-
   return (
     <div ref={containerRef} className="bg-gray-100 rounded-xl size-full p-4">
       <div className="size-full overflow-hidden">
