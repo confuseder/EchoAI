@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
+import { ChatGraph } from './chat-graph'
 
 interface MessageBoxType {
   avatar: string
@@ -23,6 +24,7 @@ export function Chat({
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState<MessageBoxType[]>(initialMessages)
+  const [totalSteps, setTotalSteps] = useState<DesignerStep[]>([])
   const [steps, setSteps] = useState<DesignerStep[]>([])
 
   useEffect(() => {
@@ -39,7 +41,8 @@ export function Chat({
         const data: DesignerResponse = await response.json()
         const { steps } = data
         const [step, ...rest] = steps
-        setSteps(rest)
+        setTotalSteps(rest)
+        setSteps([step])
         const msg = step
         const messages = [
           {
@@ -56,8 +59,11 @@ export function Chat({
   }, [chatId])
 
   function handleNext() {
-    const step = steps[0]
-    setSteps(steps.slice(1))
+    const step = totalSteps[0]
+    setTotalSteps(totalSteps.slice(1))
+    if (step.step !== undefined) {
+      setSteps((steps) => [...steps, step])
+    }
     setMessages((msg) => [
       ...msg,
       {
@@ -72,7 +78,9 @@ export function Chat({
     <div className="flex flex-row w-full h-full gap-2">
       <div className="flex flex-3/4 h-full flex-col gap-2">
         <div className="flex flex-3/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg"></div>
-        <div className="flex flex-1/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg"></div>
+        <div className="flex flex-1/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg">
+          <ChatGraph steps={steps} />
+        </div>
       </div>
       <div className="flex flex-col flex-1/4 h-full bg-[rgba(255,255,255,0.5)] p-3 rounded-lg">
         <div className="flex flex-8/10 w-full">
@@ -90,7 +98,7 @@ export function Chat({
           </div>
         </div>
         <div className="flex flex-2/10 w-full">
-          <PromptArea next={steps.length > 0} onNext={handleNext} />
+          <PromptArea next={totalSteps.length > 0} onNext={handleNext} />
         </div>
       </div>
     </div>

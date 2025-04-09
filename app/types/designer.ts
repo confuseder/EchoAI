@@ -3,6 +3,9 @@ export interface DesignerStep {
   type: string
   content: string
   timestamp: string
+  step: number
+  title: string
+  description: string
 }
 
 export interface DesignerResponse {
