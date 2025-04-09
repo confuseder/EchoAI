@@ -6,6 +6,7 @@ export interface DesignerStep {
   step: number
   title: string
   description: string
+  children?: DesignerStep[]
 }
 
 export interface DesignerResponse {

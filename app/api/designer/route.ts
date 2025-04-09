@@ -15,6 +15,16 @@ const MockSteps = [
     step: 1,
     title: '基础概念',
     description: '直角三角形定义',
+    children: [
+      {
+        id: 1,
+        type: 'text',
+        content: '直角三角形定义',
+        step: 1,
+        title: '基础概念',
+        description: '直角三角形定义',
+      },
+    ],
   },
   {
     id: 2,

@@ -75,14 +75,14 @@ export function Chat({
   }
 
   return (
-    <div className="flex flex-row w-full h-full gap-2">
-      <div className="flex flex-3/4 h-full flex-col gap-2">
+    <div className="grid grid-cols-3 w-full h-full gap-2">
+      <div className="col-span-2 flex h-full flex-col gap-2">
         <div className="flex flex-3/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg"></div>
-        <div className="flex flex-1/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg">
+        <div className="flex flex-1/4 w-full bg-[rgba(255,255,255,0.5)] rounded-lg h-[400px]">
           <ChatGraph steps={steps} />
         </div>
       </div>
-      <div className="flex flex-col flex-1/4 h-full bg-[rgba(255,255,255,0.5)] p-3 rounded-lg">
+      <div className="col-span-1 flex flex-col h-full bg-[rgba(255,255,255,0.5)] p-3 rounded-lg">
         <div className="flex flex-8/10 w-full">
           <div className="w-full h-full overflow-y-scroll">
             {messages.map((message, index) => (
@@ -97,7 +97,7 @@ export function Chat({
             )}
           </div>
         </div>
-        <div className="flex flex-2/10 w-full">
+        <div className="flex flex-2/10 w-full ">
           <PromptArea next={totalSteps.length > 0} onNext={handleNext} />
         </div>
       </div>
