@@ -101,14 +101,13 @@ export function ChatGraph({
       // Add child nodes if any
       if (step.children && step.children.length) {
         const childrenCount = step.children.length
-        const totalChildWidth = childrenCount * childSpacing
-        const startX =
-          50 + index * mainNodeSpacing - totalChildWidth / 2 + childSpacing / 2
+        // Position children horizontally in a sequence
+        const childStartX = 50 + index * mainNodeSpacing - 30
 
         step.children.forEach((child, childIndex) => {
           newNodes.push({
             id: child.id,
-            x: startX + childIndex * childSpacing,
+            x: childStartX + childIndex * childSpacing,
             y: baseY + 80,
             width: 100,
             height: 60,
@@ -183,26 +182,61 @@ export function ChatGraph({
       )
       const childNodes = nodes.filter((n) => !n.isMain)
 
-      childNodes.forEach((childNode) => {
-        // Find parent node
-        const parentId = steps.findIndex((s) =>
-          s.children?.some((c) => c.id === childNode.step.id),
-        )
+      // Group child nodes by parent
+      const childNodesByParent = new Map<string, StepNode[]>()
 
-        if (parentId !== -1) {
-          const parentNode = nodes.find(
-            (n) => n.step.id === steps[parentId].id && n.isMain,
-          )
-          if (parentNode) {
-            ctx.moveTo(parentNode.x, parentNode.y)
-            ctx.lineTo(childNode.x, childNode.y)
+      steps.forEach((parentStep) => {
+        if (parentStep.children && parentStep.children.length) {
+          const childNodesForParent = childNodes
+            .filter((childNode) =>
+              parentStep.children?.some(
+                (child) => child.id === childNode.step.id,
+              ),
+            )
+            .sort((a, b) => {
+              // Sort children by their step number if available
+              const stepA = parseInt(a.step.step?.toString() || '0')
+              const stepB = parseInt(b.step.step?.toString() || '0')
+              return stepA - stepB
+            })
+
+          childNodesByParent.set(parentStep.id, childNodesForParent)
+        }
+      })
+
+      // Draw connections
+      steps.forEach((parentStep) => {
+        const parentNode = nodes.find(
+          (n) => n.step.id === parentStep.id && n.isMain,
+        )
+        if (!parentNode) return
+
+        const childrenForParent = childNodesByParent.get(parentStep.id)
+        if (childrenForParent && childrenForParent.length > 0) {
+          // Connect first child to parent with dashed line
+          const firstChild = childrenForParent[0]
+          ctx.beginPath()
+          ctx.setLineDash([5, 3]) // Dashed line for parent-child
+          ctx.moveTo(parentNode.x, parentNode.y)
+          ctx.lineTo(firstChild.x, firstChild.y)
+          ctx.stroke()
+
+          // Connect subsequent children to previous child with solid lines
+          if (childrenForParent.length > 1) {
+            ctx.beginPath()
+            ctx.setLineDash([]) // Solid line for sibling connections
+            for (let i = 1; i < childrenForParent.length; i++) {
+              ctx.moveTo(childrenForParent[i - 1].x, childrenForParent[i - 1].y)
+              ctx.lineTo(childrenForParent[i].x, childrenForParent[i].y)
+            }
+            ctx.stroke()
           }
         }
       })
 
       ctx.strokeStyle = '#D1D5DB' // gray-300
       ctx.lineWidth = 2
-      ctx.stroke()
+
       // Reset line dash to solid for other elements
       ctx.setLineDash([])
 
