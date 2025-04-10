@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev:chalk": "tsup ./app/api/chalk/examples/main.test.ts --watch --format esm --dts --out-dir ./app/api/chalk/dist",
+    "run:chalk": "node --env-file=.env.local ./app/api/chalk/dist/main.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
@@ -25,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
     "tailwindcss": "^4",
+    "tsup": "^8.4.0",
     "typescript": "^5"
   }
 }

@@ -10,4 +10,4 @@ And I find some documents and references you may need:
 <:insert:references>
 ```
 
-Now please generate the sciux code according to the requirements.
+Now please call the tools to change the document.
