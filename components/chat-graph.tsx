@@ -135,13 +135,9 @@ export function ChatGraph({
       if (containerRef.current && canvas) {
         const { width, height } = containerRef.current.getBoundingClientRect()
 
-        // Ensure minimum size to accommodate all nodes
-        const rightmostNode = Math.max(...nodes.map((n) => n.x + n.width / 2))
-        const bottommostNode = Math.max(...nodes.map((n) => n.y + n.height / 2))
-
-        // Set canvas size to at least fit all nodes or container size, whichever is larger
-        canvas.width = Math.max(width, rightmostNode + 100)
-        canvas.height = Math.max(height, bottommostNode + 100)
+        // Set canvas dimensions to match container
+        canvas.width = width
+        canvas.height = height
 
         drawGraph()
       }
@@ -403,6 +399,8 @@ export function ChatGraph({
                 ? 'grabbing'
                 : 'grab',
             display: 'block',
+            width: '100%',
+            height: '100%',
           }}
         />
       </div>
