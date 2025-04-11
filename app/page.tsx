@@ -17,6 +17,7 @@ export default function Home() {
   const router = useRouter()
   const [prompt, setPrompt] = useState()
   async function start() {
+    if (!prompt) return
     console.log(prompt)
     // const { chat_id } = await createChat(prompt)
     const chat_id = '123'
@@ -30,7 +31,7 @@ export default function Home() {
       </div>
       <div className="w-full h-72 px-56 py-10">
         <div className="w-full h-full mx-auto max-w-[900px]">
-          <PromptArea next={true} setPrompt={setPrompt} onSend={start} />
+          <PromptArea setPrompt={setPrompt} onSend={start} />
         </div>
       </div>
     </div>
