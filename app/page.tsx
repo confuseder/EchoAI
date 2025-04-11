@@ -29,7 +29,9 @@ export default function Home() {
         Good {getPeriod()}, let's get started!
       </div>
       <div className="w-full h-72 px-56 py-10">
-        <PromptArea next={true} setPrompt={setPrompt} onSend={start} />
+        <div className="w-full h-full mx-auto max-w-[900px]">
+          <PromptArea next={true} setPrompt={setPrompt} onSend={start} />
+        </div>
       </div>
     </div>
   )
