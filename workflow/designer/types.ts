@@ -1,12 +1,9 @@
 export interface DesignerStep {
-  id: string
-  type: string
-  content: string
-  timestamp: string
-  step: number
-  title: string
-  description: string
-  children?: DesignerStep[]
+  step: string
+  problem: string
+  knowledge: string
+  explanation: string
+  conclusion: string
 }
 
 export interface DesignerResponse {

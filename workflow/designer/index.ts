@@ -2,6 +2,7 @@ import { ChatCompletionMessageParam } from "openai/resources/chat/completions"
 import { SYSTEM, USER, SYSTEM_ADDITION, ADDITION } from "./prompts"
 import { prompt } from "@/utils";
 import { DEFAULT_DESIGNER_MODEL, DEFAULT_PROVIDER } from "@/config";
+import { DesignerStep } from "./types";
 
 const provider = DEFAULT_PROVIDER
 const defaultModel = DEFAULT_DESIGNER_MODEL
@@ -10,7 +11,7 @@ export interface DesignerWorkflowOptions {
   prompt: string
   refs?: string
   step?: string
-  model: string
+  model?: string
 }
 
 export async function startDesignerWorkflow(
@@ -29,7 +30,7 @@ export async function startDesignerWorkflow(
       },
       {
         role: 'user',
-        content: prompt(USER, { userPrompt }),
+        content: prompt(USER, { prompt: userPrompt }),
       }
     )
   } else if (userPrompt) {
@@ -43,4 +44,8 @@ export async function startDesignerWorkflow(
     messages: context,
   })
 
+  context.push(response.choices[0].message)
+
+  const { content } = response.choices[0].message
+  return JSON.parse(content?.match(/```json\n([\s\S]*)\n```/)?.[1] ?? '') as DesignerStep[]
 }
