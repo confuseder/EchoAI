@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.rag": "markdown",
+    "*.sciux": "html"
+  },
+}
