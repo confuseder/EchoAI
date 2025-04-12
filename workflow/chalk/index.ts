@@ -1,15 +1,16 @@
 import {
   prompt,
 } from "@/utils";
-import chalk_system from "./prompts/system";
-import chalk_user from "./prompts/user";
+import { SYSTEM, USER } from "./prompts";
 import { search } from "@/utils/providers/dify";
 import { openai } from "@/utils/providers";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import chalkSchema from "./schemas/schema";
 import { Position, Result, Operation } from "./types";
-const provider = openai();
-const model = "gpt-4o";
+import { DEFAULT_CHALK_MODEL, DEFAULT_PROVIDER } from "@/config";
+
+const provider = DEFAULT_PROVIDER
+const defaultModel = DEFAULT_CHALK_MODEL
 
 export interface ChalkWorkflowOptions {
   prompt: string;
@@ -17,6 +18,7 @@ export interface ChalkWorkflowOptions {
   result?: Result;
   tool_call_id?: string;
   primary_document?: string;
+  model: string;
 }
 
 export interface ChalkWorkflowResult {
@@ -29,12 +31,13 @@ export async function startChalkWorkflow(
   context: ChatCompletionMessageParam[],
   options: ChalkWorkflowOptions,
 ): Promise<ChalkWorkflowResult> {
-  const { prompt: userPrompt, components, result, tool_call_id, primary_document } = options;
+  const { prompt: userPrompt, components, model: modelOption, result, tool_call_id, primary_document } = options;
+  const model = modelOption ?? defaultModel
 
   if (context.length === 0) {
     context.push({
       role: "system",
-      content: prompt(chalk_system, {
+      content: prompt(SYSTEM, {
         primary_document: primary_document ?? '<root></root>'
       }),
     });
@@ -48,7 +51,7 @@ export async function startChalkWorkflow(
 
   // RAG
   const chunks = await search(userPrompt);
-  const userMessage = prompt(chalk_user, {
+  const userMessage = prompt(USER, {
     requirements: userPrompt,
     references: chunks.join("\n"),
   });

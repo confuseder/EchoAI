@@ -1,6 +1,6 @@
 'use client'
 
-import createChat from '@/apis/create'
+import createChat from '@/service/create'
 import PromptArea from '@/components/prompt-area'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
