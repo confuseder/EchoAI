@@ -1,0 +1,8 @@
+openai
+python-dotenv
+requests
+pyarrow
+pandas
+datasets
+toml
+yaml

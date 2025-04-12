@@ -42,3 +42,14 @@ next-env.d.ts
 .env*.local
 
 dist
+
+.venv
+.DS_Store
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.env
+output/*
