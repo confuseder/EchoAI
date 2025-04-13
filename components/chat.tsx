@@ -1,17 +1,26 @@
 'use client'
 
-import { DesignerResponse, DesignerStep } from '@/app/types/designer'
+import { DesignerResponse, DesignerStep, StepBranch } from '@/workflow/designer'
 import { useState, useEffect } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
 import { ChatGraph } from './chat-graph'
+import fetchDesigner from '@/service/deigner'
 
-interface MessageBoxType {
-  avatar: string
+interface TipMessageBoxType {
+  role: 'tip'
+  content: string
+  isLoading?: boolean
+}
+
+interface ChatMessageBoxType {
+  avatar?: string
   role: 'user' | 'assistant'
   content: string
 }
+
+type MessageBoxType = TipMessageBoxType | ChatMessageBoxType
 
 export function Chat({
   chatId,
@@ -24,34 +33,37 @@ export function Chat({
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState<MessageBoxType[]>(initialMessages)
-  const [totalSteps, setTotalSteps] = useState<DesignerStep[]>([])
-  const [steps, setSteps] = useState<DesignerStep[]>([])
+  const [branches, setBranches] = useState<StepBranch[]>([])
+  const [currentStepId, setCurrentStepId] = useState<string | null>(null)
+  const [prompt, setPrompt] = useState<string>('')
 
   useEffect(() => {
     const fetchMessages = async () => {
       if (status === 'submitted') {
         setIsLoading(true)
-        const response = await fetch(`/api/designer`, {
-          method: 'POST',
-          body: JSON.stringify({
-            chatId,
-            prompt: 'Hello, please teach me ....',
-          }),
+        setMessages((msg) => ({
+          ...msg,
+          ...[
+            {
+              avatar: 'https://picsum.photos/200/300',
+              role: 'user' as const,
+              content: prompt,
+            },
+            {
+              role: 'tip' as const,
+              content: 'Designing...',
+              isLoading,
+            }
+          ],
+        }))
+        const designerResponse = await fetchDesigner({
+          chat_id: chatId,
+          prompt,
         })
-        const data: DesignerResponse = await response.json()
-        const { steps } = data
-        const [step, ...rest] = steps
-        setTotalSteps(rest)
-        setSteps([step])
-        const msg = step
-        const messages = [
-          {
-            avatar: 'https://picsum.photos/200/300',
-            role: 'assistant' as const,
-            content: msg.content,
-          },
-        ]
-        setMessages((msg) => [...msg, ...messages])
+        setBranches(designerResponse.branches)
+        
+        // TODO: speaker model
+
         setIsLoading(false)
       }
     }
@@ -59,19 +71,7 @@ export function Chat({
   }, [chatId])
 
   function handleNext() {
-    const step = totalSteps[0]
-    setTotalSteps(totalSteps.slice(1))
-    if (step.step !== undefined) {
-      setSteps((steps) => [...steps, step])
-    }
-    setMessages((msg) => [
-      ...msg,
-      {
-        avatar: 'https://picsum.photos/200/300',
-        role: 'assistant' as const,
-        content: step.content,
-      },
-    ])
+    // TODO: handle next
   }
 
   function handleStepClick(step: DesignerStep) {
@@ -83,26 +83,32 @@ export function Chat({
       <div className="flex flex-col w-2/3 gap-y-2">
         <div className="flex-1 bg-gray-100 rounded-lg"></div>
         <div className="w-full bg-gray-100 rounded-lg h-[400px]">
-          <ChatGraph steps={steps} onStepClick={handleStepClick} />
+          {/* <ChatGraph steps={steps} onStepClick={handleStepClick} /> */}
         </div>
       </div>
       <div className="flex flex-col w-1/3 gap-y-2 bg-gray-100 rounded-lg p-4">
         <div className="flex flex-1 overflow-y-auto">
           <div className="size-full">
             {messages.map((message, index) => (
-              <MessageBox key={index} {...message} />
+              (message.role === 'tip') ? (
+                <ToolBox
+                  content={message.content}
+                  isLoading={message.isLoading ?? false}
+                  key={index}
+                />
+              ) : (
+                <MessageBox
+                  avatar={message.avatar ?? 'https://picsum.photos/200/300'}
+                  role={message.role}
+                  content={message.content}
+                  key={index}
+                />
+              )
             ))}
-            {isLoading && (
-              <ToolBox
-                content="Designing..."
-                isLoading={isLoading}
-                key={messages.length}
-              />
-            )}
           </div>
         </div>
         <div className="h-[340px] w-full ">
-          <PromptArea next={totalSteps.length > 0} onNext={handleNext} />
+          <PromptArea onNext={handleNext} setPrompt={setPrompt} />
         </div>
       </div>
     </div>

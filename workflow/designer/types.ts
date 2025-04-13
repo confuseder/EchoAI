@@ -6,6 +6,12 @@ export interface DesignerStep {
   conclusion: string
 }
 
+export interface StepBranch {
+  steps: DesignerStep[]
+  start?: string
+  end?: string
+}
+
 export interface DesignerResponse {
   chat_id: string
   input: string

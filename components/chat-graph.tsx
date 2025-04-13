@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { DesignerStep } from '@/app/types/designer'
+import { DesignerStep } from '@/workflow/designer'
 
 interface StepNode {
   id: string

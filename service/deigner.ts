@@ -1,11 +1,14 @@
+import { DesignerWorkflowOptions, StepBranch } from '@/workflow/designer'
 import { BASE_URL } from './config'
 import supabase from './supabase'
 
-export interface DesignerParams {
+export interface DesignerParams extends DesignerWorkflowOptions {
+  chat_id: string  
+}
+
+export interface DesignerResponse {
   chat_id: string
-  refs: string
-  prompt: string
-  step: string
+  branches: StepBranch[]
 }
 
 export default async function fetchDesigner(params: DesignerParams) {
@@ -23,10 +26,5 @@ export default async function fetchDesigner(params: DesignerParams) {
     body: JSON.stringify(params)
   })
 
-  return response.json() as Promise<{
-    chat_id: string
-    refs: string
-    prompt: string
-    step: string
-  }>
+  return response.json() as Promise<DesignerResponse>
 }
