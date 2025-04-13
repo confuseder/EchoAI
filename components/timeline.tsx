@@ -72,6 +72,34 @@ const TEST_DATA: StepBranch[] = [
         explanation: '子支线说明2',
         conclusion: '子支线结论2',
       },
+      {
+        step: 'b3',
+        problem: '子支线问题3',
+        knowledge: '子支线知识3',
+        explanation: '子支线说明3',
+        conclusion: '子支线结论3',
+      },
+      {
+        step: 'b4',
+        problem: '子支线问题4',
+        knowledge: '子支线知识4',
+        explanation: '子支线说明4',
+        conclusion: '子支线结论4',
+      },
+      {
+        step: 'b5',
+        problem: '子支线问题5',
+        knowledge: '子支线知识5',
+        explanation: '子支线说明5',
+        conclusion: '子支线结论5',
+      },
+      {
+        step: 'b6',
+        problem: '子支线问题6',
+        knowledge: '子支线知识6',
+        explanation: '子支线说明6',
+        conclusion: '子支线结论6',
+      },
     ]
   }
 ];
@@ -113,37 +141,28 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA }) => {
       // 当前支线的 y 坐标
       const y = margin.top + (branchIndex + 1) * branchSpacing;
       const nodeCount = branch.steps.length;
-
-      // 对于该支线，计算节点的水平位置（初始计算值）
-      const xScale = d3.scaleLinear()
+      
+      // 初始化子支线的比例尺，默认全宽度分布
+      let xScale = d3.scaleLinear()
         .domain([0, nodeCount - 1])
         .range([margin.left, width - margin.right]);
 
-      // 构造节点坐标数据，类型为 [number, number][]
-      const lineData: [number, number][] = branch.steps.map((_, index) => [xScale(index), y]);
-
-      // 如果当前支线为子支线，并且有 start/end 参数，则覆盖首尾节点的 x 坐标
-      // 这里假设父线为 branches[0]
-      if (branchIndex > 0 && parentXScale) {
-        // 如果有 start 参数，则查找父线中对应的节点
-        if (branch.start) {
-          const parentBranch = branches[0];
-          const startIndex = parentBranch.steps.findIndex(s => s.step === branch.start);
-          if (startIndex !== -1) {
-            const parentX = parentXScale(startIndex);
-            lineData[0][0] = parentX;
-          }
-        }
-        // 如果有 end 参数，则查找父线中对应的节点
-        if (branch.end) {
-          const parentBranch = branches[0];
-          const endIndex = parentBranch.steps.findIndex(s => s.step === branch.end);
-          if (endIndex !== -1) {
-            const parentX = parentXScale(endIndex);
-            lineData[lineData.length - 1][0] = parentX;
-          }
+      // 如果是子支线且同时设置了 start 与 end，则重新生成 xScale，使得首尾对齐父线
+      if (branchIndex > 0 && branch.start && branch.end && parentXScale) {
+        const parentBranch = branches[0];
+        const startIndex = parentBranch.steps.findIndex(s => s.step === branch.start);
+        const endIndex = parentBranch.steps.findIndex(s => s.step === branch.end);
+        if (startIndex !== -1 && endIndex !== -1) {
+          const parentStartX = parentXScale(startIndex);
+          const parentEndX = parentXScale(endIndex);
+          xScale = d3.scaleLinear()
+            .domain([0, nodeCount - 1])
+            .range([parentStartX, parentEndX]);
         }
       }
+      
+      // 构造节点坐标数据，类型为 [number, number][]
+      const lineData: [number, number][] = branch.steps.map((_, index) => [xScale(index), y]);
 
       // 定义线条生成器，生成路径字符串
       const lineGenerator = d3.line<[number, number]>()
@@ -180,7 +199,7 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA }) => {
   }, [branches]);
 
   return (
-    <svg ref={svgRef} />
+    <svg ref={svgRef} style={{ border: '1px solid #ccc', background: '#fafafa' }} />
   );
 };
 
