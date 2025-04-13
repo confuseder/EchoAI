@@ -1,10 +1,8 @@
 import { Chat } from '@/components/chat'
+import { useRouter } from 'next/navigation'
 
-export default async function ChatPage(props: {
-  params: Promise<{ id: string }>
-}) {
-  const params = await props.params
-  const { id } = params
+export default async function ChatPage({ params }: { params: { chat_id: string } }) {
+  const { chat_id } = params
   const chat = {
     messages: [],
     status: 'submitted' as const,
@@ -12,7 +10,7 @@ export default async function ChatPage(props: {
 
   return (
     <div className='w-full h-full'>
-      <Chat chatId={id} status={chat.status} />
+      <Chat chatId={chat_id} status={chat.status} />
     </div>
   )
 }

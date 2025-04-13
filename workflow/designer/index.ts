@@ -1,7 +1,7 @@
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions"
 import { SYSTEM, USER, SYSTEM_ADDITION, ADDITION } from "./prompts"
 import { prompt } from "@/utils";
-import { DEFAULT_DESIGNER_MODEL, DEFAULT_PROVIDER } from "@/config";
+import { DEFAULT_DESIGNER_MODEL, DEFAULT_PROVIDER } from "@/config/client";
 import { DesignerStep } from "./types";
 
 const provider = DEFAULT_PROVIDER
@@ -33,12 +33,13 @@ export async function startDesignerWorkflow(
         content: prompt(USER, { prompt: userPrompt }),
       }
     )
-  } else if (userPrompt) {
+  } else if (context[context.length - 1].role !== 'user') {
     context.push({
       role: 'user',
       content: prompt(ADDITION, { step: step!, prompt: userPrompt }),
     })
   }
+
   const response = await provider.chat.completions.create({
     model,
     messages: context,

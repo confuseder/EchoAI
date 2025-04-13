@@ -7,7 +7,7 @@ import { openai } from "@/utils/providers";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import chalkSchema from "./schemas/schema";
 import { Position, Result, Operation } from "./types";
-import { DEFAULT_CHALK_MODEL, DEFAULT_PROVIDER } from "@/config";
+import { DEFAULT_CHALK_MODEL, DEFAULT_PROVIDER } from "@/config/client";
 
 const provider = DEFAULT_PROVIDER
 const defaultModel = DEFAULT_CHALK_MODEL

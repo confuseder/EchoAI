@@ -1,6 +1,6 @@
 import { prompt } from "@/utils"
 import { SYSTEM, USER } from "./prompts"
-import { DEFAULT_PROVIDER, DEFAULT_LAYOUT_MODEL } from "@/config"
+import { DEFAULT_PROVIDER, DEFAULT_LAYOUT_MODEL } from "@/config/client"
 import { ChatCompletionMessageParam } from "openai/resources.mjs"
 
 const provider = DEFAULT_PROVIDER

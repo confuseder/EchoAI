@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
-import fetchDesigner from '@/service/deigner'
+import fetchDesigner from '@/apis/designer'
 import { Timeline } from './timeline'
 
 interface TipMessageBoxType {
