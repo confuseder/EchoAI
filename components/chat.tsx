@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
-import { ChatGraph } from './chat-graph'
 import fetchDesigner from '@/service/deigner'
+import { Timeline } from './timeline'
 
 interface TipMessageBoxType {
   role: 'tip'
@@ -28,11 +28,12 @@ export function Chat({
   status,
 }: {
   chatId: string
-  initialMessages: MessageBoxType[]
+  initialMessages?: MessageBoxType[]
   status: 'submitted' | 'streaming' | 'ready' | 'error'
 }) {
   const [isLoading, setIsLoading] = useState(false)
-  const [messages, setMessages] = useState<MessageBoxType[]>(initialMessages)
+  const [messages, setMessages] = useState<MessageBoxType[]>([])
+  console.log(messages)
   const [branches, setBranches] = useState<StepBranch[]>([])
   const [currentStepId, setCurrentStepId] = useState<string | null>(null)
   const [prompt, setPrompt] = useState<string>('')
@@ -41,7 +42,7 @@ export function Chat({
     const fetchMessages = async () => {
       if (status === 'submitted') {
         setIsLoading(true)
-        setMessages((msg) => ({
+        setMessages((msg) => [
           ...msg,
           ...[
             {
@@ -55,7 +56,7 @@ export function Chat({
               isLoading,
             }
           ],
-        }))
+        ])
         const designerResponse = await fetchDesigner({
           chat_id: chatId,
           prompt,
@@ -83,7 +84,7 @@ export function Chat({
       <div className="flex flex-col w-2/3 gap-y-2">
         <div className="flex-1 bg-gray-100 rounded-lg"></div>
         <div className="w-full bg-gray-100 rounded-lg h-[400px]">
-          {/* <ChatGraph steps={steps} onStepClick={handleStepClick} /> */}
+          <Timeline />
         </div>
       </div>
       <div className="flex flex-col w-1/3 gap-y-2 bg-gray-100 rounded-lg p-4">
