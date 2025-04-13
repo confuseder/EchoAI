@@ -11,6 +11,8 @@ export default async function ChatPage(props: {
   }
 
   return (
-    <Chat chatId={id} status={chat.status} />
+    <div className='w-full h-full'>
+      <Chat chatId={id} status={chat.status} />
+    </div>
   )
 }

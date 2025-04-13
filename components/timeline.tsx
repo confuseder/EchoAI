@@ -11,183 +11,165 @@ export interface DesignerStep {
 
 export interface StepBranch {
   steps: DesignerStep[];
-  start?: string; // 父线中起始节点的 step 值
-  end?: string;   // 父线中结束节点的 step 值
+  start?: string; // 父支线中起始节点的 step 值
+  end?: string;   // 父支线中结束节点的 step 值
 }
 
 interface TimelineProps {
   branches?: StepBranch[];
+  minGap?: number; // 两个节点之间的最小间距，单位px
 }
 
+const DEFAULT_WIDTH = 800;
+const DEFAULT_MIN_GAP = 100;
+
 const TEST_DATA: StepBranch[] = [
-  // 父线（第一条支线）—主时间轴
+  // 父支线（根支线）
   {
     steps: [
-      {
-        step: 'A',
-        problem: '父线问题A',
-        knowledge: '父线知识A',
-        explanation: '父线说明A',
-        conclusion: '父线结论A',
-      },
-      {
-        step: 'B',
-        problem: '父线问题B',
-        knowledge: '父线知识B',
-        explanation: '父线说明B',
-        conclusion: '父线结论B',
-      },
-      {
-        step: 'C',
-        problem: '父线问题C',
-        knowledge: '父线知识C',
-        explanation: '父线说明C',
-        conclusion: '父线结论C',
-      },
-      {
-        step: 'D',
-        problem: '父线问题D',
-        knowledge: '父线知识D',
-        explanation: '父线说明D',
-        conclusion: '父线结论D',
-      },
+      { step: 'A', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'B', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'C', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'D', problem: '', knowledge: '', explanation: '', conclusion: '' },
     ]
   },
-  // 子支线示例，start 与 end 对应父线的 step 值
+  // 子支线示例
   {
     start: 'B',
     end: 'C',
     steps: [
-      {
-        step: 'b1',
-        problem: '子支线问题1',
-        knowledge: '子支线知识1',
-        explanation: '子支线说明1',
-        conclusion: '子支线结论1',
-      },
-      {
-        step: 'b2',
-        problem: '子支线问题2',
-        knowledge: '子支线知识2',
-        explanation: '子支线说明2',
-        conclusion: '子支线结论2',
-      },
-      {
-        step: 'b3',
-        problem: '子支线问题3',
-        knowledge: '子支线知识3',
-        explanation: '子支线说明3',
-        conclusion: '子支线结论3',
-      },
-      {
-        step: 'b4',
-        problem: '子支线问题4',
-        knowledge: '子支线知识4',
-        explanation: '子支线说明4',
-        conclusion: '子支线结论4',
-      },
-      {
-        step: 'b5',
-        problem: '子支线问题5',
-        knowledge: '子支线知识5',
-        explanation: '子支线说明5',
-        conclusion: '子支线结论5',
-      },
-      {
-        step: 'b6',
-        problem: '子支线问题6',
-        knowledge: '子支线知识6',
-        explanation: '子支线说明6',
-        conclusion: '子支线结论6',
-      },
+      { step: 'b1', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'b2', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'b3', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'b4', problem: '', knowledge: '', explanation: '', conclusion: '' },
+      { step: 'b5', problem: '', knowledge: '', explanation: '', conclusion: '' },
     ]
   }
 ];
 
-export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA }) => {
+export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap = DEFAULT_MIN_GAP }) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
-    // 清空之前的内容
+    if (!branches || branches.length === 0) return;
+
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+
+    // 先确定根支线（branches[0]）所需的最小宽度
+    const rootSteps = branches[0].steps;
+    const rootNodeCount = rootSteps.length;
+    // 根支线要求的最小宽度
+    let requiredWidth = margin.left + margin.right + (rootNodeCount - 1) * minGap;
+
+    // 遍历子支线，计算如果它们同时设置了 start 与 end，需要的最小svg宽度
+    branches.forEach((branch, i) => {
+      if (i === 0) return; // 跳过根支线
+      if (branch.start && branch.end) {
+        const subNodeCount = branch.steps.length;
+        // 在父支线中查找 start 与 end 的位置
+        const parentSteps = rootSteps;
+        const startIndex = parentSteps.findIndex(s => s.step === branch.start);
+        const endIndex = parentSteps.findIndex(s => s.step === branch.end);
+        if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+          // 当前父支线中该区间的比例：默认情况下父支线映射后该区间宽度为：
+          // currentParentGap = (DEFAULT_WIDTH - margin.left - margin.right) * ((endIndex - startIndex) / (rootNodeCount - 1))
+          // 子支线要求的宽度至少为：(subNodeCount - 1)*minGap
+          // 因此要求:
+          // (svgWidth - margin.left - margin.right) * ((endIndex - startIndex) / (rootNodeCount - 1)) >= (subNodeCount - 1)*minGap
+          // 解得:
+          const candidate = margin.left + margin.right + ((subNodeCount - 1) * minGap * (rootNodeCount - 1)) / (endIndex - startIndex);
+          requiredWidth = Math.max(requiredWidth, candidate);
+        }
+      }
+    });
+
+    // svg宽度取默认宽度和计算出的最小宽度中的最大值
+    const svgWidth = Math.max(DEFAULT_WIDTH, requiredWidth);
+
+    // 为便于计算，将svg高度设为固定值加上支线数的间距
+    const branchCount = branches.length;
+    const branchSpacing = 60; // 每条支线之间固定间距
+    const svgHeight = margin.top + margin.bottom + branchCount * branchSpacing;
+
+    // 设置svg尺寸
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
+    svg.attr('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
 
-    // 定义 svg 的尺寸与边距
-    const width = 800;
-    const height = 200 + branches.length * 40; // 根据支线数量动态调整高度
-    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
-    svg.attr('width', width).attr('height', height);
-
-    // 使用 d3 内置颜色方案，支线颜色不同
+    // 使用 d3 内置颜色方案，每条支线颜色不同
     const colorScale = d3.scaleOrdinal<string>()
       .domain(branches.map((_, i) => i.toString()))
       .range(d3.schemeCategory10);
 
-    // 计算每条支线的垂直间距
-    const branchCount = branches.length;
-    const branchSpacing = (height - margin.top - margin.bottom) / (branchCount + 1);
+    // 计算根支线的 xScale
+    const parentXScale = d3.scaleLinear()
+      .domain([0, rootNodeCount - 1])
+      .range([margin.left, svgWidth - margin.right]);
 
-    // 假设 branches[0] 为父线，提前计算父线的 x 位置映射
-    let parentXScale: d3.ScaleLinear<number, number> | null = null;
-    if (branches.length > 0) {
-      const parentSteps = branches[0].steps;
-      parentXScale = d3.scaleLinear()
-        .domain([0, parentSteps.length - 1])
-        .range([margin.left, width - margin.right]);
-    }
-
-    // 遍历所有支线，绘制各自的横向时间轴
+    // 绘制每条支线
     branches.forEach((branch, branchIndex) => {
-      // 当前支线的 y 坐标
-      const y = margin.top + (branchIndex + 1) * branchSpacing;
+      // 每条支线垂直位置：自上而下分布
+      const y = margin.top + branchIndex * branchSpacing + branchSpacing / 2;
       const nodeCount = branch.steps.length;
-      
-      // 初始化子支线的比例尺，默认全宽度分布
-      let xScale = d3.scaleLinear()
-        .domain([0, nodeCount - 1])
-        .range([margin.left, width - margin.right]);
 
-      // 如果是子支线且同时设置了 start 与 end，则重新生成 xScale，使得首尾对齐父线
-      if (branchIndex > 0 && branch.start && branch.end && parentXScale) {
-        const parentBranch = branches[0];
-        const startIndex = parentBranch.steps.findIndex(s => s.step === branch.start);
-        const endIndex = parentBranch.steps.findIndex(s => s.step === branch.end);
-        if (startIndex !== -1 && endIndex !== -1) {
+      // 定义 xScale：根支线或子支线的比例尺
+      let xScale: d3.ScaleLinear<number, number>;
+      // 如果为根支线，使用 parentXScale
+      if (branchIndex === 0) {
+        xScale = parentXScale;
+      } else if (branch.start && branch.end) {
+        // 子支线：将范围限制在父支线中与 start/end 对应的区间
+        const parentSteps = branches[0].steps;
+        const startIndex = parentSteps.findIndex(s => s.step === branch.start);
+        const endIndex = parentSteps.findIndex(s => s.step === branch.end);
+        if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
           const parentStartX = parentXScale(startIndex);
           const parentEndX = parentXScale(endIndex);
+          // 如果该区间不足以满足子支线的最小间距，则扩展
+          const desiredWidth = (nodeCount - 1) * minGap;
+          const rangeWidth = parentEndX - parentStartX;
+          const finalRange = Math.max(rangeWidth, desiredWidth);
           xScale = d3.scaleLinear()
             .domain([0, nodeCount - 1])
-            .range([parentStartX, parentEndX]);
+            .range([parentStartX, parentStartX + finalRange]);
+        } else {
+          // 如果未找到对应父节点，则默认使用全宽比例尺
+          xScale = d3.scaleLinear()
+            .domain([0, nodeCount - 1])
+            .range([margin.left, svgWidth - margin.right]);
         }
+      } else {
+        // 没有设置 start/end 的子支线，默认全宽
+        xScale = d3.scaleLinear()
+          .domain([0, nodeCount - 1])
+          .range([margin.left, svgWidth - margin.right]);
       }
-      
-      // 构造节点坐标数据，类型为 [number, number][]
+
+      // 构造该支线的节点坐标数据
       const lineData: [number, number][] = branch.steps.map((_, index) => [xScale(index), y]);
 
-      // 定义线条生成器，生成路径字符串
+      // 生成路径
       const lineGenerator = d3.line<[number, number]>()
         .x(d => d[0])
         .y(d => d[1]);
       const pathD = lineGenerator(lineData) || '';
 
-      // 绘制连接线
+      // 绘制路径
       svg.append('path')
         .attr('d', pathD)
         .attr('fill', 'none')
         .attr('stroke', colorScale(branchIndex.toString()))
         .attr('stroke-width', 2);
 
-      // 绘制每个节点和文本（仅显示 step 字段）
+      // 绘制每个节点及其文本（只显示 step 字段）
       branch.steps.forEach((step, index) => {
         const cx = lineData[index][0];
-        // 节点圆点
         svg.append('circle')
           .attr('cx', cx)
           .attr('cy', y)
           .attr('r', 5)
           .attr('fill', colorScale(branchIndex.toString()));
 
-        // 显示文本
         svg.append('text')
           .attr('x', cx)
           .attr('y', y - 10)
@@ -196,10 +178,13 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA }) => {
           .text(step.step);
       });
     });
-  }, [branches]);
+  }, [branches, minGap]);
 
+  // 外层容器设置滚动条，宽度和高度自适应，若 svg 尺寸超出则出现滚动条
   return (
-    <svg ref={svgRef} style={{ border: '1px solid #ccc', background: '#fafafa' }} />
+    <div className='w-full h-full'>
+      <svg ref={svgRef} className='h-full w-full select-none' />
+    </div>
   );
 };
 

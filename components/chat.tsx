@@ -80,10 +80,12 @@ export function Chat({
   }
 
   return (
-    <div className="flex size-full gap-2">
-      <div className="flex flex-col w-2/3 gap-y-2">
-        <div className="flex-1 bg-gray-100 rounded-lg"></div>
-        <div className="w-full bg-gray-100 rounded-lg h-[400px]">
+    <div className="flex w-full gap-2 h-full">
+      <div className="flex flex-col h-full w-2/3 gap-y-2">
+        <div className="flex flex-3/4 h-full bg-gray-100 rounded-lg">
+          w
+        </div>
+        <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">
           <Timeline />
         </div>
       </div>
