@@ -48,6 +48,7 @@ export async function startDesignerWorkflow(
   context.push(response.choices[0].message)
 
   const { content } = response.choices[0].message
+  console.log(content)
   return JSON.parse(content?.match(/```json\n([\s\S]*)\n```/)?.[1] ?? '') as DesignerStep[]
 }
 

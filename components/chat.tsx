@@ -1,7 +1,7 @@
 'use client'
 
 import { DesignerResponse, DesignerStep, StepBranch } from '@/workflow/designer'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
@@ -23,7 +23,7 @@ interface ChatMessageBoxType {
 type MessageBoxType = TipMessageBoxType | ChatMessageBoxType
 
 const convert = (displayedMessages: DisplayedMessage[]): MessageBoxType[] => {
-  return displayedMessages.map((msg) => {
+  return displayedMessages.map((msg, index) => {
     if (msg.role === 'user') {
       return {
         avatar: 'https://picsum.photos/200/300',
@@ -34,6 +34,7 @@ const convert = (displayedMessages: DisplayedMessage[]): MessageBoxType[] => {
       return {
         role: 'tip' as const,
         content: msg.content,
+        isLoading: index === displayedMessages.length - 1,
       }
     } else {
       return {
@@ -61,32 +62,35 @@ export function Chat({
   const [branches, setBranches] = useState<StepBranch[]>(info.branches)
   const [currentStepId, setCurrentStepId] = useState<string | null>(null)
   const [prompt, setPrompt] = useState<string>('')
+  const calledRef = useRef(false)
 
   useEffect(() => {
+    if (calledRef.current) return
     const fetchMessages = async () => {
       if (fetchStatus === 'submitted') {
+        calledRef.current = true
+        setFetchStatus('streaming')
         setIsLoading(true)
         setMessages((msg) => [
           ...msg,
-          ...[
+          ...(prompt ? [
             {
               avatar: 'https://picsum.photos/200/300',
               role: 'user' as const,
               content: prompt,
-            },
-            {
-              role: 'tip' as const,
-              content: 'Designing...',
-              isLoading,
             }
-          ],
+          ] : []),
+          {
+            role: 'tip' as const,
+            content: 'Designing...',
+            isLoading: true,
+          }
         ])
         const designerResponse = await fetchDesigner({
           chat_id: chatId,
           prompt,
         })
         setBranches(designerResponse.branches)
-        console.log(designerResponse.displayed_messages, designerResponse.branches)
         setMessages(convert(designerResponse.displayed_messages))
         
         // TODO: speaker model
