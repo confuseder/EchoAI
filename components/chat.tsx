@@ -7,7 +7,7 @@ import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
 import fetchDesigner from '@/apis/designer'
 import { Timeline } from './timeline'
-
+import { DisplayedMessage, GetChatResponse } from '@/services/get-chat'
 interface TipMessageBoxType {
   role: 'tip'
   content: string
@@ -22,25 +22,49 @@ interface ChatMessageBoxType {
 
 type MessageBoxType = TipMessageBoxType | ChatMessageBoxType
 
+const convert = (displayedMessages: DisplayedMessage[]): MessageBoxType[] => {
+  return displayedMessages.map((msg) => {
+    if (msg.role === 'user') {
+      return {
+        avatar: 'https://picsum.photos/200/300',
+        role: 'user' as const,
+        content: msg.content
+      }
+    } else if (msg.role === 'processor') {
+      return {
+        role: 'tip' as const,
+        content: msg.content,
+      }
+    } else {
+      return {
+        role: 'assistant' as const,
+        content: msg.content
+      }
+    }
+  })
+}
 export function Chat({
   chatId,
-  initialMessages,
+  info,
   status,
 }: {
   chatId: string
-  initialMessages?: MessageBoxType[]
+  info: GetChatResponse
   status: 'submitted' | 'streaming' | 'ready' | 'error'
 }) {
+  const [fetchStatus, setFetchStatus] = useState<'submitted' | 'streaming' | 'ready' | 'error'>(status)
   const [isLoading, setIsLoading] = useState(false)
-  const [messages, setMessages] = useState<MessageBoxType[]>([])
+  const [messages, setMessages] = useState<MessageBoxType[]>(
+    convert(info.displayed_messages)
+  )
   console.log(messages)
-  const [branches, setBranches] = useState<StepBranch[]>([])
+  const [branches, setBranches] = useState<StepBranch[]>(info.branches)
   const [currentStepId, setCurrentStepId] = useState<string | null>(null)
   const [prompt, setPrompt] = useState<string>('')
 
   useEffect(() => {
     const fetchMessages = async () => {
-      if (status === 'submitted') {
+      if (fetchStatus === 'submitted') {
         setIsLoading(true)
         setMessages((msg) => [
           ...msg,
@@ -62,6 +86,8 @@ export function Chat({
           prompt,
         })
         setBranches(designerResponse.branches)
+        console.log(designerResponse.displayed_messages, designerResponse.branches)
+        setMessages(convert(designerResponse.displayed_messages))
         
         // TODO: speaker model
 
@@ -86,7 +112,7 @@ export function Chat({
           w
         </div>
         <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">
-          <Timeline />
+          <Timeline branches={branches} />
         </div>
       </div>
       <div className="flex flex-col w-1/3 gap-y-2 bg-gray-100 rounded-lg p-4">

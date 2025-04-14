@@ -41,11 +41,19 @@ export async function create(
           }
           : void 0,
       ]),
+      displayed_messages: JSON.stringify([
+        {
+          role: 'user',
+          content: body.prompt
+        }
+      ]),
     })
     .select("uid, id")
     .single();
+
   if (error) {
-    return new Response("Internal Server Error", { status: 500 });
+    console.log(error)
+    return new Response("Internal Server Error: " + error.message, { status: 500 });
   }
 
   return new Response(
