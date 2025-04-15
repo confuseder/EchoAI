@@ -34,7 +34,6 @@ const convert = (displayedMessages: DisplayedMessage[]): MessageBoxType[] => {
       return {
         role: 'tip' as const,
         content: msg.content,
-        isLoading: index === displayedMessages.length - 1,
       }
     } else {
       return {
@@ -64,49 +63,53 @@ export function Chat({
   const [prompt, setPrompt] = useState<string>('')
   const calledRef = useRef(false)
 
+  const fetchMessages = async (inputPrompt: string) => {
+    if (fetchStatus === 'submitted') {
+      calledRef.current = true
+      setFetchStatus('streaming')
+      setIsLoading(true)
+      setMessages((msg) => [
+        ...msg,
+        ...(prompt ? [
+          {
+            avatar: 'https://picsum.photos/200/300',
+            role: 'user' as const,
+            content: inputPrompt,
+          }
+        ] : []),
+        {
+          role: 'tip' as const,
+          content: 'Designing...',
+          isLoading: true,
+        }
+      ])
+      const designerResponse = await fetchDesigner({
+        chat_id: chatId,
+        prompt,
+      })
+      setBranches(designerResponse.branches)
+      setMessages(convert(designerResponse.displayed_messages))
+      
+      // TODO: speaker model
+
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (calledRef.current) return
-    const fetchMessages = async () => {
-      if (fetchStatus === 'submitted') {
-        calledRef.current = true
-        setFetchStatus('streaming')
-        setIsLoading(true)
-        setMessages((msg) => [
-          ...msg,
-          ...(prompt ? [
-            {
-              avatar: 'https://picsum.photos/200/300',
-              role: 'user' as const,
-              content: prompt,
-            }
-          ] : []),
-          {
-            role: 'tip' as const,
-            content: 'Designing...',
-            isLoading: true,
-          }
-        ])
-        const designerResponse = await fetchDesigner({
-          chat_id: chatId,
-          prompt,
-        })
-        setBranches(designerResponse.branches)
-        setMessages(convert(designerResponse.displayed_messages))
-        
-        // TODO: speaker model
-
-        setIsLoading(false)
-      }
-    }
-    fetchMessages()
+    
+    fetchMessages(prompt)
   }, [chatId])
 
   function handleNext() {
     // TODO: handle next
   }
 
-  function handleStepClick(step: DesignerStep) {
-    console.log('clicked', step)
+  function handleSend() {
+    console.log('send', prompt)
+    fetchMessages(prompt)
+    setPrompt('')
   }
 
   return (
@@ -141,7 +144,7 @@ export function Chat({
           </div>
         </div>
         <div className="h-[340px] w-full ">
-          <PromptArea onNext={handleNext} setPrompt={setPrompt} />
+          <PromptArea onNext={handleNext} onSend={handleSend} setPrompt={setPrompt} />
         </div>
       </div>
     </div>

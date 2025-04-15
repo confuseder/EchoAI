@@ -16,7 +16,7 @@ Each step in your lesson plan must include:
 - Detailed guidance on how teachers should explain this content
 - A concrete conclusion or key takeaway from this step
 
-The output must be a JSON array following this schema:
+The output must be a JSON array following this JSON schema:
 
 \`\`\`json
 {
@@ -48,6 +48,8 @@ The output must be a JSON array following this schema:
   }
 }
 \`\`\`
+
+Notice: this is JSON schema, not the final output reference.
 
 Remember to:
 - Start with the most basic concepts

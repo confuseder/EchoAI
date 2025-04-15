@@ -54,10 +54,10 @@ export async function designer(body: DesignerRequestBody, headers: Headers): Pro
       designer_context: JSON.stringify(context),
       displayed_messages: JSON.stringify([
         ...JSON.parse(designerContext.data.displayed_messages),
-        body.prompt ? {
+        ...(body.prompt ? [{
           role: 'user',
           content: body.prompt,
-        } : void 0,
+        }] : []),
         {
           role: 'processor',
           content: 'Designer',

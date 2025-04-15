@@ -172,10 +172,10 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
 
         svg.append('text')
           .attr('x', cx)
-          .attr('y', y - 10)
+          .attr('y', y + (index % 2 === 0 ? 10 : -10))
           .attr('text-anchor', 'middle')
           .attr('font-size', '10px')
-          .text(step.step);
+          .text(`${step.step} ${step.problem}`);
       });
     });
   }, [branches, minGap]);
