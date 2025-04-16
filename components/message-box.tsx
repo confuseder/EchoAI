@@ -1,3 +1,5 @@
+import { marked } from 'marked'
+
 export default function MessageBox(
   props: {
     avatar: string,
@@ -12,7 +14,7 @@ export default function MessageBox(
       </div>
       <div className="flex w-full h-full">
         <div className="w-full h-full bg-[rgba(255,255,255,0.5)] rounded-lg p-2">
-          {props.content}
+          <div dangerouslySetInnerHTML={{ __html: marked(props.content) }} />
         </div>
       </div>
     </div>
