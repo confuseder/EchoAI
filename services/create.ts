@@ -15,6 +15,7 @@ export async function create(
   headers: Headers,
 ): Promise<Response> {
   const token = headers.get("Authorization")?.split(" ")[1];
+  console.log(process.env.UNAUTHORIZED_MODE)
   if (!token && process.env.UNAUTHORIZED_MODE !== "true") {
     return new Response("Unauthorized", { status: 401 });
   }

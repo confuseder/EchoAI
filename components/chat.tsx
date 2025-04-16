@@ -8,6 +8,7 @@ import PromptArea from './prompt-area'
 import fetchDesigner from '@/apis/designer'
 import { Timeline } from './timeline'
 import { DisplayedMessage, GetChatResponse } from '@/services/get-chat'
+import fetchSpeaker from '@/apis/speaker'
 interface TipMessageBoxType {
   role: 'tip'
   content: string
@@ -43,6 +44,18 @@ const convert = (displayedMessages: DisplayedMessage[]): MessageBoxType[] => {
     }
   })
 }
+
+const findStep = (stepId: string, branches: StepBranch[]): DesignerStep | null => {
+  for (const branch of branches) {
+    for (const step of branch.steps) {
+      if (step.step.toString() === stepId.toString()) {
+        return step
+      }
+    }
+  }
+  return null
+}
+
 export function Chat({
   chatId,
   info,
@@ -59,7 +72,8 @@ export function Chat({
   )
   console.log(messages)
   const [branches, setBranches] = useState<StepBranch[]>(info.branches)
-  const [currentStepId, setCurrentStepId] = useState<string | null>(null)
+  // const [currentStepId, setCurrentStepId] = useState<string | null>(null)
+  const currentStep = useRef<string | null>(null)
   const [prompt, setPrompt] = useState<string>('')
   const calledRef = useRef(false)
 
@@ -88,7 +102,34 @@ export function Chat({
         prompt,
       })
       setBranches(designerResponse.branches)
+      currentStep.current = designerResponse.branches[designerResponse.branches.length - 1].steps[0].step
+      console.log('currentStepId', currentStep.current, designerResponse, designerResponse.branches[designerResponse.branches.length - 1].steps[0].step, 'findStep', findStep(currentStep.current!, designerResponse.branches))
       setMessages(convert(designerResponse.displayed_messages))
+
+      await fetchSpeaker({
+        chat_id: chatId,
+        stream: true,
+        ...findStep(currentStep.current!, designerResponse.branches)!
+      }, (chunk) => {
+        console.log('chunk', chunk)
+        setMessages((messages) => {
+          const newMessages = [...messages];
+          const lastMessage = newMessages[newMessages.length - 1];
+          
+          if (lastMessage && lastMessage.role === 'assistant') {
+            // Update existing message
+            lastMessage.content += chunk.content;
+            return newMessages;
+          } else {
+            // Create new message if none exists
+            return [...messages, {
+              role: 'assistant' as const,
+              content: chunk.content,
+              avatar: 'https://picsum.photos/200/300',
+            }];
+          }
+        });
+      })
       
       // TODO: speaker model
 
