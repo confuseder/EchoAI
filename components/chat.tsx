@@ -2,7 +2,7 @@
 
 import { DesignerStep, StepBranch } from '@/workflow/designer'
 import { DesignerResponse } from '@/services/designer'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
@@ -11,6 +11,8 @@ import { Timeline } from './timeline'
 import { DisplayedMessage, GetChatResponse } from '@/services/get-chat'
 import fetchSpeaker from '@/apis/speaker'
 import { marked } from 'marked'
+import { Board } from './board'
+import { layout } from '@/apis/layout'
 
 export const END = Symbol('END_FLAG')
 
@@ -96,8 +98,9 @@ export function Chat({
   const [prompt, setPrompt] = useState<string>('')
   const calledRef = useRef(false)
   const [nextAvailablity, setNextAvailablity] = useState<boolean>(false)
+  const [boardContent, setBoardContent] = useState<string>('')
 
-  const fetchMessages = async (inputPrompt: string) => {
+  const requestDesigner = async (inputPrompt: string) => {
     console.log('fetchMessages called', { fetchStatus, inputPrompt });
     
     try {
@@ -129,7 +132,7 @@ export function Chat({
       setUpdateTrigger(v => v + 1)
 
       let content = ''
-      await requestSpeaker(content, designerResponse.branches)
+      await request(content, designerResponse.branches)
       setNextAvailablity(true)
       
     } catch (error) {
@@ -163,10 +166,33 @@ export function Chat({
     })
   }
 
+  const requestLayout = async (
+    currentBranches: StepBranch[]
+  ) => {
+    const step = findStep(currentStep.current as string, currentBranches)!
+    const layoutResponse = await layout({
+      chat_id: chatId,
+      prompt,
+      ...step,
+    })
+    setBoardContent(layoutResponse.content)
+    setUpdateTrigger(v => v + 1)
+  }
+
+  const request = async (
+    content: string,
+    currentBranches: StepBranch[]
+  ) => {
+    await Promise.all([
+      requestSpeaker(content, currentBranches),
+      requestLayout(currentBranches),
+    ])
+  }
+
   useEffect(() => {
     console.log('useEffect triggered', { calledRef: calledRef.current });
     if (calledRef.current) return;
-    fetchMessages(prompt);
+    requestDesigner(prompt);
   }, [chatId]);
 
   async function handleNext() {
@@ -177,7 +203,7 @@ export function Chat({
     } else {
       currentStep.current = nextStep?.step!
       let content = ''
-      await requestSpeaker(content, branches)
+      await request(content, branches)
       setUpdateTrigger(v => v + 1)
     }
     setNextAvailablity(true)
@@ -185,7 +211,7 @@ export function Chat({
 
   function handleSend() {
     console.log('send', prompt)
-    fetchMessages(prompt)
+    requestDesigner(prompt)
     setPrompt('')
   }
 
@@ -193,7 +219,7 @@ export function Chat({
     <div className="flex w-full gap-2 h-full">
       <div className="flex flex-col h-full w-2/3 gap-y-2">
         <div className="flex flex-3/4 h-full bg-gray-100 rounded-lg">
-          w
+          <Board content={boardContent} />
         </div>
         <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">
           <Timeline branches={branches} />

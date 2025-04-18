@@ -7,6 +7,7 @@ const provider = DEFAULT_PROVIDER
 const defaultModel = DEFAULT_LAYOUT_MODEL
 
 export interface LayoutWorkflowOptions {
+  prompt: string
   step: string
   problem: string
   knowledge: string
@@ -18,7 +19,7 @@ export interface LayoutWorkflowOptions {
 export async function startLayoutWorkflow(
   context: ChatCompletionMessageParam[],
   options: LayoutWorkflowOptions) {
-  const { step, problem, knowledge, explanation, conclusion, model: modelOption } = options
+  const { prompt: promptOption, step, problem, knowledge, explanation, conclusion, model: modelOption } = options
   const model = modelOption ?? defaultModel
 
   if (context.length === 0) {
@@ -31,7 +32,7 @@ export async function startLayoutWorkflow(
   }
   context.push({
     role: 'user',
-    content: prompt(USER, { step, problem, knowledge, explanation, conclusion }),
+    content: prompt(USER, { step, problem, knowledge, explanation, conclusion, prompt: promptOption }),
   })
 
   const response = await provider.chat.completions.create({

@@ -29,6 +29,12 @@ When you complete a design, the user may arise an additional requirement, your c
 `
 
 export const USER = `
+The requirement form user is:
+
+\`\`\`markdown
+<:insert:prompt>
+\`\`\`
+
 STEP: <:insert:step>
 
 PROBLEM: <:insert:problem>

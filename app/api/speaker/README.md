@@ -14,7 +14,6 @@
 ```json
 {
   "chat_id": "the-chat-id",
-  "input": "the-prompt-from-step",
-  "output": "the-output-from-step"
+  "content": "the-output-from-step"
 }
 ```
