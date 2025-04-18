@@ -1,6 +1,7 @@
 'use client'
 
-import { DesignerResponse, DesignerStep, StepBranch } from '@/workflow/designer'
+import { DesignerStep, StepBranch } from '@/workflow/designer'
+import { DesignerResponse } from '@/services/designer'
 import { useState, useEffect, useRef } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
@@ -10,6 +11,8 @@ import { Timeline } from './timeline'
 import { DisplayedMessage, GetChatResponse } from '@/services/get-chat'
 import fetchSpeaker from '@/apis/speaker'
 import { marked } from 'marked'
+
+export const END = Symbol('END_FLAG')
 
 interface TipMessageBoxType {
   role: 'tip'
@@ -58,6 +61,23 @@ const findStep = (stepId: string, branches: StepBranch[]): DesignerStep | null =
   return null
 }
 
+const findStepNext = (stepId: string, branches: StepBranch[]): DesignerStep | null | typeof END => {
+  for (const [index, branch] of branches.entries()) {
+    for (const [stepIndex, step] of branch.steps.entries()) {
+      if (step.step.toString() === stepId.toString()) {
+        if (stepIndex < branch.steps.length - 1) {
+          return branch.steps[stepIndex + 1]
+        } else if (branch.start && branch.end) {
+          return findStep(branch.end, branches)
+        } else {
+          return END
+        }
+      }
+    }
+  }
+  return null
+}
+
 export function Chat({
   chatId,
   info,
@@ -72,9 +92,10 @@ export function Chat({
   const messages = useRef<MessageBoxType[]>(convert(info.displayed_messages))
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const [branches, setBranches] = useState<StepBranch[]>(info.branches)
-  const currentStep = useRef<string | null>(null)
+  const currentStep = useRef<string | null | typeof END>(null)
   const [prompt, setPrompt] = useState<string>('')
   const calledRef = useRef(false)
+  const [nextAvailablity, setNextAvailablity] = useState<boolean>(false)
 
   const fetchMessages = async (inputPrompt: string) => {
     console.log('fetchMessages called', { fetchStatus, inputPrompt });
@@ -107,27 +128,10 @@ export function Chat({
       messages.current.push(...convert(designerResponse.displayed_messages))
       setUpdateTrigger(v => v + 1)
 
-      messages.current.push({
-        role: 'assistant' as const,
-        content: '',
-      })
-      setUpdateTrigger(v => v + 1)
-
       let content = ''
-
-      await fetchSpeaker({
-        chat_id: chatId,
-        stream: true,
-        ...findStep(currentStep.current!, designerResponse.branches)!
-      }, (chunk) => {
-        content += chunk.content
-        messages.current.pop()
-        messages.current.push({
-          role: 'assistant' as const,
-          content,
-        })
-        setUpdateTrigger(v => v + 1)
-      })
+      await requestSpeaker(content, designerResponse.branches)
+      setNextAvailablity(true)
+      
     } catch (error) {
       console.error('Error in fetchMessages:', error);
       setFetchStatus('error');
@@ -136,14 +140,47 @@ export function Chat({
     }
   }
 
+  const requestSpeaker = async (
+    content: string,
+    currentBranches: StepBranch[]
+  ) => {
+    const step = findStep(currentStep.current as string, currentBranches)!
+    console.log('requestSpeaker', step, currentStep.current, currentBranches)
+    await fetchSpeaker({
+      chat_id: chatId,
+      stream: true,
+      ...step,
+    }, (chunk) => {
+      setUpdateTrigger(v => v + 1)
+      
+      if (content.length > 0) messages.current.pop()
+      content += chunk.content
+      messages.current.push({
+        role: 'assistant' as const,
+        content,
+      })
+      setUpdateTrigger(v => v + 1)
+    })
+  }
+
   useEffect(() => {
     console.log('useEffect triggered', { calledRef: calledRef.current });
     if (calledRef.current) return;
     fetchMessages(prompt);
   }, [chatId]);
 
-  function handleNext() {
-    // TODO: handle next
+  async function handleNext() {
+    setNextAvailablity(false)
+    const nextStep = findStepNext(currentStep.current as string, branches)
+    if (nextStep === END) {
+      // TODO: END
+    } else {
+      currentStep.current = nextStep?.step!
+      let content = ''
+      await requestSpeaker(content, branches)
+      setUpdateTrigger(v => v + 1)
+    }
+    setNextAvailablity(true)
   }
 
   function handleSend() {
@@ -183,8 +220,8 @@ export function Chat({
             ))}
           </div>
         </div>
-        <div className="h-[340px] w-full ">
-          <PromptArea onNext={handleNext} onSend={handleSend} setPrompt={setPrompt} />
+        <div className="h-[200px] w-full ">
+          <PromptArea onNext={handleNext} onSend={handleSend} setPrompt={setPrompt} next={nextAvailablity} />
         </div>
       </div>
     </div>

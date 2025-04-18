@@ -11,9 +11,3 @@ export interface StepBranch {
   start?: string
   end?: string
 }
-
-export interface DesignerResponse {
-  chat_id: string
-  input: string
-  steps: DesignerStep[]
-}
