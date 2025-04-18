@@ -21,7 +21,6 @@
 
 body {
   background: var(--background);
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
 
 .bg-custom-block {
