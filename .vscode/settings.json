@@ -3,4 +3,11 @@
     "*.rag": "markdown",
     "*.sciux": "html"
   },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.formatOnSaveMode": "modifications",
+  
 }

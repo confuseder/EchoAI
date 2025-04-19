@@ -1,0 +1,16 @@
+import { defineConfig } from "drizzle-kit";
+import dotenv from 'dotenv'
+
+dotenv.config({
+  path: '../../.env.development.local',
+})
+
+export default defineConfig({
+  dialect: "postgresql",
+  schema: "./db/chats.ts",
+  out: "./drizzle",
+  dbCredentials: {
+    url: process.env.DATABASE_URL,
+    user: process.env.DATABASE_USER,
+  },
+});

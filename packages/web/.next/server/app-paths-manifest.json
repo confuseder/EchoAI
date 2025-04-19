@@ -1,0 +1,9 @@
+{
+  "/api/speaker/route": "app/api/speaker/route.js",
+  "/api/create/route": "app/api/create/route.js",
+  "/api/get/route": "app/api/get/route.js",
+  "/api/designer/route": "app/api/designer/route.js",
+  "/api/layout/route": "app/api/layout/route.js",
+  "/page": "app/page.js",
+  "/chat/[chat_id]/page": "app/chat/[chat_id]/page.js"
+}

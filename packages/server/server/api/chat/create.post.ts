@@ -1,0 +1,68 @@
+import { eq } from "drizzle-orm";
+import { table as chats } from "~/chats";
+import db from "~/index";
+import { SYSTEM, USER } from "@echoai/workflow/designer";
+import { prompt } from "@echoai/utils";
+import logto from "../../utils/logto";
+
+export interface ChatCreateRequestBody {
+  prompt?: string;
+}
+
+export interface ChatCreateResponse {
+  chat_id: string;
+}
+
+export default defineEventHandler(async (event) => {
+  const body = await readBody<ChatCreateRequestBody>(event);
+  const token = getRequestHeader(event, "Authorization")?.split(" ")[1];
+
+  if (!token && process.env.UNAUTHORIZED_MODE !== "true") {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized"
+    });
+  }
+
+  const userId = process.env.UNAUTHORIZED_MODE === "true"
+    ? process.env.UNAUTHORIZED_MODE_USER_ID
+    : (await logto.getAccessTokenClaims(token))?.sub;
+
+  try {
+    const [chat] = await db.insert(chats)
+      .values({
+        uid: userId,
+        designer_context: [
+          {
+            role: "system",
+            content: SYSTEM,
+          },
+          body.prompt
+            ? {
+              role: "user",
+              content: prompt(USER, {
+                prompt: body.prompt,
+              }),
+            }
+            : undefined,
+        ],
+        context: [
+          {
+            role: 'user',
+            content: body.prompt
+          }
+        ],
+      } as any)
+      .returning({ id: chats.id });
+
+    return {
+      chat_id: chat.id
+    };
+  } catch (error) {
+    console.error(error);
+    throw createError({
+      statusCode: 500,
+      message: `Internal Server Error: ${error.message}`
+    });
+  }
+});
