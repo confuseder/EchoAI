@@ -1,33 +1,6 @@
 {
   "version": 3,
   "middleware": {},
-  "functions": {
-    "/api/speaker/route": {
-      "files": [
-        "server/server-reference-manifest.js",
-        "server/app/api/speaker/route_client-reference-manifest.js",
-        "server/middleware-build-manifest.js",
-        "server/middleware-react-loadable-manifest.js",
-        "server/next-font-manifest.js",
-        "server/interception-route-rewrite-manifest.js",
-        "server/edge-runtime-webpack.js",
-        "server/app/api/speaker/route.js"
-      ],
-      "name": "app/api/speaker/route",
-      "page": "/api/speaker/route",
-      "matchers": [
-        {
-          "regexp": "^/api/speaker$",
-          "originalSource": "/api/speaker"
-        }
-      ],
-      "wasm": [],
-      "assets": [],
-      "env": {
-        "__NEXT_BUILD_ID": "development",
-        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "b3OgMjPy5C7jW2LczmljQT8oEBzP+FDLAwYqeNJoc68="
-      }
-    }
-  },
-  "sortedMiddleware": []
+  "sortedMiddleware": [],
+  "functions": {}
 }

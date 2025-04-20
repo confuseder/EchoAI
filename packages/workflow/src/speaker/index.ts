@@ -1,9 +1,9 @@
 import { prompt } from "@echoai/utils"
 import { SYSTEM, USER } from "./prompts"
-import { DEFAULT_PROVIDER, DEFAULT_SPEAKER_MODEL } from "@echoai/web/config/client"
+import { openai, DEFAULT_SPEAKER_MODEL } from "@echoai/utils"
 import { ChatCompletionMessageParam } from "openai/resources.mjs"
 
-const provider = DEFAULT_PROVIDER
+const provider = openai()
 const defaultModel = DEFAULT_SPEAKER_MODEL
 
 export interface SpeakerWorkflowOptions {

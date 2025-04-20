@@ -3,7 +3,7 @@
   "extends": "./.nitro/types/tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "~/*": ["./db/*"]
+      "@/*": ["./db/*"]
     }
   }
 }

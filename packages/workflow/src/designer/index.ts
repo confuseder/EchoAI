@@ -1,10 +1,10 @@
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions"
 import { SYSTEM, USER, SYSTEM_ADDITION, ADDITION } from "./prompts"
 import { prompt } from "@echoai/utils";
-import { DEFAULT_DESIGNER_MODEL, DEFAULT_PROVIDER } from "@echoai/web/config/client";
+import { openai, DEFAULT_DESIGNER_MODEL } from "@echoai/utils";
 import { DesignerStep } from "./types";
 
-const provider = DEFAULT_PROVIDER
+const provider = openai()
 const defaultModel = DEFAULT_DESIGNER_MODEL
 
 export interface DesignerWorkflowOptions {

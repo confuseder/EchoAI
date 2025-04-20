@@ -3,13 +3,12 @@ import {
 } from "@echoai/utils";
 import { SYSTEM, USER } from "./prompts";
 import { search } from "@echoai/utils";
-import { openai } from "@echoai/utils";
+import { openai, DEFAULT_CHALK_MODEL } from "@echoai/utils";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import chalkSchema from "./schemas/schema";
 import { Position, Result, Operation } from "./types";
-import { DEFAULT_CHALK_MODEL, DEFAULT_PROVIDER } from "@echoai/web/config/client";
 
-const provider = DEFAULT_PROVIDER
+const provider = openai()
 const defaultModel = DEFAULT_CHALK_MODEL
 
 export interface ChalkWorkflowOptions {

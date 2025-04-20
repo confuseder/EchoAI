@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { table as chats } from "~/chats";
-import db from "~/index";
+import { table as chats } from "../../../db/chats";
+import db from "../../../db";
 import { SYSTEM, USER } from "@echoai/workflow/designer";
 import { prompt } from "@echoai/utils";
 import logto from "../../utils/logto";

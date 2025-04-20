@@ -66,7 +66,7 @@ export interface GetChatResponse {
   chalk_context: Context
   chalk_results: ChalkResult[]
   branches: StepBranch[]
-  displayed_messages: DisplayedMessage[]
+  context: DisplayedMessage[]
 }
 
 export default async function fetchGetChat(body: GetChatRequestBody, token?: string): Promise<GetChatResponse> {

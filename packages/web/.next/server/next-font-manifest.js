@@ -1,1 +1,1 @@
-self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/acboxliu/projects/bijon/echoai/app/layout\":[\"static/media/b298f373c0960056-s.p.woff2\",\"static/media/610b50da0be92ee2-s.p.woff2\",\"static/media/0223192f2338eb8b-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
+self.__NEXT_FONT_MANIFEST="{\n  \"app\": {},\n  \"appUsingSizeAdjust\": false,\n  \"pages\": {},\n  \"pagesUsingSizeAdjust\": false\n}"
