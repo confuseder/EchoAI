@@ -1,5 +1,5 @@
-import fetchGetChat from '@echoai/api/get-chat'
 import { Chat } from '@/components/chat'
+import connection from '@/lib/connection'
 
 export default async function ChatPage({ params }: { params: { chat_id: string } }) {
   const { chat_id } = params
@@ -7,7 +7,7 @@ export default async function ChatPage({ params }: { params: { chat_id: string }
     messages: [],
     status: 'submitted' as const,
   }
-  const chatInfo = await fetchGetChat({
+  const chatInfo = await connection.chat.get({
     chat_id,
   })
 

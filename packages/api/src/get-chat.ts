@@ -1,26 +1,90 @@
-import { GetChatRequestBody, GetChatResponse } from "@/services/get-chat";
-import { API_BASE_URL } from "@/packages/web/config/app";
-import supabase from "@/services/lib/supabase";
+import { API_URL } from "@echoai/utils";
+import { ChatCompletionMessageParam } from "openai/resources.mjs";
+export interface GetChatRequestBody {
+  chat_id: string
+}
 
-export default async function fetchGetChat(body: GetChatRequestBody): Promise<GetChatResponse> {
-  const session = await supabase.auth.getSession()
+export interface DesignerStep {
+  step: string
+  problem: string
+  knowledge: string
+  explanation: string
+  conclusion: string
+}
+
+export interface StepBranch {
+  steps: DesignerStep[]
+  start?: string
+  end?: string
+}
+
+
+export type Message = ChatCompletionMessageParam
+export type Context = Message[]
+export interface DisplayedMessage {
+  role: 'user' | 'speaker' | 'processor'
+  content: string
+}
+export interface DesignerResult {
+  prompt: string
+  refs?: string
+  step?: string
+  model?: string
+  result: DesignerStep[]
+}
+export interface SpeakerResult {
+  step: string
+  problem: string
+  knowledge: string
+  explanation: string
+  conclusion: string
+  prompt?: string
+  model?: string
+  result: string
+}
+export interface LayoutResult {
+  step: string
+  problem: string
+  knowledge: string
+  explanation: string
+  conclusion: string
+  model?: string
+  result: string
+}
+export interface ChalkResult {
+  // TODO: chalk
+}
+
+export interface GetChatResponse {
+  chat_id: string
+  designer_context: Context
+  designer_results: DesignerResult[]
+  speaker_context: Context
+  speaker_results: SpeakerResult[]
+  layout_context: Context
+  layout_results: LayoutResult[]
+  chalk_context: Context
+  chalk_results: ChalkResult[]
+  branches: StepBranch[]
+  displayed_messages: DisplayedMessage[]
+}
+
+export default async function fetchGetChat(body: GetChatRequestBody, token?: string): Promise<GetChatResponse> {
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
-  if (session.data.session) {
-    headers.Authorization = `Bearer ${session.data.session.access_token}`
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}/get`, {
+  const response = await fetch(`${API_URL}/get`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
   })
-  console.log(response.status)
 
   const data = await response.json()
-  console.log(data)
 
   return data as GetChatResponse
 }

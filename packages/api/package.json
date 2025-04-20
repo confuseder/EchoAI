@@ -8,6 +8,13 @@
   },
   "keywords": [],
   "author": "",
+  "exports": {
+    "import": "./src/index.ts"
+  },
   "license": "ISC",
-  "packageManager": "pnpm@10.8.1"
+  "packageManager": "pnpm@10.8.1",
+  "dependencies": {
+    "@echoai/utils": "workspace:^",
+    "openai": "^4.95.1"
+  }
 }

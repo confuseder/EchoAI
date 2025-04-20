@@ -1,9 +1,9 @@
 'use client'
 
-import createChat from '@/packages/web/apis/create'
-import PromptArea from '@/packages/web/components/prompt-area'
+import connection from '@/lib/connection'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import PromptArea from '@/components/prompt-area'
 
 function getPeriod(): 'morning' | 'afternoon' | 'evening' {
   const now = new Date()
@@ -20,7 +20,7 @@ export default function Home() {
   async function start() {
     if (!prompt || disabled) return
     disabled = true
-    const { chat_id } = await createChat({ prompt })
+    const { chat_id } = await connection.chat.create({ prompt })
     router.push(`/chat/${chat_id}`)
   }
 

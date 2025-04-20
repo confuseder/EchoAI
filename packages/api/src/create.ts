@@ -1,19 +1,23 @@
-import { API_BASE_URL } from '@/packages/web/config/app'
-import supabase from '@/services/lib/supabase'
-import { CreateRequestBody, CreateResponse } from '@/services/create'
+import { API_URL } from '@echoai/utils'
 
-export default async function createChat(body: CreateRequestBody): Promise<CreateResponse> {
-  const session = await supabase.auth.getSession()
+export interface CreateChatRequestBody {
+  prompt?: string
+}
 
+export interface CreateChatResponse {
+  chat_id: string
+}
+
+export default async function createChat(body: CreateChatRequestBody, token?: string): Promise<CreateChatResponse> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json'
   }
   
-  if (session.data.session) {
-    headers.Authorization = `Bearer ${session.data.session.access_token}`
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}/create`, {
+  const response = await fetch(`${API_URL}/create`, {
     method: 'POST',
     headers,
     body: JSON.stringify({
@@ -21,5 +25,5 @@ export default async function createChat(body: CreateRequestBody): Promise<Creat
     })
   })
 
-  return await response.json() as CreateResponse
+  return await response.json() as CreateChatResponse
 }

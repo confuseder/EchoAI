@@ -1,18 +1,15 @@
 'use client'
 
-import { DesignerStep, StepBranch } from '@/workflow/designer'
-import { DesignerResponse } from '@/services/designer'
+import { DesignerStep, StepBranch } from '@echoai/workflow/designer'
 import { useState, useEffect, useRef, Suspense } from 'react'
 import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
-import fetchDesigner from '@/packages/web/apis/designer'
 import { Timeline } from './timeline'
-import { DisplayedMessage, GetChatResponse } from '@/services/get-chat'
-import fetchSpeaker from '@/packages/web/apis/speaker'
+import { DisplayedMessage, GetChatResponse } from '@echoai/api'
 import { marked } from 'marked'
 import { Board } from './board'
-import { layout } from '@/packages/web/apis/layout'
+import connection from '@/lib/connection'
 
 export const END = Symbol('END_FLAG')
 
@@ -120,7 +117,7 @@ export function Chat({
       })
       setUpdateTrigger(v => v + 1)
 
-      const designerResponse = await fetchDesigner({
+      const designerResponse = await connection.chat.designer({
         chat_id: chatId,
         prompt,
       })
@@ -149,7 +146,7 @@ export function Chat({
   ) => {
     const step = findStep(currentStep.current as string, currentBranches)!
     console.log('requestSpeaker', step, currentStep.current, currentBranches)
-    await fetchSpeaker({
+    await connection.chat.speaker({
       chat_id: chatId,
       stream: true,
       ...step,
@@ -170,7 +167,7 @@ export function Chat({
     currentBranches: StepBranch[]
   ) => {
     const step = findStep(currentStep.current as string, currentBranches)!
-    const layoutResponse = await layout({
+    const layoutResponse = await connection.chat.layout({
       chat_id: chatId,
       prompt,
       ...step,

@@ -1,22 +1,35 @@
-import { SpeakerRequestBody, SpeakerResponse } from "@/services/speaker";
-import { API_BASE_URL } from "@/packages/web/config/app";
-import supabase from "@/services/lib/supabase";
+import { API_URL } from "@echoai/utils";
+
+export interface SpeakerRequestBody {
+  chat_id: string;
+  step: string
+  problem: string
+  knowledge: string
+  explanation: string
+  conclusion: string
+  prompt?: string
+  model?: string
+  stream?: boolean
+}
+
+export interface SpeakerResponse {
+  content: string
+}
 
 export default async function fetchSpeaker(
   body: SpeakerRequestBody, 
-  callback?: (chunk: SpeakerResponse) => void
+  callback?: (chunk: SpeakerResponse) => void,
+  token?: string
 ): Promise<SpeakerResponse | void> {
-  const session = await supabase.auth.getSession()
-
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'Accept': 'text/event-stream',
   }
-  if (session.data.session) {
-    headers.Authorization = `Bearer ${session.data.session.access_token}`
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}/speaker`, {
+  const response = await fetch(`${API_URL}/speaker`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body)

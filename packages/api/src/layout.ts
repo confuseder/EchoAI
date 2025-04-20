@@ -1,18 +1,30 @@
-import { API_BASE_URL } from "@/packages/web/config/app";
-import { LayoutRequestBody, LayoutResponse } from "@/services/layout";
-import supabase from "@/services/lib/supabase";
+import { API_URL } from "@echoai/utils";
 
-export async function layout(body: LayoutRequestBody): Promise<LayoutResponse> {
-  const session = await supabase.auth.getSession()
+export interface LayoutRequestBody {
+  chat_id: string
+  prompt: string
+  step: string
+  problem: string
+  knowledge: string
+  explanation: string
+  conclusion: string
+}
 
+export interface LayoutResponse {
+  chat_id: string
+  prompt: string
+  content: string
+}
+
+export default async function fetchLayout(body: LayoutRequestBody, token?: string): Promise<LayoutResponse> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
-  if (session.data.session) {
-    headers.Authorization = `Bearer ${session.data.session.access_token}`
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}/layout`, {
+  const response = await fetch(`${API_URL}/layout`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
