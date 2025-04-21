@@ -17,7 +17,7 @@ export default async function createChat(body: CreateChatRequestBody, token?: st
     headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_URL}/create`, {
+  const response = await fetch(`${API_URL}/chat/create`, {
     method: 'POST',
     headers,
     body: JSON.stringify({

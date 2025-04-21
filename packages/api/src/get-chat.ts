@@ -78,7 +78,7 @@ export default async function fetchGetChat(body: GetChatRequestBody, token?: str
     headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_URL}/get`, {
+  const response = await fetch(`${API_URL}/chat/get`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),

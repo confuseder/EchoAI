@@ -29,7 +29,7 @@ export default async function fetchSpeaker(
     headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_URL}/speaker`, {
+  const response = await fetch(`${API_URL}/chat/speaker`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body)

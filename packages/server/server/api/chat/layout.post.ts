@@ -4,6 +4,7 @@ import db from "../../../db";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import { startLayoutWorkflow } from "@echoai/workflow/layout";
 import logto from "../../utils/logto";
+import { UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
 
 export interface LayoutRequestBody {
   chat_id: string
@@ -25,15 +26,15 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<LayoutRequestBody>(event);
   const token = getRequestHeader(event, "Authorization")?.split(" ")[1];
 
-  if (!token && process.env.UNAUTHORIZED_MODE !== "true") {
+  if (!token && UNAUTHORIZED_MODE !== "true") {
     throw createError({
       statusCode: 401,
       message: "Unauthorized"
     });
   }
 
-  const userId = process.env.UNAUTHORIZED_MODE === "true"
-    ? process.env.UNAUTHORIZED_MODE_USER_ID
+  const userId = UNAUTHORIZED_MODE === "true"
+    ? UNAUTHORIZED_MODE_USER_ID
     : (await logto.getAccessTokenClaims(token))?.sub;
 
   try {
@@ -88,7 +89,11 @@ export default defineEventHandler(async (event) => {
       .set(updateValues)
       .where(eq(chats.id, body.chat_id));
 
-    return layoutResult;
+    return {
+      chat_id: body.chat_id,
+      prompt: body.prompt,
+      content: layoutResult
+    };
   } catch (error) {
     console.error(error);
     throw createError({

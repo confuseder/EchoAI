@@ -7,12 +7,12 @@ const logto = new LogtoClient({
   endpoint: LOGTO_ENDPOINT,
 }, {
   navigate: (url: string) => {
-    window.location.href = url;
+    
   },
   storage: {
-    getItem: async (key: string) => localStorage.getItem(key),
-    setItem: async (key: string, value: string) => localStorage.setItem(key, value),
-    removeItem: async (key: string) => localStorage.removeItem(key),
+    getItem: async (key: string) => '',
+    setItem: async (key: string, value: string) => {},
+    removeItem: async (key: string) => {},
   },
 });
 

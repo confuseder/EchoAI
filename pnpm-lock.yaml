@@ -60,6 +60,10 @@ importers:
         version: 4.19.3
 
   packages/utils:
+    dependencies:
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
     devDependencies:
       tsup:
         specifier: ^8.4.0
@@ -143,6 +147,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.2
         version: 19.1.2(@types/react@19.1.2)
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       eslint:
         specifier: ^9.25.0
         version: 9.25.0(jiti@2.4.2)

@@ -2,7 +2,8 @@
   "name": "@echoai/monorepo",
   "private": true,
   "scripts": {
-    "db:init": "pnpm --filter @echoai/server run init"
+    "db:init": "pnpm --filter @echoai/server run init",
+    "compose:dev": "pnpm run --parallel --filter=./packages/{server,web} dev"
   },
   "author": "BijonAI Team",
   "license": "MIT",

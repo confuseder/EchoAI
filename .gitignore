@@ -34,7 +34,7 @@ yarn-error.log*
 .env*
 
 # exclude .env.template
-!*.env.template
+!*.env.*template
 
 # vercel
 .vercel

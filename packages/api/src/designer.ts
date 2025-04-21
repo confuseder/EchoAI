@@ -25,7 +25,7 @@ export default async function fetchDesigner(body: DesignerRequestBody, token?: s
     headers.Authorization = `Bearer ${token}`
   }
   
-  const response = await fetch(`${API_URL}/designer`, {
+  const response = await fetch(`${API_URL}/chat/designer`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body)

@@ -88,7 +88,7 @@ export function Chat({
 }) {
   const [fetchStatus, setFetchStatus] = useState<'submitted' | 'streaming' | 'ready' | 'error'>(status)
   const [isLoading, setIsLoading] = useState(false)
-  const messages = useRef<MessageBoxType[]>(convert(info.displayed_messages))
+  const messages = useRef<MessageBoxType[]>(convert(info.context))
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const [branches, setBranches] = useState<StepBranch[]>(info.branches)
   const currentStep = useRef<string | null | typeof END>(null)

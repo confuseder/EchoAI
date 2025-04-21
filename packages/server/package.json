@@ -2,7 +2,7 @@
   "name": "@echoai/server",
   "scripts": {
     "build": "nitro build",
-    "dev": "nitro dev",
+    "dev": "nitro dev --port 3322",
     "prepare": "nitro prepare",
     "preview": "node .output/server/index.mjs",
     "init": "pnpm exec drizzle-kit push"

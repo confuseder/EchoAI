@@ -24,7 +24,7 @@ export default async function fetchLayout(body: LayoutRequestBody, token?: strin
     headers.Authorization = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_URL}/layout`, {
+  const response = await fetch(`${API_URL}/chat/layout`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),

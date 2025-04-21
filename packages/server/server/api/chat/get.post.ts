@@ -4,6 +4,7 @@ import db from "../../../db";
 import { DesignerStep, StepBranch } from "@echoai/workflow/designer";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import logto from "../../utils/logto";
+import { UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
 
 export type Message = ChatCompletionMessageParam
 export type Context = Message[]
@@ -67,15 +68,15 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<GetChatRequestBody>(event);
   const token = getRequestHeader(event, "Authorization")?.split(" ")[1];
 
-  if (!token && process.env.UNAUTHORIZED_MODE !== "true") {
+  if (!token && UNAUTHORIZED_MODE !== "true") {
     throw createError({
       statusCode: 401,
       message: "Unauthorized"
     });
   }
 
-  const userId = process.env.UNAUTHORIZED_MODE === "true"
-    ? process.env.UNAUTHORIZED_MODE_USER_ID
+  const userId = UNAUTHORIZED_MODE === "true"
+    ? UNAUTHORIZED_MODE_USER_ID
     : (await logto.getAccessTokenClaims(token))?.sub;
 
   try {
