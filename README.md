@@ -75,6 +75,16 @@ pnpm db:init
 pnpm compose:dev
 ```
 
+## 📦 Packages
+
+| Package | Description |
+| ------- | ----------- |
+| `@echoai/api` | Front-end functions to fetch server |
+| `@echoai/server` | Backend server |
+| `@echoai/utils` | Utility functions for workflow |
+| `@echoai/web` | NextJS web app |
+| `@echoai/workflow` | Workflow for AI |
+
 ## 🤝 Contributors
 
 ![contributors](https://opencollective.com/bijonai/contributors.svg)
