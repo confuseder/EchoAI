@@ -1,4 +1,5 @@
 openai
+qdrant-client
 python-dotenv
 requests
 pyarrow

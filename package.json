@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "db:init": "pnpm --filter @echoai/server run init",
+    "knowledge:init": "cd database && python3 scripts/api/document.py && python3 scripts/qdrant/main.py",
     "compose:dev": "pnpm run --parallel --filter=./packages/{server,web} dev"
   },
   "author": "BijonAI Team",

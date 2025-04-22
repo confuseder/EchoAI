@@ -28,7 +28,7 @@ EchoAI is a open-source LLM applied on education with a whiteboard and step-by-s
 | ---------- | ------- | -------- | ----- | --- |
 | TypeScript | Nitro | Logto | PNPM | DeepSeek |
 |    React   | NodeJs | PostgreSQL | Python | ChatGPT |
-|   NextJs   | Drizzle | | | Claude |
+|   NextJs   | Drizzle | Qdrant | | Claude |
 | TailwindCSS | Logto Node | | | Qwen |
 | D3 | OpenAI SDK | | | Gemini |
 | Logto SDK | | | | |
@@ -38,8 +38,12 @@ EchoAI is a open-source LLM applied on education with a whiteboard and step-by-s
 ### Environment
 >
 > NodeJs >= 20
+>
 > PNPM >= 9
+>
 > Docker
+>
+> Python >= 3.10
 
 ### Start
 
@@ -57,7 +61,7 @@ pnpm i
 
 3. Launch the required services
 
-You need to launch [Logto](https://logto.io/) and [PostgreSQL](https://www.postgresql.org/) to start the development environment.
+You need to launch [Logto](https://logto.io/), [PostgreSQL](https://www.postgresql.org/) and [Qdrant](https://qdrant.tech/) to start the development environment.
 
 4. Setup environment variables
 
@@ -69,7 +73,13 @@ Rename `.env.template` in the root to `.env` and fill in the required variables 
 pnpm db:init
 ```
 
-6. Start the development server
+6. Initialize knowledge base
+
+```bash
+pnpm knowledge:init
+```
+
+7. Start the development server
 
 ```bash
 pnpm compose:dev

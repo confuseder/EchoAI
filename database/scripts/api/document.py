@@ -41,12 +41,16 @@ if __name__ == "__main__":
   api_result = ''
   for item in index['components']:
     api_result += generte_api_document(item) + '\n\n======\n\n'
+  if not os.path.exists('output/documents'):
+    os.makedirs('output/documents')
+
   with open('output/documents/references.md', 'w') as f:
     f.write(api_result)
   
   knowledges_result = ''
-  for item in os.listdir('knowledges'):
-    if os.path.exists(os.path.join('knowledges', item, 'knowledges.toml')):
-      knowledges_result += '\n\n======\n\n'.join(generate_konwledges(os.path.join('knowledges', item)))
-  with open('output/documents/references.md', 'a') as f:
+  for item in os.listdir('database'):
+    if os.path.exists(os.path.join('database', item, 'knowledges.toml')):
+      knowledges_result += '\n\n======\n\n'.join(generate_konwledges(os.path.join('database', item)))
+      print(f'{item} done {len(knowledges_result)}')
+  with open('output/documents/knowledges.md', 'w') as f:
     f.write(knowledges_result)
