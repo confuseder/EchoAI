@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Sidebar } from "./components/Sidebar";
+import { Sidebar } from "@/components/sidebar";
 import { Noto_Serif_SC, Noto_Sans_TC, Comic_Neue } from "next/font/google";
 
 export const metadata: Metadata = {

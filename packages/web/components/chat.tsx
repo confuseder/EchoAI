@@ -10,6 +10,7 @@ import { DisplayedMessage, GetChatResponse } from '@echoai/api'
 import { marked } from 'marked'
 import { Board } from './board'
 import connection from '@/lib/connection'
+import { useClearParamOnLoad } from '@/hooks/use-clear-params-onload'
 
 export const END = Symbol('END_FLAG')
 
@@ -97,6 +98,8 @@ export function Chat({
   const [nextAvailablity, setNextAvailablity] = useState<boolean>(false)
   const [boardContent, setBoardContent] = useState<string>('')
 
+  useClearParamOnLoad('new')
+
   const requestDesigner = async (inputPrompt: string) => {
     console.log('fetchMessages called', { fetchStatus, inputPrompt });
     
@@ -120,6 +123,7 @@ export function Chat({
       const designerResponse = await connection.chat.designer({
         chat_id: chatId,
         prompt,
+        step: currentStep.current as string,
       })
       
       setBranches(designerResponse.branches)
@@ -189,7 +193,9 @@ export function Chat({
   useEffect(() => {
     console.log('useEffect triggered', { calledRef: calledRef.current });
     if (calledRef.current) return;
-    requestDesigner(prompt);
+    if (fetchStatus === 'submitted') {
+      requestDesigner(prompt);
+    }
   }, [chatId]);
 
   async function handleNext() {

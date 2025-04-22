@@ -21,7 +21,7 @@ export default function Home() {
     if (!prompt || disabled) return
     disabled = true
     const { chat_id } = await connection.chat.create({ prompt })
-    router.push(`/chat/${chat_id}`)
+    router.push(`/chat/${chat_id}?new=yes`)
   }
 
   return (

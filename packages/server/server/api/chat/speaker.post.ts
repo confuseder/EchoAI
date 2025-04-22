@@ -102,8 +102,8 @@ export default defineEventHandler(async (event) => {
               context: [
                 ...(speakerContext.context as any[]),
                 {
-                  role: 'processor' as const,
-                  content: 'Speaker',
+                  role: 'assistant' as const,
+                  content: fullContent,
                 }
               ]
             } as any;

@@ -30,7 +30,7 @@ export default function PromptArea({ send, next, upload, image, webSearch, onNex
         </div>
         <div className="flex flex-grow-[10] w-full h-full">
           <textarea
-            className="w-full h-full bg-white rounded-2xl p-2 focus:outline-none"
+            className="w-full h-full bg-white rounded-2xl p-2 focus:outline-none resize-none"
             onChange={(event) => setPrompt?.(event.target.value)}
           />
         </div>

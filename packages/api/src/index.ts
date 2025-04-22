@@ -1,14 +1,9 @@
-// export * from './create'
-// export * from './designer'
-
-
-
 import createChat, { type CreateChatRequestBody, type CreateChatResponse } from "./create"
 import getChat, { type GetChatRequestBody, type GetChatResponse } from "./get-chat"
 import fetchDesigner, { type DesignerRequestBody, type DesignerResponse } from "./designer"
 import fetchSpeaker, { type SpeakerRequestBody, type SpeakerResponse } from "./speaker"
 import fetchLayout, { type LayoutRequestBody, type LayoutResponse } from "./layout"
-
+import fetchHistory, { type HistoryResponse } from "./history"
 export interface ConnectionParams {
   token: string
 }
@@ -30,6 +25,9 @@ export function createConnection(params: ConnectionParams) {
     async layout(body: LayoutRequestBody): Promise<LayoutResponse> {
       return await fetchLayout(body, params.token)
     },
+    async history(): Promise<HistoryResponse> {
+      return await fetchHistory(params.token)
+    }
   }
 
   return {

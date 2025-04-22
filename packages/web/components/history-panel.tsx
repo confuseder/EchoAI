@@ -1,4 +1,6 @@
-import React from 'react';
+import connection from '@/lib/connection';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface HistoryItem {
   id: string;
@@ -8,16 +10,24 @@ interface HistoryItem {
 
 interface HistoryPanelProps {
   isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
   onClose: () => void;
 }
 
-const mockHistory: HistoryItem[] = [
-  { id: '1', title: '如何学习React', date: '2024-03-20' },
-  { id: '2', title: '什么是Next.js', date: '2024-03-19' },
-  { id: '3', title: 'Tailwind CSS教程', date: '2024-03-18' },
-];
+export default function HistoryPanel({ isOpen, setIsOpen, onClose }: HistoryPanelProps) {
+  const [history, setHistory] = useState<HistoryItem[]>([])
+  const router = useRouter()
 
-export default function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
+  useEffect(() => {
+    connection.chat.history().then((res) => {
+      setHistory(res.map((item) => ({
+        id: item.id,
+        title: item.updated_at,
+        date: item.updated_at,
+      })))
+    })
+  }, [])
+
   return (
     <>
       {/* Backdrop */}
@@ -27,7 +37,7 @@ export default function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
           onClick={onClose}
         />
       )}
-      
+
       {/* Panel */}
       <div
         className={`fixed top-0 right-0 h-full bg-white/90 backdrop-blur-sm shadow-xl
@@ -50,13 +60,21 @@ export default function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
           <div className="space-y-3">
             <div
               className="p-4 bg-[#EBEBDB] rounded-xl hover:opacity-65 cursor-pointer transition-colors duration-200"
+              onClick={() => {
+                router.push('/')
+                setIsOpen(false)
+              }}
             >
               <div className="font-medium text-gray-800">+ New</div>
             </div>
-            {mockHistory.map((item) => (
+            {history.map((item) => (
               <div
                 key={item.id}
                 className="p-4 bg-white rounded-xl hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+                onClick={() => {
+                  router.push(`/chat/${item.id}`)
+                  setIsOpen(false)
+                }}
               >
                 <div className="font-medium text-gray-800">{item.title}</div>
                 <div className="text-sm text-gray-500 mt-1">{item.date}</div>

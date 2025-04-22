@@ -2,7 +2,7 @@
 
 import { CounterClockwiseClockIcon, GearIcon, PersonIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
-import HistoryPanel from "./HistoryPanel";
+import HistoryPanel from "./history-panel";
 
 export function Sidebar() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -29,7 +29,7 @@ export function Sidebar() {
           </button>
         </div>
       </div>
-      <HistoryPanel isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+      <HistoryPanel isOpen={isHistoryOpen} setIsOpen={setIsHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
     </>
   )
 }
