@@ -84,6 +84,14 @@ Operation Here...
 {remove-prop position="The xpath of the node" prop="attrName"}
 \`\`\`
 
+## Operation Rules
+
+The operation should be separated to suitable parts, which could be summarized as follows:
+
+- The earliest operation is layout the structure of the document if it's primary.
+- Each area layouted should be operated independently.
+- For complex canvas, you need to divide the operation into multiple parts.
+
 ## Primary Document
 
 This is the primary document:
