@@ -93,6 +93,7 @@ export async function startChalkWorkflow(
         console.error('Error in stream processing:', error);
         controller.error(error);
       } finally {
+        console.log(content)
         context.push({
           role: 'assistant',
           content,

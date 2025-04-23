@@ -40,21 +40,16 @@ Each operation are supposed to be considered before, the thinking process should
 
 ## Format
 
-Output format could summarize as the following pseudo language:
-
 \`\`\`output
-[START]
-1. ANSWER("According to the requirement, what components/animations/utils should I use?")
-2. opts = ANSWER("How much and what concrete operations should I do?")
+1. ANSWER the question "According to the requirement, what components/animations/utils should I use?"
+2. LIST the operations you need to do with the result from step 1.
 
-[LOOP_START for opt in opts]
-ANSWER("What should I do with {opt}?")
-
+step n: THINKING what should you do in this step
 {start:operation-name}
-Operation Here...
+Operation content here...
 {end:operation-name}
-[LOOP_END]
-[END]
+
+Continue with the next step...
 \`\`\`
 
 ## Operations
