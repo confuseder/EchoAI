@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "node ./dist/index.test.cjs"
   },
   "exports": {
     ".": {
@@ -29,5 +32,8 @@
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
     "@echoai/utils": "workspace:^"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0"
   }
 }

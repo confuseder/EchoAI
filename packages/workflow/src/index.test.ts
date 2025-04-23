@@ -1,37 +1,21 @@
 import { ChatCompletionMessageParam } from "openai/resources.mjs"
-import { startDesignerWorkflow } from "./designer"
-import { writeFileSync } from "fs"
-import { startLayoutWorkflow } from "./layout"
-import { startSpeakerWorkflow } from "./speaker"
+import { startChalkWorkflow } from "./chalk"
 
-const designerContext: ChatCompletionMessageParam[] = []
-const chalkContext: ChatCompletionMessageParam[] = []
-const speakerContext: ChatCompletionMessageParam[] = []
-const layoutContext: ChatCompletionMessageParam[] = []
+const context: ChatCompletionMessageParam[] = []
+
+const test = "Here's how to layout the whiteboard for this step:\n\n1. Divide the whiteboard into TWO VERTICAL COLUMNS:\n\nLeft Column (50% width) - \"Function Basics\"\n- Draw a table with 2 columns and 3 rows:\n  - Column heads: \"Function Type\" | \"General Form\"\n  - Rows:\n    - \"Linear\" | \"f(x) = mx + b\"\n    - \"Quadratic\" | \"f(x) = ax² + bx + c\"\n    - \"Cubic\" | \"f(x) = ax³ + bx² + cx + d\"\n\nRight Column (50% width) - \"Quadratic Function Example\"\n- Draw a coordinate system:\n  - Origin at center\n  - x-axis from -5 to 5\n  - y-axis from -5 to 10\n- Plot the quadratic function:\n  - f(x) = x²\n  - Domain: All real numbers\n- Highlight the parabola shape with arrows\n- At the vertex (0,0), write: \"Standard quadratic form: f(x) = ax² + bx + c\"\n- Below the graph, write key takeaways:\n  - \"Always forms a parabola\"\n  - \"Highest exponent is 2 (quadratic term)\"\n  - \"a determines opening direction\"\n\nAdditional notes:\n- Use different colors for different function types in the table\n- Make the quadratic function curve stand out in bold color\n- Leave space between the table and graph for teacher annotations"
 
 let log = ''
 
 export const main = async () => {
-  await designer()
-}
-
-const designer = async () => {
-  const result = await startDesignerWorkflow(designerContext, {
-    prompt: '我今天学了三角函数课程，但是我不太理解，你能教我吗'
+  const res = await startChalkWorkflow([], {
+    prompt: test,
+    document: '<root></root>'
   })
 
-  log += `designer: ${JSON.stringify(result)}\n`
-
-  const layoutResult = startLayoutWorkflow(layoutContext, result[0])
-  const speakerResult = startSpeakerWorkflow(speakerContext, result[0])
-  const syncResult = await Promise.all([layoutResult, speakerResult])
-
-  log += `layout: ${syncResult[0]}\n`
-  log += `speaker: ${syncResult[1]}\n`
+  log += `\n\n${JSON.stringify(res)}`
 }
-const chalk = async () => {}
 
 main().then(() => {
-  const fileName = `test-log-at-${Date.now()}.log`
-  writeFileSync('./workflow/' + fileName, log)
+  console.log(log)
 })

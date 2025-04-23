@@ -20,6 +20,8 @@
     "tsup": "^8.4.0"
   },
   "dependencies": {
-    "dotenv": "^16.5.0"
+    "@qdrant/js-client-rest": "^1.14.0",
+    "openai": "^4.95.1",
+    "qdrant-client": "^0.0.1"
   }
 }
