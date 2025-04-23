@@ -3,9 +3,8 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: ['./src/index.test.ts'],
   outDir: './dist',
-  format: 'esm',
+  format: 'cjs',
   splitting: false,
   noExternal: ['@echoai/utils'],
-  platform: 'node',
-  target: 'node20'
+  external: ['fs']
 })
