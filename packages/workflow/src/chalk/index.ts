@@ -1,4 +1,6 @@
 import {
+  API_COLLECTION_NAME,
+  KNOWLEDGE_COLLECTION_NAME,
   prompt,
 } from "@echoai/utils";
 import { SYSTEM, USER } from "./prompts";
@@ -30,16 +32,23 @@ export async function startChalkWorkflow(
   const { prompt: userPrompt, components, model: modelOption, document, stream } = options;
   const model = modelOption ?? defaultModel
 
-  const searchArgs: Parameters<typeof search> = [
-    embedding(),
-    client,
-    {
+  const referencePromise = new Promise<string[]>((resolve, reject) => {
+    search(embedding(), client, {
+      collection: API_COLLECTION_NAME,
       query: userPrompt,
-      topK: 10
-    }
-  ]
+      topK: 30,
+    }).then(resolve).catch(reject)
+  })
+  const knowledgePromise = new Promise<string[]>((resolve, reject) => {
+    search(embedding(), client, {
+      collection: KNOWLEDGE_COLLECTION_NAME,
+      query: userPrompt,
+      topK: 3
+    }).then(resolve).catch(reject)
+  })
 
-  const references = await search(...searchArgs)
+  const [references, knowledge] = await Promise.all([referencePromise, knowledgePromise])
+  console.log(references, references.length, knowledge, knowledge.length)
 
   if (context.length === 0) {
     context.push({
@@ -53,7 +62,7 @@ export async function startChalkWorkflow(
     role: 'user',
     content: prompt(USER, {
       requirement: userPrompt,
-      references: references.join('\n')
+      references: [...references, ...knowledge].join('\n')
     }),
   })
 
