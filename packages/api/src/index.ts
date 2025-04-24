@@ -4,6 +4,8 @@ import fetchDesigner, { type DesignerRequestBody, type DesignerResponse } from "
 import fetchSpeaker, { type SpeakerRequestBody, type SpeakerResponse } from "./speaker"
 import fetchLayout, { type LayoutRequestBody, type LayoutResponse } from "./layout"
 import fetchHistory, { type HistoryResponse } from "./history"
+import fetchChalk, { ChalkResponse } from "./chalk"
+import { ChalkRequestBody } from "./chalk"
 export interface ConnectionParams {
   token: string
 }
@@ -27,6 +29,9 @@ export function createConnection(params: ConnectionParams) {
     },
     async history(): Promise<HistoryResponse> {
       return await fetchHistory(params.token)
+    },
+    async chalk(body: ChalkRequestBody, callback: (chunk: ChalkResponse) => void = () => {}): Promise<ChalkResponse> {
+      return await fetchChalk(body, callback, params.token) as ChalkResponse
     }
   }
 

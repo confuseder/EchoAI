@@ -23,6 +23,9 @@ export interface ChalkWorkflowOptions {
 export interface ChalkWorkflowResult {
   content: string | null;
   operations: Operation[];
+  delta?: {
+    operation: Operation
+  }
 }
 
 export async function startChalkWorkflow(
@@ -94,7 +97,12 @@ export async function startChalkWorkflow(
             const operations = parse(content)
             if (operations.length > latestOperationAmount) {
               latestOperationAmount = operations.length
-              controller.enqueue(JSON.stringify(operations))
+              controller.enqueue(JSON.stringify({
+                operations,
+                delta: {
+                  operation: operations[operations.length - 1]
+                }
+              }))
             }
           }
         }
@@ -114,3 +122,4 @@ export async function startChalkWorkflow(
 }
 
 export * from './prompts'
+export * from './types'
