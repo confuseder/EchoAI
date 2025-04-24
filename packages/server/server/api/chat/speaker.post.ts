@@ -106,13 +106,13 @@ export default defineEventHandler(async (event) => {
                   content: fullContent,
                 }
               ]
-            } as any;
-
-            await db
-              .update(chats)
-              .set(updateValues)
-              .where(eq(chats.id, body.chat_id));
-
+            }
+            runTask('save-context', {
+              payload: {
+                chat_id: body.chat_id,
+                values: updateValues
+              }
+            })
             controller.close();
           }
         }
@@ -139,12 +139,13 @@ export default defineEventHandler(async (event) => {
           content: 'Speaker',
         }
       ]
-    } as any;
-
-    await db
-      .update(chats)
-      .set(updateValues)
-      .where(eq(chats.id, body.chat_id));
+    }
+    runTask('save-context', {
+      payload: {
+        chat_id: body.chat_id,
+        values: updateValues
+      }
+    })
 
     return {
       content: result

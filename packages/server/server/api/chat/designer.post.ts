@@ -71,6 +71,11 @@ export default defineEventHandler(async (event) => {
       model: body.model,
     });
 
+    const latestBranch = {
+      steps,
+      start: body.step,
+      end: body.next_step,
+    }
     const updateValues = {
       designer_context: context,
       context: [
@@ -86,35 +91,20 @@ export default defineEventHandler(async (event) => {
       ],
       branches: [
         ...(designerContext.branches as StepBranch[]),
-        {
-          steps,
-          start: body.step,
-          end: body.next_step,
-        }
+        latestBranch,
       ],
-    } as any;
-
-    const [updatedChat] = await db
-      .update(chats)
-      .set(updateValues)
-      .where(eq(chats.id, body.chat_id))
-      .returning({
-        context: chats.context,
-        branches: chats.branches,
-        id: chats.id
-      });
-
-    if (!updatedChat) {
-      throw createError({
-        statusCode: 500,
-        message: "Failed to update chat"
-      });
     }
+    runTask('save-context', {
+      payload: {
+        chat_id: body.chat_id,
+        values: updateValues
+      }
+    })
 
     return {
       steps,
-      branches: updatedChat.branches as StepBranch[],
-      displayed_messages: updatedChat.context as DisplayedMessage[],
+      branches: updateValues.branches as StepBranch[],
+      displayed_messages: updateValues.context as DisplayedMessage[],
     };
   } catch (error) {
     console.error(error);
