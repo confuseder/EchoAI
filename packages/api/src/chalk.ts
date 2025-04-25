@@ -22,9 +22,6 @@ export interface ChalkRequestBody {
 export interface ChalkResponse {
   content: string;
   operations: Operation[];
-  delta?: {
-    operation: Operation
-  }
 }
 
 export default async function fetchChalk(
@@ -51,6 +48,7 @@ export default async function fetchChalk(
   }
 
   if (body.stream) {
+    console.log('streaming')
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error('No reader available');
@@ -64,31 +62,7 @@ export default async function fetchChalk(
         const { done, value } = await reader.read();
         if (done) break;
 
-        buffer += decoder.decode(value, { stream: true });
-
-        // Process data line by line
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Keep the last incomplete line
-
-        for (const line of lines) {
-          if (line.trim()) {
-            try {
-              const parsed = JSON.parse(line);
-              callback?.(parsed);
-            } catch (e) {
-              console.error('Failed to parse line:', line);
-            }
-          }
-        }
-      }
-      // Process remaining buffer
-      if (buffer.trim()) {
-        try {
-          const parsed = JSON.parse(buffer);
-          callback?.(parsed);
-        } catch (e) {
-          console.error('Failed to parse final buffer:', buffer);
-        }
+        callback?.(JSON.parse(decoder.decode(value, { stream: true })))
       }
     } finally {
       reader.releaseLock();

@@ -6,7 +6,7 @@ import MessageBox from './message-box'
 import ToolBox from './tool-box'
 import PromptArea from './prompt-area'
 import { Timeline } from './timeline'
-import { DisplayedMessage, GetChatResponse } from '@echoai/api'
+import { DisplayedMessage, GetChatResponse, Operation } from '@echoai/api'
 import { marked } from 'marked'
 import { Board } from './board'
 import connection from '@/lib/connection'
@@ -95,8 +95,12 @@ export function Chat({
   const currentStep = useRef<string | null | typeof END>(null)
   const [prompt, setPrompt] = useState<string>('')
   const calledRef = useRef(false)
-  const [nextAvailablity, setNextAvailablity] = useState<boolean>(false)
+  const [nextAvailablity, setNextAvailablity] = useState<boolean>(status === 'ready')
   const [boardContent, setBoardContent] = useState<string>('')
+
+  // ---TEST-FUNCTIONS---
+  const operations = useRef<Operation[]>([])
+  // --------------------
 
   useClearParamOnLoad('new')
 
@@ -167,6 +171,20 @@ export function Chat({
     })
   }
 
+  const requestChalk = async (prompt: string) => {
+    const chalkResponse = await connection.chat.chalk({
+      chat_id: chatId,
+      prompt,
+      stream: true,
+      document: '<root></root>'
+    }, (chunk) => {
+      operations.current.length = 0
+      operations.current.push(...chunk.operations)
+      console.log('operations', operations.current)
+      setUpdateTrigger(v => v + 1)
+    })
+  }
+
   const requestLayout = async (
     currentBranches: StepBranch[]
   ) => {
@@ -176,7 +194,7 @@ export function Chat({
       prompt,
       ...step,
     })
-    setBoardContent(layoutResponse.content)
+    await requestChalk(layoutResponse.content)
     setUpdateTrigger(v => v + 1)
   }
 
@@ -222,7 +240,9 @@ export function Chat({
     <div className="flex w-full gap-2 h-full">
       <div className="flex flex-col h-full w-2/3 gap-y-2">
         <div className="flex flex-3/4 h-full bg-gray-100 rounded-lg">
-          <Board content={boardContent} />
+          <Board operations={
+            operations.current.map(operation => JSON.stringify(operation, null, 2))
+          } />
         </div>
         <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">
           <Timeline branches={branches} />

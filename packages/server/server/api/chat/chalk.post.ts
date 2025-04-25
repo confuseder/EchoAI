@@ -79,47 +79,28 @@ export default defineEventHandler(async (event) => {
       setResponseHeader(event, 'Cache-Control', 'no-cache');
       setResponseHeader(event, 'Connection', 'keep-alive');
 
-      const stream = new ReadableStream({
-        async start(controller) {
-          const chalkResult = await startChalkWorkflow(context, {
-            prompt: body.prompt,
-            components: body.components,
-            document: body.document,
-            model: body.model,
-            stream: true,
-          });
-
-          const reader = (chalkResult as ReadableStream).getReader();
-
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              controller.enqueue(value);
+      return await startChalkWorkflow(context, {
+        prompt: body.prompt,
+        components: body.components,
+        document: body.document,
+        model: body.model,
+        stream: true,
+      }, (operations) => {
+        results.push({
+          input: body.prompt,
+          components: body.components,
+          output: operations as unknown as Operation[],
+        })
+        runTask('save-context', {
+          payload: {
+            chat_id: body.chat_id,
+            values: {
+              chalk_context: context,
+              chalk_results: results,
             }
-          } catch (error) {
-            controller.error(error);
-          } finally {
-            results.push({
-              input: body.prompt,
-              components: body.components,
-              output: (chalkResult as any).operations,
-            })
-            runTask('save-context', {
-              payload: {
-                chat_id: body.chat_id,
-                values: {
-                  chalk_context: context,
-                  chalk_results: results,
-                }
-              }
-            })
-            controller.close();
           }
-        }
-      })
-
-      return stream;
+        })
+      });
     }
 
     const chalkResult = await startChalkWorkflow(context, {

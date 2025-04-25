@@ -42,3 +42,4 @@ export function createConnection(params: ConnectionParams) {
 
 export * from './create'
 export * from './get-chat'
+export * from './chalk'

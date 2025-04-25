@@ -7,7 +7,7 @@ import { SYSTEM, USER } from "./prompts";
 import { chalk, CHALK_MODEL, search, client, embedding } from "@echoai/utils";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Position, Operation } from "./types";
-import { parse } from "./parse";
+import { OperationNode, parse } from "./parse";
 
 const provider = chalk()
 const defaultModel = CHALK_MODEL
@@ -23,14 +23,12 @@ export interface ChalkWorkflowOptions {
 export interface ChalkWorkflowResult {
   content: string | null;
   operations: Operation[];
-  delta?: {
-    operation: Operation
-  }
 }
 
 export async function startChalkWorkflow(
   context: ChatCompletionMessageParam[],
   options: ChalkWorkflowOptions,
+  callback?: (operations: OperationNode[]) => any
 ) /* : Promise<ChalkWorkflowResult> */ {
   const { prompt: userPrompt, components, model: modelOption, document, stream } = options;
   const model = modelOption ?? defaultModel
@@ -51,7 +49,6 @@ export async function startChalkWorkflow(
   })
 
   const [references, knowledge] = await Promise.all([referencePromise, knowledgePromise])
-  console.log(references, references.length, knowledge, knowledge.length)
 
   if (context.length === 0) {
     context.push({
@@ -97,11 +94,9 @@ export async function startChalkWorkflow(
             const operations = parse(content)
             if (operations.length > latestOperationAmount) {
               latestOperationAmount = operations.length
+              console.log('operations', operations)
               controller.enqueue(JSON.stringify({
-                operations,
-                delta: {
-                  operation: operations[operations.length - 1]
-                }
+                operations
               }))
             }
           }
@@ -110,11 +105,11 @@ export async function startChalkWorkflow(
         console.error('Error in stream processing:', error);
         controller.error(error);
       } finally {
-        console.log(content)
         context.push({
           role: 'assistant',
           content,
         })
+        callback?.(parse(content))
         controller.close();
       }
     }

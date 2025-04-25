@@ -1,15 +1,15 @@
-import { getHighlighter, Highlighter } from "shikiji"
+import ShikiHighlighter from 'react-shiki'
 
-export function Board({ content }: { content: string }) {
-  let highlighter: Highlighter | undefined
-  getHighlighter().then(h => {
-    highlighter = h
-    highlighter.loadLanguage('markdown')
-  })
-
+export function Board({ operations }: { operations: string[] }) {
   return (
-    <div>
-      <div className="size-full flex" dangerouslySetInnerHTML={{ __html: highlighter ? highlighter.codeToHtml(content, { lang: 'markdown', theme: 'github-dark' }) : '' }}></div>
+    <div className='grid grid-cols-4 gap-2'>
+      {operations.map((operation, index) => (
+        <div key={index}>
+          <ShikiHighlighter language="json" theme="github-dark">
+            {operation}
+          </ShikiHighlighter>
+        </div>
+      ))}
     </div>
   )
 }
