@@ -60,13 +60,13 @@ export default async function fetchSpeaker(
         buffer = lines.pop() || ''; // 保留最后一个不完整的行
 
         for (const line of lines) {
-          if (line.trim()) {
+          if (line) {
             callback?.({ content: line });
           }
         }
       }
       // 处理最后的buffer
-      if (buffer.trim()) {
+      if (buffer) {
         callback?.({ content: buffer });
       }
     } finally {

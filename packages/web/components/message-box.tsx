@@ -1,4 +1,8 @@
-import { marked } from 'marked'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import ShikiHighlighter from 'react-shiki'
 
 export default function MessageBox(
   props: {
@@ -14,7 +18,29 @@ export default function MessageBox(
       </div>
       <div className="flex w-full h-full">
         <div className="w-full h-full bg-[rgba(255,255,255,0.5)] rounded-lg p-2">
-          <div dangerouslySetInnerHTML={{ __html: marked(props.content) }} />
+          <Markdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={{
+              code(props) {
+                const { children, className, node, ...rest } = props
+                const match = /language-(\w+)/.exec(className || '')
+                return match ? (
+                  <ShikiHighlighter
+                    language={match[1]}
+                    theme="github-dark"
+                    style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                  >
+                    {String(children)}
+                  </ShikiHighlighter>
+                ) : (
+                  <code {...rest} className={className}>
+                    {children}
+                  </code>
+                )
+              }
+            }}
+          >{props.content}</Markdown>
         </div>
       </div>
     </div>

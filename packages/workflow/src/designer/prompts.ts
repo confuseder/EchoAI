@@ -71,6 +71,8 @@ Requirements:
 2. Do not include any markdown code blocks or additional text
 3. Break down the implementation into clear, sequential steps
 4. Each step should be specific and actionable
+
+Notice: The content must use the same language as the user's description
 `.trim()
 
 export const SYSTEM_ADDITION = `
