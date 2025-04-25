@@ -24,6 +24,7 @@ export type Context = Message[]
 export interface DisplayedMessage {
   role: 'user' | 'speaker' | 'processor'
   content: string
+  step?: string
 }
 export interface DesignerResult {
   prompt: string

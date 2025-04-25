@@ -26,7 +26,7 @@ export default function HistoryPanel({ isOpen, setIsOpen, onClose }: HistoryPane
         date: item.updated_at,
       })))
     })
-  }, [])
+  }, [isOpen])
 
   return (
     <>

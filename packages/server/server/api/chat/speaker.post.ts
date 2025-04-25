@@ -104,6 +104,7 @@ export default defineEventHandler(async (event) => {
                 {
                   role: 'assistant' as const,
                   content: fullContent,
+                  step: body.step,
                 }
               ]
             }
@@ -135,8 +136,9 @@ export default defineEventHandler(async (event) => {
       context: [
         ...(speakerContext.context as any[]),
         {
-          role: 'processor' as const,
-          content: 'Speaker',
+          role: 'assistant' as const,
+          content: result,
+          step: body.step,
         }
       ]
     }

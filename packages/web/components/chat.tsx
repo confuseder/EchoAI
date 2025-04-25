@@ -92,7 +92,7 @@ export function Chat({
   const messages = useRef<MessageBoxType[]>(convert(info.context))
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const [branches, setBranches] = useState<StepBranch[]>(info.branches)
-  const currentStep = useRef<string | null | typeof END>(null)
+  const currentStep = useRef<string | null | typeof END>(info.context[info.context.length - 1].step ?? null)
   const [prompt, setPrompt] = useState<string>('')
   const calledRef = useRef(false)
   const [nextAvailablity, setNextAvailablity] = useState<boolean>(status === 'ready')
