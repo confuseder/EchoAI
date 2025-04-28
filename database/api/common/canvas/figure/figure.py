@@ -10,7 +10,7 @@ You can use the `<figure>` component to draw a figure on the canvas.
 
 ```sciux
 <canvas :width="300" :height="300" :origin="[150, 150]">
-  <figure :x="0" :y="0" :path="m 0 0 l 100 100" />
+  <figure :x="0" :y="0" path="m 0 0 l 100 100" />
 </canvas>
 ```
 
