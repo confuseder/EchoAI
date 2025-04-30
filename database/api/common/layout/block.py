@@ -19,11 +19,3 @@ block.attr('border', 'Defines the border style.', 'string | number', "'none'")
 block.attr('border-radius', 'Specifies the border radius.', 'string | number', '0')
 block.attr('border-width', 'Defines the border width.', 'string | number', '0')
 block.attr('border-color', 'Specifies the border color.', 'string', "'none'")
-
-block.example('''
-```eich
-<block :width="100" :height="100" fill="lightblue" :margin="10" :padding="10" border="solid" :border-radius="5" :border-width="2" border-color="red">
-  Hello World
-</block>
-```
-''', 'Create a block with a width of 100, height of 100, background color of lightblue, margin of 10, padding of 10, border of solid, border radius of 5, border width of 2, and border color of red')

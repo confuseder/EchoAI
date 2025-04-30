@@ -6,7 +6,9 @@ import toml
 
 def generte_api_document(comp: dict):
   content = ''
-  content += f"# `<{comp.name}>`\n\n"
+  content += f"# `<{comp.name}>`\n"
+  if comp.namespace:
+    content += f"> fullname: {comp.namespace}\n\n"
   content += f"{comp.description}\n\n"
   content += "## Attributes\n\n"
   for key in comp.attrs:

@@ -1,6 +1,7 @@
 from api import comp
 
 angle = comp('angle', 'Angle with at least two sides.')
+angle.fullname('canvas:angle')
 
 angle.attr('x', 'The x coordinate of the center of the angle', 'number')
 angle.attr('y', 'The y coordinate of the center of the angle', 'number')

@@ -1,6 +1,7 @@
 from api import comp
 
 plane = comp('plane', 'A coordinate system component, which is used to display the coordinate system of the canvas, only can be used in <canvas> component')
+plane.fullname('canvas:plane')
 
 plane.attr('x', 'The x coordinate of the original position relative to the canvas', 'number', '0')
 plane.attr('y', 'The y coordinate of the original position relative to the canvas', 'number', '0')

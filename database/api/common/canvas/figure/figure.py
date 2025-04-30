@@ -1,6 +1,8 @@
 from api import comp
 
 figure = comp('figure', 'A base figure component')
+figure.fullname('canvas:figure')
+
 figure.attr('x', 'The x coordinate of the figure', 'number')
 figure.attr('y', 'The y coordinate of the figure', 'number')
 figure.attr('path', 'The path of the figure', 'string')

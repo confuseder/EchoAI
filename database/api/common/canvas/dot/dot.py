@@ -2,6 +2,7 @@ from api import comp
 
 
 dot = comp('dot', 'A dot on the canvas.')
+dot.fullname('canvas:dot')
 
 dot.attr('x', 'The x coordinate of the dot', 'number')
 dot.attr('y', 'The y coordinate of the dot', 'number')

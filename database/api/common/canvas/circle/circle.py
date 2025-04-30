@@ -1,7 +1,7 @@
 from api import comp
 
-
 circle = comp('circle', 'Circle with a center point and a radius.')
+circle.fullname('canvas:circle')
 
 circle.attr('x', 'The x coordinate of the center point', 'number')
 circle.attr('y', 'The y coordinate of the center point', 'number')

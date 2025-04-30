@@ -105,6 +105,10 @@ This is the requirements from user:
 And I find some documents and references you may need:
 
 \`\`\`markdown
+> Rules
+> - attributes format: \`<name>:<description>(type)[default value]\`
+> - namespace: for example, the fullname \`<namespace:name>\` can only be used in \`<namespace>\` component, the \`namespace:\` can be omitted.
+
 <:insert:references>
 \`\`\`
 `.trim()
