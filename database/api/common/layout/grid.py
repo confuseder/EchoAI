@@ -12,14 +12,3 @@ grid.attr('align', 'Alignment of content within cells.', 'string', '')
 grid.attr('stroke', 'Stroke for grid lines.', 'string', '')
 grid.attr('inset', 'Padding inside each cell.', 'string | number', '')
 
-grid.example('''
-```eich
-<grid columns="60px 1fr 2fr" rows="auto 60px" gutter="3px" fill="lightgray" align="center" stroke="1px solid red" inset="8px">
-  <block inset="8px">Fixed width, auto height</block>
-  <block inset="8px">1/3 of the remains</block>
-  <block inset="8px">2/3 of the remains</block>
-  <block inset="8px" height="100%">Fixed height</block>
-  <block inset="8px" colspan="2">Cell spanning 2 columns</block>
-</grid>
-```
-''', 'Grid with different track sizing options')

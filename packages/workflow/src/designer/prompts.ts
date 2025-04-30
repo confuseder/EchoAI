@@ -15,6 +15,7 @@ Each step in your lesson plan must include:
 - The essential knowledge points needed for this step
 - Detailed guidance on how teachers should explain this content
 - A concrete conclusion or key takeaway from this step
+- A list of questions that can be used to check the understanding of the students (give concrete formula, number (natural science related), concept (social science related), code (CS related) if possible)
 
 The output must be a JSON array following this JSON schema:
 

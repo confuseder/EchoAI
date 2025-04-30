@@ -10,13 +10,3 @@ flexbox.attr('shrink', 'The flex shrink factor of the flex item.', 'number', '1'
 flexbox.attr('basis', 'The initial main size of the flex item.', 'string | number')
 flexbox.attr('wrap', 'The wrapping behavior of the flex container. Options are `nowrap`, `wrap`, `wrap-reverse`.', "'nowrap' | 'wrap' | 'wrap-reverse'", "'nowrap'")
 flexbox.attr('gap', 'The gap between flex items.', 'string | number', '0')
-
-flexbox.example('''
-```eich
-<flexbox direction="row" justify="center" align="center" :grow="1" :shrink="1" basis="auto" wrap="nowrap" :gap="10">
-  <text>This is a flexbox container</text>
-  <text>This is a flexbox container</text>
-  <text>This is a flexbox container</text>
-</flexbox>
-```
-''', 'Create a flexbox container with 3 items') 

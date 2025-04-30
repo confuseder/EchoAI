@@ -1,7 +1,7 @@
 from .function import function
-from .save_as import save_as
+from .point_on import point_on
 
 function_set = [
   function,
-  save_as,
+  point_on,
 ]

@@ -34,9 +34,3 @@ text.attr('number-width', 'Sets the numeral width variant', "string | 'auto'", "
 text.attr('slashed-zero', 'Enables the slashed zero variant', 'boolean', 'false')
 text.attr('fractions', 'Enables fraction formatting', 'boolean', 'false')
 text.attr('features', 'Defines OpenType features', 'Array<Record<string, any>> | Record<string, any>', 'undefined')
-
-text.example('''
-```eich
-<text font= "Arial" :size="20" fill="#ff0000">Hello World.</text>
-```
-''', 'Create a text with a font of Arial, a size of 20, and a fill color of #ff0000') 

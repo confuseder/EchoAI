@@ -10,9 +10,3 @@ highlight.attr('radius', 'The radius of the highlight', 'number', '0')
 highlight.rule('`fill` and `stroke` must be colors.')
 highlight.rule('`stroke-width` must be a number.')
 highlight.rule('`radius` must be a number.')
-
-highlight.example('''
-```eich
-<highlight fill="lightblue" stroke="blue" :stroke-width="2" :radius="5">Hello World</highlight>
-```
-''', 'Highlight the text with a lightblue fill and a blue stroke') 

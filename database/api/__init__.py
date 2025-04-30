@@ -8,6 +8,7 @@ def comp(name: str, description: str):
       self.examples = []
       self.rules = []
       self.name = name
+      self.namespace = ''
       self.description = description
     def attr(self, name: str, description: str, type: str, default: str = ''):
       self.attrs[name] = {
@@ -39,6 +40,9 @@ def comp(name: str, description: str):
       return self
     def use(self, *comps: list[str]):
       self.usables.extend(comps)
+      return self
+    def fullname(self, namespace: str):
+      self.namespace = namespace
       return self
   return Comp()
 
