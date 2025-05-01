@@ -1,6 +1,6 @@
-import { DesignerStep, StepBranch } from "@echoai/workflow/designer";
-import { API_URL } from "@echoai/utils";
-import { DisplayedMessage } from "./get-chat";
+import type { DesignerStep, StepBranch } from "@echoai/workflow/designer";
+import { API_URL } from "../env";
+import type { DisplayedMessage } from "./get-chat";
 
 export interface DesignerRequestBody {
   chat_id: string;

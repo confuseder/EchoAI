@@ -1,4 +1,4 @@
-import { API_URL } from '@echoai/utils'
+import { API_URL } from '../env'
 
 export interface CreateChatRequestBody {
   prompt?: string

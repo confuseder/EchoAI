@@ -1,6 +1,10 @@
+'use client'
+
 import { ArrowRightIcon, GlobeIcon, ImageIcon, Link1Icon, PaperPlaneIcon } from "@radix-ui/react-icons";
 import Button from "./button";
 import Tool from "./tool";
+import useConnection from "@/lib/connection";
+import { useRouter } from "next/navigation";
 
 export interface PromptAreaProps {
   send?: boolean
@@ -14,14 +18,21 @@ export interface PromptAreaProps {
   onImage?: () => void
   onWebSearch?: () => void
   setPrompt?: (value: any) => any
+  primaryPage?: boolean
 }
 
-export default function PromptArea({ send, next, upload, image, webSearch, onNext, onSend, onUpload, onImage, onWebSearch, setPrompt }: PromptAreaProps) {
+export default function PromptArea({ send, next, upload, image, webSearch, onNext, onSend, onUpload, onImage, onWebSearch, setPrompt, primaryPage }: PromptAreaProps) {
   send = send ?? true
   next = next ?? false
   upload = upload ?? true
   image = image ?? true
   webSearch = webSearch ?? true
+  primaryPage = primaryPage ?? false
+
+  let prompt = ''
+
+  const connection = useConnection()
+  const router = useRouter()
   return (
     <div className="flex w-full h-full bg-[#EBEBDB] rounded-2xl p-2 text-sm">
       <div className="flex flex-col w-full h-full gap-2">
@@ -31,7 +42,10 @@ export default function PromptArea({ send, next, upload, image, webSearch, onNex
         <div className="flex flex-grow-[10] w-full h-full">
           <textarea
             className="w-full h-full bg-white rounded-2xl p-2 focus:outline-none resize-none"
-            onChange={(event) => setPrompt?.(event.target.value)}
+            onChange={(event) => {
+              setPrompt?.(event.target.value)
+              prompt = event.target.value
+            }}
           />
         </div>
         <div className="flex flex-row w-full">
@@ -48,7 +62,15 @@ export default function PromptArea({ send, next, upload, image, webSearch, onNex
         </div>
         <div className="w-full flex-grow-[3] flex justify-end gap-2">
           {send && (
-            <Button color="skyblue" onClick={onSend}>
+              <Button color="skyblue" onClick={() => {
+                if (primaryPage) {
+                  connection.chat.create({ prompt: prompt }).then((res) => {
+                    router.push(`/chat/${res.chat_id}?new=yes`)
+                  })
+                } else {
+                  onSend?.()
+                }
+            }}>
               <PaperPlaneIcon className="w-4 h-4 mr-2"/> Send
             </Button>
           )}

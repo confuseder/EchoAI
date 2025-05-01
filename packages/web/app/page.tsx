@@ -1,6 +1,6 @@
 'use client'
 
-import connection from '@/lib/connection'
+import useServerConnection from '@/lib/server-connection'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import PromptArea from '@/components/prompt-area'
@@ -20,8 +20,6 @@ export default function Home() {
   async function start() {
     if (!prompt || disabled) return
     disabled = true
-    const { chat_id } = await connection.chat.create({ prompt })
-    router.push(`/chat/${chat_id}?new=yes`)
   }
 
   return (

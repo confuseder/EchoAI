@@ -8,7 +8,7 @@ import PromptArea from './prompt-area'
 import { Timeline } from './timeline'
 import { DisplayedMessage, GetChatResponse, Operation } from '@echoai/api'
 import { Board } from './board'
-import connection from '@/lib/connection'
+import useConnection from '@/lib/connection'
 import { useClearParamOnLoad } from '@/hooks/use-clear-params-onload'
 
 export const END = Symbol('END_FLAG')
@@ -101,7 +101,7 @@ export function Chat({
   const [boardContent, setBoardContent] = useState('')
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const operations = useRef<Operation[]>([])
-
+  const connection = useConnection()
   useClearParamOnLoad('new')
 
   useEffect(() => {

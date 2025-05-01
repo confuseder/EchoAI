@@ -1,4 +1,4 @@
-import { API_URL } from "@echoai/utils";
+import { API_URL } from "../env";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 export interface GetChatRequestBody {
   chat_id: string

@@ -1,4 +1,4 @@
-import connection from '@/lib/connection';
+import useConnection from '@/lib/connection';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -18,7 +18,7 @@ export default function HistoryPanel({ isOpen, setIsOpen, onClose }: HistoryPane
   const [history, setHistory] = useState<HistoryItem[]>([])
   const router = useRouter()
 
-  useEffect(() => {
+  const connection = useConnection(() => {
     connection.chat.history().then((res) => {
       setHistory(res.map((item) => ({
         id: item.id,
@@ -26,7 +26,7 @@ export default function HistoryPanel({ isOpen, setIsOpen, onClose }: HistoryPane
         date: item.updated_at,
       })))
     })
-  }, [isOpen])
+  })
 
   return (
     <>

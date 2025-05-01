@@ -1,4 +1,4 @@
-import { API_URL } from "@echoai/utils";
+import { API_URL } from "../env";
 
 export interface Position {
   // Based on usage in chalk.post.ts, this seems to be a component position type
