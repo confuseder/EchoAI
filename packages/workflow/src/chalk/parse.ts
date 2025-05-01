@@ -4,8 +4,14 @@ export interface OperationNode {
   content?: string;
 }
 
+interface Range {
+  start: number;
+  end: number;
+}
+
 export function parse(text: string): OperationNode[] {
   const result: OperationNode[] = [];
+  const excludedRanges: Range[] = [];
 
   // First handle start-end pairs
   const startEndPattern = /{start:([^}\s]+)([^}]*)}(.*?){end:\1}/gs;
@@ -13,10 +19,19 @@ export function parse(text: string): OperationNode[] {
 
   while ((startEndMatch = startEndPattern.exec(text)) !== null) {
     const [fullMatch, type, propsStr, content] = startEndMatch;
+    const matchStart = startEndMatch.index;
+    const matchEnd = matchStart + fullMatch.length;
+
     result.push({
       type,
       props: parseProps(propsStr),
       content: content.trim()
+    });
+
+    // Mark this range as excluded for single tags
+    excludedRanges.push({
+      start: matchStart,
+      end: matchEnd
     });
   }
 
@@ -26,15 +41,15 @@ export function parse(text: string): OperationNode[] {
 
   while ((singleMatch = singlePattern.exec(text)) !== null) {
     const [fullMatch, type, propsStr] = singleMatch;
-    // Skip if this tag is within a start/end pair
-    const matchStart = text.indexOf(fullMatch);
-    const isPartOfPair = result.some(node => {
-      const nodeStart = text.indexOf(`{start:${node.type}`);
-      const nodeEnd = text.indexOf(`{end:${node.type}`);
-      return matchStart > nodeStart && matchStart < nodeEnd;
-    });
+    const matchStart = singleMatch.index;
+    const matchEnd = matchStart + fullMatch.length;
 
-    if (!isPartOfPair) {
+    // Skip if this tag is within any excluded range
+    const isExcluded = excludedRanges.some(range =>
+      matchStart >= range.start && matchEnd <= range.end
+    );
+
+    if (!isExcluded) {
       result.push({
         type,
         props: parseProps(propsStr)

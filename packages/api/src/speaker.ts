@@ -54,16 +54,8 @@ export default async function fetchSpeaker(
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        
-        // 按行处理数据
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // 保留最后一个不完整的行
 
-        for (const line of lines) {
-          if (line) {
-            callback?.({ content: line });
-          }
-        }
+        callback?.({ content: buffer });
       }
       // 处理最后的buffer
       if (buffer) {
