@@ -3,8 +3,8 @@ import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import { startSpeakerWorkflow } from "@echoai/workflow/speaker";
-import logto from "../../utils/logto";
-import { UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
+import { UNAUTHORIZED_MODE } from "@echoai/utils";
+import { getVerifiedLogtoUser } from "../../utils/jwt";
 
 export interface SpeakerRequestBody {
   chat_id: string;
@@ -33,9 +33,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const userId = UNAUTHORIZED_MODE === "true"
-    ? UNAUTHORIZED_MODE_USER_ID
-    : (await logto.getAccessTokenClaims(token))?.sub;
+  const jwt = await getVerifiedLogtoUser(token)
+  if (!jwt) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized"
+    });
+  }
+
+  const userId = jwt.sub
 
   try {
     const [speakerContext] = await db

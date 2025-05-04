@@ -10,25 +10,34 @@ import LogtoClient from "@logto/browser"
 import handleSignIn from "./auth/signin"
 import handleSignOut from "./auth/signout"
 import getStatus from "./auth/status"
-import createOperator from "./auth/operator"
+import getToken from "./auth/token"
 import handleSignInCallback from "./auth/callback"
-import { LOGTO_ENDPOINT, LOGTO_APP_ID } from "./env"
+import { LOGTO_ENDPOINT, LOGTO_APP_ID, APP_BASE_URL, LOGTO_APP_SECRET } from "./env"
 import { UserScope } from "@logto/browser"
+import { LogtoNextConfig, SessionData } from "@logto/next"
 
 export interface ConnectionParams {
   token: string
 }
 
-export const logto = new LogtoClient({
-  endpoint: LOGTO_ENDPOINT,
+export const logtoConfig: LogtoNextConfig = {
   appId: LOGTO_APP_ID,
-  scopes: [UserScope.Identities, UserScope.Profile]
-})
-
+  endpoint: LOGTO_ENDPOINT,
+  // appSecret: LOGTO_APP_SECRET,
+  baseUrl: APP_BASE_URL,
+  cookieSecure: process.env.NODE_ENV === 'production',
+  sessionWrapper: {
+    wrap(data: SessionData, key: string) {
+      return Promise.resolve(key)
+    },
+    unwrap(value: string, key: string): Promise<SessionData> {
+      return Promise.resolve(value as unknown as SessionData)
+    }
+  }
+}
 export function createConnection(params: ConnectionParams = {
   token: ''
 }) {
-  // params.token = await logto.getAccessToken()
   const chat = {
     async create(body: CreateChatRequestBody): Promise<CreateChatResponse> {
       return await createChat(body, params.token)
@@ -54,20 +63,20 @@ export function createConnection(params: ConnectionParams = {
   }
 
   const auth = {
-    async signIn(redirectUri: string) {
-      return await handleSignIn(logto, redirectUri)
+    async signIn(redirectUri?: string) {
+      return await handleSignIn(logtoConfig, redirectUri)
     },
     async signOut() {
-      return await handleSignOut(logto)
+      return await handleSignOut(logtoConfig)
     },
     async status(): Promise<boolean> {
-      return await getStatus(logto)
+      return await getStatus(logtoConfig)
     },
-    async operator() {
-      return await createOperator(logto)
+    async callback(searchParams: URLSearchParams) {
+      return await handleSignInCallback(logtoConfig, searchParams)
     },
-    async callback(callbackUri: string) {
-      return await handleSignInCallback(logto, callbackUri)
+    async token() {
+      return await getToken(logtoConfig)
     }
   }
 

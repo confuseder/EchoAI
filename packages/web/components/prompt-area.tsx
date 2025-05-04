@@ -3,7 +3,7 @@
 import { ArrowRightIcon, GlobeIcon, ImageIcon, Link1Icon, PaperPlaneIcon } from "@radix-ui/react-icons";
 import Button from "./button";
 import Tool from "./tool";
-import useConnection from "@/lib/connection";
+import { useConnection } from "@/lib/connection";
 import { useRouter } from "next/navigation";
 
 export interface PromptAreaProps {
@@ -31,7 +31,9 @@ export default function PromptArea({ send, next, upload, image, webSearch, onNex
 
   let prompt = ''
 
-  const connection = useConnection()
+  // const connection = useConnection((token) => {
+  //   console.log(token)
+  // })
   const router = useRouter()
   return (
     <div className="flex w-full h-full bg-[#EBEBDB] rounded-2xl p-2 text-sm">
@@ -49,37 +51,37 @@ export default function PromptArea({ send, next, upload, image, webSearch, onNex
           />
         </div>
         <div className="flex flex-row w-full">
-        <div className="flex flex-grow-[1] gap-2">
-          {upload && (
-            <Tool icon={<Link1Icon />} onClick={onUpload!} />
-          )}
-          {image && (
-            <Tool icon={<ImageIcon />} onClick={onImage!} />
-          )}
-          {webSearch && (
-            <Tool icon={<GlobeIcon />} onClick={onWebSearch!} />
-          )}
-        </div>
-        <div className="w-full flex-grow-[3] flex justify-end gap-2">
-          {send && (
+          <div className="flex flex-grow-[1] gap-2">
+            {upload && (
+              <Tool icon={<Link1Icon />} onClick={onUpload!} />
+            )}
+            {image && (
+              <Tool icon={<ImageIcon />} onClick={onImage!} />
+            )}
+            {webSearch && (
+              <Tool icon={<GlobeIcon />} onClick={onWebSearch!} />
+            )}
+          </div>
+          <div className="w-full flex-grow-[3] flex justify-end gap-2">
+            {send && (
               <Button color="skyblue" onClick={() => {
                 if (primaryPage) {
-                  connection.chat.create({ prompt: prompt }).then((res) => {
-                    router.push(`/chat/${res.chat_id}?new=yes`)
-                  })
+                  // connection.chat.create({ prompt: prompt }).then((res) => {
+                  //   router.push(`/chat/${res.chat_id}?new=yes`)
+                  // })
                 } else {
                   onSend?.()
                 }
-            }}>
-              <PaperPlaneIcon className="w-4 h-4 mr-2"/> Send
-            </Button>
-          )}
-          {next && (
-            <Button color="#FC6262" onClick={onNext}>
-              <ArrowRightIcon className="w-4 h-4 mr-2"/> Next
-            </Button>
-          )}
-        </div>
+              }}>
+                <PaperPlaneIcon className="w-4 h-4 mr-2" /> Send
+              </Button>
+            )}
+            {next && (
+              <Button color="#FC6262" onClick={onNext}>
+                <ArrowRightIcon className="w-4 h-4 mr-2" /> Next
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>

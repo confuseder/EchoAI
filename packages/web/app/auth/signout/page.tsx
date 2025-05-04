@@ -1,6 +1,4 @@
-'use client'
-
-import useConnection from "@/lib/connection"
+import { useConnection } from "@/lib/connection"
 import { redirect } from "next/navigation"
 
 export default function SignOut() {

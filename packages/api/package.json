@@ -16,6 +16,7 @@
   "dependencies": {
     "@logto/browser": "^3.0.6",
     "@logto/next": "^4.2.3",
+    "next": "15.2.2",
     "openai": "^4.95.1"
   }
 }

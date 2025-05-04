@@ -5,6 +5,8 @@ import { DesignerStep, startDesignerWorkflow, StepBranch } from "@echoai/workflo
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import logto from "../../utils/logto";
 import { UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
+import { getVerifiedLogtoUser } from "../../utils/jwt";
+
 export interface DisplayedMessage {
   role: 'user' | 'speaker' | 'processor'
   content: string
@@ -36,9 +38,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const userId = UNAUTHORIZED_MODE === "true"
-    ? UNAUTHORIZED_MODE_USER_ID
-    : (await logto.getAccessTokenClaims(token))?.sub;
+  const jwt = await getVerifiedLogtoUser(token)
+  if (!jwt) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized"
+    });
+  }
+
+  const userId = jwt.sub
 
   try {
     const [designerContext] = await db

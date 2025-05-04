@@ -1,8 +1,3 @@
-'use client'
-
-import useServerConnection from '@/lib/server-connection'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import PromptArea from '@/components/prompt-area'
 
 function getPeriod(): 'morning' | 'afternoon' | 'evening' {
@@ -14,13 +9,12 @@ function getPeriod(): 'morning' | 'afternoon' | 'evening' {
 }
 
 export default function Home() {
-  const router = useRouter()
-  const [prompt, setPrompt] = useState()
+  // const [prompt, setPrompt] = useState()
   let disabled = false
-  async function start() {
-    if (!prompt || disabled) return
-    disabled = true
-  }
+  // async function start() {
+  //   if (!prompt || disabled) return
+  //   disabled = true
+  // }
 
   return (
     <div className="flex flex-col w-full h-full pt-48">
@@ -29,7 +23,7 @@ export default function Home() {
       </div>
       <div className="w-full h-72 px-56 py-10">
         <div className="w-full h-full mx-auto max-w-[900px]">
-          <PromptArea setPrompt={setPrompt} onSend={start} />
+          <PromptArea primaryPage={true} />
         </div>
       </div>
     </div>

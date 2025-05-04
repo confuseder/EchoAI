@@ -82,26 +82,34 @@ const findStepNext = (stepId: string, branches: StepBranch[]): DesignerStep | nu
 
 export function Chat({
   chatId,
-  info,
   status,
 }: {
-  chatId: string
-  info: GetChatResponse
+    chatId: string
   status: 'submitted' | 'streaming' | 'ready' | 'error'
 }) {
   const [fetchStatus, setFetchStatus] = useState(status)
   const [isLoading, setIsLoading] = useState(false)
-  const messages = useRef<MessageBoxType[]>(convert(info.context))
+  const messages = useRef<MessageBoxType[]>([])
   const [updateTrigger, setUpdateTrigger] = useState(0)
-  const [branches, setBranches] = useState<StepBranch[]>(info.branches)
-  const currentStep = useRef<string | null | typeof END>(info.context[info.context.length - 1]?.step ?? null)
+  const [branches, setBranches] = useState<StepBranch[]>([])
+  const currentStep = useRef<string | null | typeof END>(null)
   const [prompt, setPrompt] = useState('')
   const calledRef = useRef(false)
   const [nextAvailablity, setNextAvailablity] = useState(status === 'ready')
   const [boardContent, setBoardContent] = useState('')
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const operations = useRef<Operation[]>([])
-  const connection = useConnection()
+  const connection = useConnection(() => {
+    connection.chat.get({
+      chat_id: chatId,
+    }).then((info) => {
+      setBranches(info.branches)
+      currentStep.current = info.context[info.context.length - 1]?.step ?? null
+      messages.current.push(
+        ...convert(info.context)
+      )
+    })
+  })
   useClearParamOnLoad('new')
 
   useEffect(() => {
@@ -140,7 +148,13 @@ export function Chat({
       })
 
       setBranches(designerResponse.branches)
-      currentStep.current = designerResponse.branches[designerResponse.branches.length - 1].steps[0].step
+      if (designerResponse.branches && designerResponse.branches.length > 0 &&
+        designerResponse.branches[designerResponse.branches.length - 1].steps &&
+        designerResponse.branches[designerResponse.branches.length - 1].steps.length > 0) {
+        currentStep.current = designerResponse.branches[designerResponse.branches.length - 1].steps[0].step
+      } else {
+        currentStep.current = null
+      }
       messages.current.length = 0
       messages.current.push(...convert(designerResponse.displayed_messages))
       setUpdateTrigger(v => v + 1)

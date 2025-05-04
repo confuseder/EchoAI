@@ -1,15 +1,11 @@
-'use client'
-
-import { useEffect } from 'react';
-import useConnection from "@/lib/connection";
+import { useConnection } from "@/lib/connection";
+import { redirect } from "next/navigation";
 
 export default function AuthCallbackPage() {
   const connection = useConnection()
-  useEffect(() => {
-    const currentUrl = window.location.href;
-    console.log(currentUrl)
-    connection.auth.callback(currentUrl);
-  }, []);
+  connection.auth.callback().then(() => {
+    redirect('/')
+  })
 
   return (
     <div className="w-full h-full flex justify-center items-center">

@@ -2,8 +2,8 @@ import { eq } from "drizzle-orm";
 import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { SYSTEM, USER } from "@echoai/workflow/designer";
-import { prompt, UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
-import logto from "../../utils/logto";
+import { prompt, UNAUTHORIZED_MODE } from "@echoai/utils";
+import { getVerifiedLogtoUser } from "../../utils/jwt";
 
 export interface ChatCreateRequestBody {
   prompt?: string;
@@ -17,16 +17,16 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<ChatCreateRequestBody>(event);
   const token = getRequestHeader(event, "Authorization")?.split(" ")[1];
 
-  if (!token && UNAUTHORIZED_MODE !== "true") {
+  const jwt = await getVerifiedLogtoUser(token)
+  console.log(jwt, token)
+  if (!jwt) {
     throw createError({
       statusCode: 401,
       message: "Unauthorized"
     });
   }
 
-  const userId = UNAUTHORIZED_MODE === "true"
-    ? UNAUTHORIZED_MODE_USER_ID
-    : (await logto.getAccessTokenClaims(token))?.sub;
+  const userId = jwt.sub
 
   try {
     const [chat] = await db.insert(chats)
@@ -54,6 +54,8 @@ export default defineEventHandler(async (event) => {
         ],
       } as any)
       .returning({ id: chats.id });
+    
+    console.log(chat)
 
     return {
       chat_id: chat.id

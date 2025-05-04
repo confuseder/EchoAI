@@ -12,6 +12,8 @@ export default async function createChat(body: CreateChatRequestBody, token?: st
   const headers: Record<string, string> = {
     'Content-Type': 'application/json'
   }
+
+  console.log(token)
   
   if (token) {
     headers.Authorization = `Bearer ${token}`

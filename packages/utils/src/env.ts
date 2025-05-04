@@ -8,6 +8,8 @@ dotenv.config({
 export const LOGTO_APP_ID = process.env.LOGTO_APP_ID!
 export const LOGTO_ENDPOINT = process.env.LOGTO_ENDPOINT!
 export const LOGTO_APP_SECRET = process.env.LOGTO_APP_SECRET!
+export const LOGTO_JWKS_URI = process.env.LOGTO_JWKS_URI!
+export const LOGTO_ISSUER = process.env.LOGTO_ISSUER!
 
 // Postgres
 export const DATABASE_URL = process.env.DATABASE_URL!

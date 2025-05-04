@@ -1,6 +1,4 @@
 import { Chat } from '@/components/chat'
-import { useClearParamOnLoad } from '@/hooks/use-clear-params-onload'
-import useServerConnection from '@/lib/server-connection'
 
 export default async function ChatPage({
   params,
@@ -16,14 +14,10 @@ export default async function ChatPage({
     messages: [],
     status: newParam === 'yes' ? 'submitted' as const : 'ready' as const,
   }
-  const connection = useServerConnection()
-  const chatInfo = await connection.chat.get({
-    chat_id,
-  })
 
   return (
     <div className='w-full h-full'>
-      <Chat chatId={chat_id} status={chat.status} info={chatInfo} />
+      <Chat chatId={chat_id} status={chat.status} />
     </div>
   )
 }

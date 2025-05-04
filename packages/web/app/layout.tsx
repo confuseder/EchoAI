@@ -31,16 +31,14 @@ export default function RootLayout({
       <body
         className={`antialiased ${notoSerifSC.className}`}
       >
-        <AuthCheck>
-          <div className="w-screen h-screen max-w-screen max-h-screen min-w-screen min-h-screen">
-            <div className="w-full h-full flex flex-row">
-              <ConditionalSidebar />
-              <div className="flex p-1 w-full h-full">
-                {children}
-              </div>
+        <div className="w-screen h-screen max-w-screen max-h-screen min-w-screen min-h-screen">
+          <div className="w-full h-full flex flex-row">
+            <ConditionalSidebar />
+            <div className="flex p-1 w-full h-full">
+              {children}
             </div>
           </div>
-        </AuthCheck>
+        </div>
       </body>
     </html>
   );

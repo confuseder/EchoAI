@@ -1,10 +1,10 @@
 import { Operation, Position, startChalkWorkflow } from "@echoai/workflow/chalk";
-import { UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
 import { UNAUTHORIZED_MODE } from "@echoai/utils";
 import { and, eq } from "drizzle-orm";
 import db from "../../../db";
 import { table as chats } from "../../../db/chats";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { getVerifiedLogtoUser } from "../../utils/jwt";
 export interface ChalkRequestBody {
   chat_id: string;
   prompt: string;
@@ -39,9 +39,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const userId = UNAUTHORIZED_MODE === "true"
-    ? UNAUTHORIZED_MODE_USER_ID
-    : (await logto.getAccessTokenClaims(token))?.sub;
+  const jwt = await getVerifiedLogtoUser(token)
+  if (!jwt) {
+    throw createError({
+      statusCode: 401,
+      message: "Unauthorized"
+    });
+  }
+
+  const userId = jwt.sub
 
   if (!userId) {
     throw createError({
