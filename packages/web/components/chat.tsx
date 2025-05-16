@@ -133,10 +133,12 @@ export function Chat({
       )
       setUpdateTrigger(v => v + 1)
 
+      const nextStep = findStepNext(currentStep.current as string, branches)
       const designerResponse = await connection.chat.designer({
         chat_id: chatId,
         prompt,
         step: currentStep.current as string,
+        next_step: nextStep ? (nextStep as DesignerStep).step : void 0
       })
 
       setBranches(designerResponse.branches)
@@ -235,6 +237,7 @@ export function Chat({
   async function handleNext() {
     setNextAvailablity(false)
     const nextStep = findStepNext(currentStep.current as string, branches)
+    console.log('nextStep', currentStep.current, nextStep)
     if (nextStep === END) {
       // handle end
     } else {
@@ -257,7 +260,9 @@ export function Chat({
           <Board operations={operations.current.map(op => JSON.stringify(op, null, 2))} />
         </div>
         <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">
-          <Timeline branches={branches} />
+          <div className='relative w-full'>
+            <Timeline branches={branches} />
+          </div>
         </div>
       </div>
       <div className="flex flex-col w-1/3 gap-y-2 bg-gray-100 rounded-lg p-4">

@@ -58,6 +58,11 @@ Remember to:
 - Use clear, age-appropriate explanations
 - Include visual or practical examples when helpful
 - Ensure each step has a clear learning outcome
+
+Designing Improvement:
+- IF: user just require a change for a step -> THEN: just need give ONLY ONE step
+- IF: the question is based on some step you have already designed -> THEN: the steps shouldn't be over 4 steps.
+- IF: the user give some unmeaningful question or not related to some step you have designed -> THEN: DO NOT think too much, return a empty array.
 `.trim()
 
 export const USER = `
@@ -95,7 +100,8 @@ User's question:
 Requirements:
 1. Output the response as pure JSON data without markdown code blocks or additional text
 2. Ensure step names are unique and follow a hierarchical naming pattern:
-   - For questions about step N, use step numbers like "N.1", "N.2", etc.
-   - Example: If user asks about step 1, create steps like "1.1", "1.2", etc.
+   - For questions about step N, use step numbers like "N-1", "N-2", etc.
+   - Example: If user asks about step 1, create steps like "1-1", "1-2", etc.
+   - The step number performs as a string in JSON, not a number.
 3. Each new step should directly relate to and elaborate on the step being questioned
 `.trim()

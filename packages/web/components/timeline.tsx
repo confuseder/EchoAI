@@ -49,6 +49,7 @@ const TEST_DATA: StepBranch[] = [
 
 export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap = DEFAULT_MIN_GAP }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const gRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
     if (!branches || branches.length === 0) return;
@@ -96,17 +97,36 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
     svg.selectAll('*').remove();
     svg.attr('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
 
+    // 创建一个g元素作为所有内容的容器，用于平移
+    const g = svg.append('g')
+      .attr('class', 'timeline-container');
+
+    // 添加缩放和平移功能
+    const zoom = d3.zoom()
+      .scaleExtent([0.5, 2]) // 限制缩放范围
+      .translateExtent([
+        [-svgWidth * 0.5, -svgHeight * 0.5],
+        [svgWidth * 1.5, svgHeight * 1.5]
+      ]) // 限制平移范围
+      .on('zoom', (event) => {
+        g.attr('transform', event.transform);
+      });
+
+    // @ts-ignore - d3 zoom type issue
+    svg.call(zoom);
+
     // 使用 d3 内置颜色方案，每条支线颜色不同
     const colorScale = d3.scaleOrdinal<string>()
       .domain(branches.map((_, i) => i.toString()))
       .range(d3.schemeCategory10);
 
     // 计算根支线的 xScale
-    const parentXScale = d3.scaleLinear()
+    let parentXScale = d3.scaleLinear()
       .domain([0, rootNodeCount - 1])
       .range([margin.left, svgWidth - margin.right]);
 
     // 绘制每条支线
+    console.log('branches', branches);
     branches.forEach((branch, branchIndex) => {
       // 每条支线垂直位置：自上而下分布
       const y = margin.top + branchIndex * branchSpacing + branchSpacing / 2;
@@ -118,15 +138,15 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
       if (branchIndex === 0) {
         xScale = parentXScale;
       } else if (branch.start && branch.end) {
-        // 子支线：将范围限制在父支线中与 start/end 对应的区间
-        const parentSteps = branches[0].steps;
+        const parentSteps = branches[branchIndex - 1].steps;
+        console.log('b', branchIndex, parentSteps, branch.start, branch.end);
         const startIndex = parentSteps.findIndex(s => s.step === branch.start);
         const endIndex = parentSteps.findIndex(s => s.step === branch.end);
         if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
           const parentStartX = parentXScale(startIndex);
           const parentEndX = parentXScale(endIndex);
           // 如果该区间不足以满足子支线的最小间距，则扩展
-          const desiredWidth = (nodeCount - 1) * minGap;
+          const desiredWidth = (nodeCount - 1);
           const rangeWidth = parentEndX - parentStartX;
           const finalRange = Math.max(rangeWidth, desiredWidth);
           xScale = d3.scaleLinear()
@@ -155,7 +175,7 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
       const pathD = lineGenerator(lineData) || '';
 
       // 绘制路径
-      svg.append('path')
+      g.append('path')
         .attr('d', pathD)
         .attr('fill', 'none')
         .attr('stroke', colorScale(branchIndex.toString()))
@@ -164,26 +184,31 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
       // 绘制每个节点及其文本（只显示 step 字段）
       branch.steps.forEach((step, index) => {
         const cx = lineData[index][0];
-        svg.append('circle')
+        const color = colorScale(branchIndex.toString())
+        const node = g.append('circle')
           .attr('cx', cx)
           .attr('cy', y)
           .attr('r', 5)
-          .attr('fill', colorScale(branchIndex.toString()));
-
-        svg.append('text')
+          .attr('stroke', color)
+          .attr('stroke-width', 2)
+          .attr('fill', 'white')
+          .on('mouseenter', () => node.attr('fill', color))
+          .on('mouseleave', () => node.attr('fill', 'white'))
+        g.append('text')
           .attr('x', cx)
           .attr('y', y + (index % 2 === 0 ? 10 : -10))
           .attr('text-anchor', 'middle')
           .attr('font-size', '10px')
           .text(`${step.step} ${step.problem}`);
       });
+      parentXScale = xScale;
     });
   }, [branches, minGap]);
 
   // 外层容器设置滚动条，宽度和高度自适应，若 svg 尺寸超出则出现滚动条
   return (
-    <div className='w-full h-full'>
-      <svg ref={svgRef} className='h-full w-full select-none' />
+    <div className='w-full h-full overflow-hidden'>
+      <svg ref={svgRef} className='w-full h-full select-none' />
     </div>
   );
 };

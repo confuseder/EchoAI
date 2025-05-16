@@ -36,6 +36,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  console.log('next', body.next_step)
+
   const userId = UNAUTHORIZED_MODE === "true"
     ? UNAUTHORIZED_MODE_USER_ID
     : (await logto.getAccessTokenClaims(token))?.sub;
