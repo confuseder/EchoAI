@@ -26,7 +26,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full h-full pt-48">
-      <div className="text-4xl flex self-center font-blod">
+      <div className="text-4xl flex flex-row gap-5 self-center font-blod">
         Good {getPeriod()}, let's get started!
       </div>
       <div className="w-full h-72 px-56 py-10">
