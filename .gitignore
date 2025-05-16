@@ -58,3 +58,5 @@ __pycache__
 output/*
 
 test-log-*.log
+
+qdrant_data/
