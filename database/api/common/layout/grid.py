@@ -7,8 +7,6 @@ grid.attr('rows', 'Defines the rows of the grid. Can be a single value, a number
 grid.attr('gutter', 'The spacing between rows and columns.', 'string | number', '')
 grid.attr('column-gutter', 'The spacing between columns.', 'string | number', '')
 grid.attr('row-gutter', 'The spacing between rows.', 'string | number', '')
-grid.attr('fill', 'Background color for cells.', 'string', '')
 grid.attr('align', 'Alignment of content within cells.', 'string', '')
-grid.attr('stroke', 'Stroke for grid lines.', 'string', '')
 grid.attr('inset', 'Padding inside each cell.', 'string | number', '')
 

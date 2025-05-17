@@ -112,3 +112,29 @@ And I find some documents and references you may need:
 <:insert:references>
 \`\`\`
 `.trim()
+
+export const LAYOUT_REFERENCE = `
+There are some layout components you may need:
+
+- \`<block>\`
+  - \`padding\`/\`padding-top\`/\`padding-right\`/\`padding-bottom\`/\`padding-left\`: <Size>
+  - \`margin\`/\`margin-top\`/\`margin-right\`/\`margin-bottom\`/\`margin-left\`: <Size>
+- \`<flexbox>\`: A flexbox layout.
+  - \`direction\`: 'row' or 'column'
+  - \`justify\`/\`align\`: 'start', 'end', 'center'
+  - \`gap\`/\`basis\`: <Size>
+  - \`wrap\`: 'nowrap' or 'wrap' or 'wrap-reverse'
+  - \`grow\`/\`shrink\`: <Number>
+- \`<grid>\`: A grid layout.
+  - \`columns\`/\`rows\`: <Number> or <Array>
+  - \`gutter\`/\`column-gutter\`/\`row-gutter\`: <Size>
+  - \`align\`: 'start', 'end', 'center'
+  - \`inset\`: <Size>
+- \`<align>\`: A align layout.
+  - \`type\`: 'start', 'end', 'center'
+
+Usable Size value:
+> full/half/quarter/third/sm/md/lg/xl/2xl/3xl/4xl/5xl/6xl
+>
+> you **CANNOT use concrete number size**
+`
