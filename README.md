@@ -5,7 +5,7 @@ EchoAI is a open-source LLM applied on education with a whiteboard and step-by-s
 ## 📚 Features
 
 1. **Interactive Whiteboard**
-   - Powered by our open-source DSL engine [Sciux](https://github.com/sicux-kit)
+   - Powered by our open-source DSL engine [Sciux](https://github.com/sciux-kit)
    - Rich vector graphics with interactive components
    - Comprehensive toolset for math, physics, and diagrams
    - Built-in animations and transitions
