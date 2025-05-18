@@ -8,6 +8,7 @@ export interface LayoutRequestBody {
   knowledge: string
   explanation: string
   conclusion: string
+  interaction: string
 }
 
 export interface LayoutResponse {

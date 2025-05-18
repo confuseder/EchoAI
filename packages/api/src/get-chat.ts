@@ -10,6 +10,7 @@ export interface DesignerStep {
   knowledge: string
   explanation: string
   conclusion: string
+  interaction: string
 }
 
 export interface StepBranch {

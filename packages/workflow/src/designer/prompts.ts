@@ -41,6 +41,10 @@ The output must be a JSON array following this JSON schema:
         "type": "string",
         "description": "Detailed guidance for teachers on how to present and explain this content"
       },
+      "interaction": {
+        "type": "string",
+        "description": "The interaction design of the lesson"
+      },
       "conclusion": {
         "type": "string",
         "description": "The key learning outcome or solution for this step"
@@ -63,7 +67,7 @@ Interactive Design:
 - You can describe a interactive program or a game with natural language.
 - The props you can use: button, input, select, checkbox, radio, switch, slider, etc.
 - You should describe when student operate these components, what will happen.
-- The interactive design should be included in \`explanation\` field.
+- The interactive design should be included in \`interaction\` field.
 
 Designing Improvement:
 - IF: user just require a change for a step -> THEN: just need give ONLY ONE step
