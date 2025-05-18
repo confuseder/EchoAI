@@ -137,4 +137,12 @@ Usable Size value:
 > full/half/quarter/third/sm/md/lg/xl/2xl/3xl/4xl/5xl/6xl
 >
 > you **CANNOT use concrete number size**
-`
+`.trim()
+
+export const INTERACTIVE_REFERENCE = `
+There are some interactive components you may need:
+
+- \`<button>\`
+- \`<input>\`
+- \`<select>\`
+`.trim()

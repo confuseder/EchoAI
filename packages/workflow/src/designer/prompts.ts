@@ -59,6 +59,12 @@ Remember to:
 - Include visual or practical examples when helpful
 - Ensure each step has a clear learning outcome
 
+Interactive Design:
+- You can describe a interactive program or a game with natural language.
+- The props you can use: button, input, select, checkbox, radio, switch, slider, etc.
+- You should describe when student operate these components, what will happen.
+- The interactive design should be included in \`explanation\` field.
+
 Designing Improvement:
 - IF: user just require a change for a step -> THEN: just need give ONLY ONE step
 - IF: the question is based on some step you have already designed -> THEN: the steps shouldn't be over 4 steps.
