@@ -55,5 +55,7 @@ EXPLANATION: <:insert:explanation>
 
 CONCLUSION: <:insert:conclusion>
 
+INTERACTION: <:insert:interaction>
+
 Now, please describe the layout and figures based on the information above. 
 `
