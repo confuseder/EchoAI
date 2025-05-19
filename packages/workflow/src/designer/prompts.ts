@@ -64,8 +64,10 @@ Remember to:
 - Ensure each step has a clear learning outcome
 
 Interactive Design:
+- You can guide the teacher to draw figures on his whiteboard.
 - You can describe a interactive program or a game with natural language.
 - The props you can use: button, input, select, checkbox, radio, switch, slider, etc.
+- You can give some question to the student, for example according to the figure, fill blank/select the correct answer.
 - You should describe when student operate these components, what will happen.
 - The interactive design should be included in \`interaction\` field.
 
