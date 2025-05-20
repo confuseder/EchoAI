@@ -89,10 +89,22 @@ The operation should be separated to suitable parts, which could be summarized a
 
 ## Primary Document
 
-This is the primary document:
+This is the primary page's document:
 \`\`\`sciux
 <:insert:primary_document>
 \`\`\`
+
+> Page ID: <:insert:primary_page_id>
+
+## Page Management
+
+We provide some tools to manage pages, notice the tool is NOT a kind of operation, it's the tool of llm context.
+- \`add-page\`: Add a new page with a primary document and switch to it.
+  - \`title\`: The title or main topic of the page.
+  - @return the primary document of the new page.
+- \`switch-page\`: Switch to a page with page id.
+  - \`id\`: The id of the page to switch to.
+  - @return the current document of the page.
 `.trim()
 
 export const USER = `
@@ -110,6 +122,15 @@ And I find some documents and references you may need:
 > - namespace: for example, the fullname \`<namespace:name>\` can only be used in \`<namespace>\` component, the \`namespace:\` can be omitted.
 
 <:insert:references>
+\`\`\`
+`.trim()
+
+export const PAGE_TOOL_CONTENT = `
+> Page ID: <:insert:page_id>
+
+> Page Document:
+\`\`\`sciux
+<:insert:document>
 \`\`\`
 `.trim()
 
