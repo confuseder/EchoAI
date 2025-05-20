@@ -3,13 +3,11 @@ import {
   KNOWLEDGE_COLLECTION_NAME,
   prompt,
 } from "@echoai/utils";
-import { PAGE_TOOL_CONTENT, SYSTEM, USER } from "./prompts";
+import { SYSTEM, USER } from "./prompts";
 import { chalk, CHALK_MODEL, search, client, embedding } from "@echoai/utils";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Position, Operation } from "./types";
 import { OperationNode, parse } from "./parse";
-import { addPage, switchPage } from "./tools";
-import { FunctionToolCall, ToolCall } from "openai/resources/beta/threads/runs/steps.mjs";
 
 const provider = chalk()
 const defaultModel = CHALK_MODEL
@@ -27,16 +25,7 @@ export interface ChalkWorkflowResultCommon {
   content: string | null;
   operations: Operation[];
 }
-export interface ChalkWorkflowResultAddPageRequired {
-  type: 'add-page';
-  title: string;
-}
-export interface ChalkWorkflowResultSwitchPageRequired {
-  type: 'switch-page';
-  id: string;
-}
-type ChalkWorkflowResult = ChalkWorkflowResultCommon | ReadableStream<string> | ChalkWorkflowResultAddPageRequired | ChalkWorkflowResultSwitchPageRequired
-
+export type ChalkWorkflowResult = ChalkWorkflowResultCommon | ReadableStream<string>
 
 export async function startChalkWorkflow(
   context: ChatCompletionMessageParam[],
@@ -45,60 +34,42 @@ export async function startChalkWorkflow(
 ): Promise<ChalkWorkflowResult> {
   const { prompt: userPrompt, components, model: modelOption, document, stream, pageId } = options;
   const model = modelOption ?? defaultModel
+  const referencePromise = new Promise<string[]>((resolve, reject) => {
+    search(embedding(), client, {
+      collection: API_COLLECTION_NAME,
+      query: userPrompt,
+      topK: 30,
+    }).then(resolve).catch(reject)
+  })
+  const knowledgePromise = new Promise<string[]>((resolve, reject) => {
+    search(embedding(), client, {
+      collection: KNOWLEDGE_COLLECTION_NAME,
+      query: userPrompt,
+      topK: 3
+    }).then(resolve).catch(reject)
+  })
+  const [references, knowledge] = await Promise.all([referencePromise, knowledgePromise])
 
-  const latestMessageIsToolCalling = context.length > 0 && 'tool_calls' in (context[context.length - 1] as any)
-
-  // If the latest message is a function message, process the page requirements.
-  if (latestMessageIsToolCalling) {
-    const toolCall = (context[context.length - 1] as any).tool_calls[0] as FunctionToolCall
+  if (context.length === 0) {
     context.push({
-      role: 'tool',
-      content: prompt(PAGE_TOOL_CONTENT, {
-        page_id: pageId ?? '',
-        document: document ?? ''
-      }),
-      tool_call_id: toolCall.id
-    })
-  } else {
-    const referencePromise = new Promise<string[]>((resolve, reject) => {
-      search(embedding(), client, {
-        collection: API_COLLECTION_NAME,
-        query: userPrompt,
-        topK: 30,
-      }).then(resolve).catch(reject)
-    })
-    const knowledgePromise = new Promise<string[]>((resolve, reject) => {
-      search(embedding(), client, {
-        collection: KNOWLEDGE_COLLECTION_NAME,
-        query: userPrompt,
-        topK: 3
-      }).then(resolve).catch(reject)
-    })
-    const [references, knowledge] = await Promise.all([referencePromise, knowledgePromise])
-
-    if (context.length === 0) {
-      context.push({
-        role: 'system',
-        content: prompt(SYSTEM, {
-          primary_document: document ?? '',
-          primary_page_id: pageId ?? ''
-        })
-      })
-    }
-    context.push({
-      role: 'user',
-      content: prompt(USER, {
-        requirement: userPrompt,
-        references: [...references, ...knowledge].join('\n')
-      }),
+      role: 'system',
+      content: prompt(SYSTEM)
     })
   }
+  context.push({
+    role: 'user',
+    content: prompt(USER, {
+      page_id: pageId ?? '',
+      document: document ?? '',
+      requirement: userPrompt,
+      references: [...references, ...knowledge].join('\n')
+    }),
+  })
 
   const res = await provider.chat.completions.create({
     model,
     messages: context,
     stream: stream ?? false,
-    tools: [addPage, switchPage] as any
   })
 
   // Handle non-stream response

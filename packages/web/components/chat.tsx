@@ -197,7 +197,8 @@ export function Chat({
       chat_id: chatId,
       prompt,
       stream: true,
-      document: '<root></root>'
+      document: '<root></root>',
+      pageId: '1',
     }, (chunk) => {
       operations.current.length = 0
       operations.current.push(...chunk.operations)

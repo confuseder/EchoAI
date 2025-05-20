@@ -52,7 +52,9 @@ Operation content here...
 Continue with the next step...
 \`\`\`
 
-## Operations
+## Content Operations (These are operations that should be included in your output content)
+
+The following operations should be included in your output content when you need to modify the document:
 
 - \`{add-node position="XPath"}\`: Add a new node to a parent node, add content included in slot.
 \`\`\`example
@@ -86,28 +88,17 @@ The operation should be separated to suitable parts, which could be summarized a
 - The earliest operation is layout the structure of the document if it's primary.
 - Each area layouted should be operated independently.
 - For complex canvas, you need to divide the operation into multiple parts.
-
-## Primary Document
-
-This is the primary page's document:
-\`\`\`sciux
-<:insert:primary_document>
-\`\`\`
-
-> Page ID: <:insert:primary_page_id>
-
-## Page Management
-
-We provide some tools to manage pages, notice the tool is NOT a kind of operation, it's the tool of llm context.
-- \`add-page\`: Add a new page with a primary document and switch to it.
-  - \`title\`: The title or main topic of the page.
-  - @return the primary document of the new page.
-- \`switch-page\`: Switch to a page with page id.
-  - \`id\`: The id of the page to switch to.
-  - @return the current document of the page.
 `.trim()
 
 export const USER = `
+Now you are at:
+> Page ID: <:insert:page_id>
+
+> Page Document:
+\`\`\`sciux
+<:insert:document>
+\`\`\`
+
 This is the requirements from user:
 
 \`\`\`txt
@@ -126,12 +117,7 @@ And I find some documents and references you may need:
 `.trim()
 
 export const PAGE_TOOL_CONTENT = `
-> Page ID: <:insert:page_id>
 
-> Page Document:
-\`\`\`sciux
-<:insert:document>
-\`\`\`
 `.trim()
 
 export const LAYOUT_REFERENCE = `

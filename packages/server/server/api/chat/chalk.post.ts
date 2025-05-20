@@ -10,6 +10,7 @@ export interface ChalkRequestBody {
   prompt: string;
   components?: Position[];
   document?: string;
+  page_id?: string;
   model?: string;
   stream?: boolean;
 }
@@ -83,6 +84,7 @@ export default defineEventHandler(async (event) => {
         prompt: body.prompt,
         components: body.components,
         document: body.document,
+        pageId: body.page_id,
         model: body.model,
         stream: true,
       }, (operations) => {
@@ -107,6 +109,7 @@ export default defineEventHandler(async (event) => {
       prompt: body.prompt,
       components: body.components,
       document: body.document,
+      pageId: body.page_id,
       model: body.model,
     });
 

@@ -15,6 +15,7 @@ export interface ChalkRequestBody {
   prompt: string;
   components?: Position[];
   document?: string;
+  pageId?: string;
   model?: string;
   stream?: boolean;
 }
