@@ -1,5 +1,5 @@
 {
-  "name": "@echoai/api",
+  "name": "@echoai/shared",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,7 +15,6 @@
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
     "@echoai/utils": "workspace:^",
-    "@echoai/shared": "workspace:^",
     "openai": "^4.95.1"
   }
 }

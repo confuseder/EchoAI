@@ -15,6 +15,7 @@
     "@echoai/api": "workspace:^",
     "@echoai/utils": "workspace:^",
     "@echoai/workflow": "workspace:^",
+    "@echoai/shared": "workspace:^",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",

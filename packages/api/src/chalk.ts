@@ -1,14 +1,5 @@
 import { API_URL } from "@echoai/utils";
-
-export interface Position {
-  // Based on usage in chalk.post.ts, this seems to be a component position type
-  // Exact structure can be added when needed
-}
-
-export interface Operation {
-  // Based on usage in chalk.post.ts, this seems to be an operation type
-  // Exact structure can be added when needed
-}
+import { Position, Operation } from "@echoai/shared";
 
 export interface ChalkRequestBody {
   chat_id: string;

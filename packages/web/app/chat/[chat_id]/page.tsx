@@ -1,4 +1,4 @@
-import { Chat } from '@/components/chat'
+import { Chat } from '@/components/chat/chat'
 import { useClearParamOnLoad } from '@/hooks/use-clear-params-onload'
 import connection from '@/lib/connection'
 

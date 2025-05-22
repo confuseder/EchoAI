@@ -2,84 +2,18 @@
 
 import { DesignerStep, StepBranch } from '@echoai/workflow/designer'
 import { useState, useEffect, useRef } from 'react'
-import MessageBox from './message-box'
-import ToolBox from './tool-box'
-import PromptArea from './prompt-area'
-import { Timeline } from './timeline'
-import { DisplayedMessage, GetChatResponse, Operation } from '@echoai/api'
-import { Board } from './board'
+import MessageBox from '../message-box'
+import ToolBox from '../tool-box'
+import PromptArea from '../prompt-area'
+import { Timeline } from '../timeline'
+import { GetChatResponse } from '@echoai/api'
+import { Operation } from '@echoai/shared'
+import { Board } from '../board'
 import connection from '@/lib/connection'
 import { useClearParamOnLoad } from '@/hooks/use-clear-params-onload'
-
-export const END = Symbol('END_FLAG')
-
-interface TipMessageBoxType {
-  role: 'tip'
-  content: string
-  isLoading?: boolean
-  key?: number
-}
-
-interface ChatMessageBoxType {
-  avatar?: string
-  role: 'user' | 'assistant'
-  content: string
-  key?: number
-}
-
-type MessageBoxType = TipMessageBoxType | ChatMessageBoxType
-
-const convert = (displayedMessages: DisplayedMessage[]): MessageBoxType[] => {
-  return displayedMessages.map((msg) => {
-    if (msg.role === 'user') {
-      return {
-        avatar: 'https://picsum.photos/200/300',
-        role: 'user',
-        content: msg.content
-      }
-    } else if (msg.role === 'processor') {
-      return {
-        role: 'tip',
-        content: msg.content
-      }
-    } else {
-      return {
-        role: 'assistant',
-        content: msg.content
-      }
-    }
-  })
-}
-
-const findStep = (stepId: string, branches: StepBranch[]): DesignerStep | null => {
-  for (const branch of branches) {
-    for (const step of branch.steps) {
-      if (step.step.toString() === stepId.toString()) {
-        return step
-      }
-    }
-  }
-  return null
-}
-
-const findStepNext = (stepId: string, branches: StepBranch[]): DesignerStep | null | typeof END => {
-  for (const branch of branches) {
-    for (let i = 0; i < branch.steps.length; i++) {
-      const step = branch.steps[i]
-      if (step.step.toString() === stepId.toString()) {
-        if (i < branch.steps.length - 1) {
-          return branch.steps[i + 1]
-        } else if (branch.start && branch.end) {
-          return findStep(branch.end, branches)
-        } else {
-          return END
-        }
-      }
-    }
-  }
-  return null
-}
-
+import { MessageBoxType, END } from './types'
+import { convert, findStep, findStepNext } from './timeline'
+import { Whiteboard } from './whiteboard'
 export function Chat({
   chatId,
   info,
@@ -95,15 +29,19 @@ export function Chat({
   const [updateTrigger, setUpdateTrigger] = useState(0)
   const [branches, setBranches] = useState<StepBranch[]>(info.branches)
   const currentStep = useRef<string | null | typeof END>(info.context[info.context.length - 1]?.step ?? null)
+  const currentPage = useRef<string | null>(null)
   const [prompt, setPrompt] = useState('')
   const calledRef = useRef(false)
   const [nextAvailablity, setNextAvailablity] = useState(status === 'ready')
   const [boardContent, setBoardContent] = useState('')
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const operations = useRef<Operation[]>([])
+  const whiteboard = new Whiteboard()
+
+  // Initialize whiteboard
+  currentPage.current = whiteboard.addPage('Default').id
 
   useClearParamOnLoad('new')
-
   useEffect(() => {
     const el = messagesContainerRef.current;
     if (el) {
@@ -147,8 +85,7 @@ export function Chat({
       messages.current.push(...convert(designerResponse.displayed_messages))
       setUpdateTrigger(v => v + 1)
 
-      let content = ''
-      await request(content, designerResponse.branches)
+      await request(designerResponse.branches)
       setNextAvailablity(true)
     } catch (error) {
       console.error('Error in fetchMessages:', error)
@@ -159,7 +96,6 @@ export function Chat({
   }
 
   const requestSpeaker = async (
-    content: string,
     currentBranches: StepBranch[]
   ) => {
     const step = findStep(currentStep.current as string, currentBranches)!
@@ -193,12 +129,12 @@ export function Chat({
   }
 
   const requestChalk = async (prompt: string) => {
-    const chalkResponse = await connection.chat.chalk({
+    await connection.chat.chalk({
       chat_id: chatId,
       prompt,
       stream: true,
-      document: '<root></root>',
-      pageId: '1',
+      document: whiteboard.processToSummarizedDocumentString(currentPage.current!),
+      pageId: currentPage.current!,
     }, (chunk) => {
       operations.current.length = 0
       operations.current.push(...chunk.operations)
@@ -219,11 +155,10 @@ export function Chat({
   }
 
   const request = async (
-    content: string,
     currentBranches: StepBranch[]
   ) => {
     await Promise.all([
-      requestSpeaker(content, currentBranches),
+      requestSpeaker(currentBranches),
       requestLayout(currentBranches),
     ])
   }
@@ -243,7 +178,7 @@ export function Chat({
       // handle end
     } else {
       currentStep.current = nextStep?.step!
-      await request('', branches)
+      await request(branches)
       setUpdateTrigger(v => v + 1)
     }
     setNextAvailablity(true)
@@ -258,7 +193,7 @@ export function Chat({
     <div className="flex w-full gap-2 h-full">
       <div className="flex flex-col h-full w-2/3 gap-y-2">
         <div className="flex flex-3/4 h-full bg-gray-100 rounded-lg">
-          <Board operations={operations.current.map(op => JSON.stringify(op, null, 2))} />
+          <Board operations={operations.current} whiteboard={whiteboard} pageId={currentPage.current!} />
         </div>
         <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">
           <div className='relative w-full'>

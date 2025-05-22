@@ -3,5 +3,11 @@
   "compilerOptions": {
     
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "node_modules/**/*.ts", "node_modules/**/*.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "node_modules/**/*.ts",
+    "node_modules/**/*.tsx",
+    "../shared/src/operation.ts"
+  ],
 }

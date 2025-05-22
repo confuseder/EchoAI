@@ -21,6 +21,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@echoai/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@echoai/utils':
         specifier: workspace:^
         version: link:../utils
@@ -30,6 +33,9 @@ importers:
 
   packages/server:
     dependencies:
+      '@echoai/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@echoai/workflow':
         specifier: workspace:^
         version: link:../workflow
@@ -62,6 +68,15 @@ importers:
         specifier: ^4.19.3
         version: 4.19.3
 
+  packages/shared:
+    dependencies:
+      '@echoai/utils':
+        specifier: workspace:^
+        version: link:../utils
+      openai:
+        specifier: ^4.95.1
+        version: 4.95.1(ws@8.18.1)(zod@3.24.3)
+
   packages/utils:
     dependencies:
       '@qdrant/js-client-rest':
@@ -86,6 +101,9 @@ importers:
       '@echoai/api':
         specifier: workspace:^
         version: link:../api
+      '@echoai/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@echoai/utils':
         specifier: workspace:^
         version: link:../utils
@@ -219,6 +237,9 @@ importers:
 
   packages/workflow:
     dependencies:
+      '@echoai/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@echoai/utils':
         specifier: workspace:^
         version: link:../utils

@@ -6,7 +6,7 @@ import {
 import { SYSTEM, USER } from "./prompts";
 import { chalk, CHALK_MODEL, search, client, embedding } from "@echoai/utils";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
-import { Position, Operation } from "./types";
+import { Position, Operation } from "@echoai/shared";
 import { OperationNode, parse } from "./parse";
 
 const provider = chalk()
@@ -126,4 +126,4 @@ export async function startChalkWorkflow(
 }
 
 export * from './prompts'
-export * from './types'
+export * from '@echoai/shared'
