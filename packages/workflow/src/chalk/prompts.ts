@@ -153,3 +153,10 @@ There are some interactive components you may need:
 - \`<input>\`
 - \`<select>\`
 `.trim()
+
+export const BUILTIN_VARS_REFERENCE = `
+We provided you some variables built-in you may need.
+
+- \`nextable\`: If the user complete the task and be able to do next step, set the value to \`true\`.
+> It always be used in interactive sense, for example you need to user complete a blank or finish a game.
+`.trim()

@@ -1,4 +1,4 @@
-import { ChildNode, DocumentNode, ElementNode, NodeType, parse, querySelectorXPath } from 'sciux-laplace'
+import { ChildNode, DocumentNode, ElementNode, NodeType, parse, querySelectorXPath, ref, Ref } from 'sciux-laplace'
 
 export type WhiteboardPage = {
   id: string
@@ -9,6 +9,8 @@ export type WhiteboardPage = {
 export class Whiteboard {
   pages: WhiteboardPage[] = []
   primaryPageTemp: DocumentNode = parse('<root></root>')
+  // When whiteboard.nextable and chalk workflow request completed status both true, the next function will be allowed.
+  nextable: Ref<boolean> = ref(true)
 
   constructor() { }
 
