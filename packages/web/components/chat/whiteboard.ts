@@ -1,4 +1,4 @@
-import { DocumentNode, ElementNode, NodeType, parse, querySelectorXPath } from 'sciux-laplace'
+import { ChildNode, DocumentNode, ElementNode, NodeType, parse, querySelectorXPath } from 'sciux-laplace'
 
 export type WhiteboardPage = {
   id: string
@@ -107,8 +107,38 @@ export class Whiteboard {
   // Process
   processToDocumentString(pageId: string): string {
     const page = this.findPage(pageId)!
+    
+    const resolve = (children: ChildNode[]) => {
+      let content = ''
+      for (const child of children) {
+        switch (child.type) {
+          case NodeType.TEXT:
+            content += child.content
+            break
+          case NodeType.VALUE:
+            content += `{{${child.value}}}`
+            break
+          case NodeType.ELEMENT:
+            content += `<${child.tag} `
+            for (const attr of child.attributes) {
+              content += `${attr.name}="${attr.value}" `
+            }
+            if (child.selfClosing) {
+              content += '/>'
+              break
+            }
+            content += '>'
+            const childrenContent = resolve(child.children)
+            content += childrenContent
+            content += `</${child.tag}>`
+            break
+        }
+      }
 
-    return ''
+      return content
+    }
+
+    return resolve(page.document.children)
   }
 
   processToSummarizedDocumentString(pageId: string): string {
