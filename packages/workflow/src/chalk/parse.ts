@@ -14,7 +14,7 @@ export function parse(text: string): OperationNode[] {
   const excludedRanges: Range[] = [];
 
   // First handle start-end pairs
-  const startEndPattern = /{start:([^}\s]+)([^}]*)}(.*?){end:\1}/gs;
+  const startEndPattern = /\$\$start:([a-zA-Z0-9-]+)([^$]*)\$\$(.*?)\$\$end:\1\$\$/gs;
   let startEndMatch;
 
   while ((startEndMatch = startEndPattern.exec(text)) !== null) {
@@ -36,7 +36,7 @@ export function parse(text: string): OperationNode[] {
   }
 
   // Then handle single tags, excluding any start: or end: tags
-  const singlePattern = /{(?!start:)(?!end:)([^}\s]+)([^}]*)}/g;
+  const singlePattern = /\$\$(?!start:)(?!end:)([a-zA-Z0-9-]+)([^$]*)\$\$/g;
   let singleMatch;
 
   while ((singleMatch = singlePattern.exec(text)) !== null) {

@@ -40,10 +40,12 @@ export class Whiteboard {
   ) {
     const page = this.findPage(pageId)!
     const node = querySelectorXPath(page.document, position)!
+    // console.log('node', content)
     const children = parse(content).children
     if (node.type === NodeType.ELEMENT || node.type === NodeType.FRAGMENT || node.type === NodeType.DOCUMENT) {
       node.children.push(...children)
     }
+    console.log('document', page.document)
 
     return this
   }

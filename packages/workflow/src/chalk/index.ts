@@ -118,6 +118,7 @@ export async function startChalkWorkflow(
           role: 'assistant',
           content,
         })
+        console.log('content', content)
         callback?.(parse(content))
         controller.close();
       }
