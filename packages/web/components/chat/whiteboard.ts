@@ -6,6 +6,13 @@ export type WhiteboardPage = {
   document: DocumentNode
 }
 
+const resolveXPath = (source: string) => {
+  if (source === '/') {
+    return `${source}`
+  } else {
+    return `/root/root${source}`
+  }
+}
 export class Whiteboard {
   pages: WhiteboardPage[] = []
   primaryPageTemp: DocumentNode = parse('<root></root>')
@@ -39,7 +46,7 @@ export class Whiteboard {
     content: string
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     // console.log('node', content)
     const children = parse(content).children
     if (node.type === NodeType.ELEMENT || node.type === NodeType.FRAGMENT || node.type === NodeType.DOCUMENT) {
@@ -55,7 +62,7 @@ export class Whiteboard {
     position: string // XPath
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     node.parent?.children.splice(node.parent.children.indexOf(node), 1)
 
     return this
@@ -68,7 +75,7 @@ export class Whiteboard {
     value: string
   ) { 
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     if (node.type === NodeType.ELEMENT) {
       for (const attr of node.attributes) {
         if (attr.name === prop) {
@@ -88,7 +95,7 @@ export class Whiteboard {
     prop: string
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     if (node.type === NodeType.ELEMENT) {
       node.attributes = node.attributes.filter(attr => attr.name !== prop)
     }
@@ -101,7 +108,7 @@ export class Whiteboard {
     content: string
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     if (node.type === NodeType.ELEMENT || node.type === NodeType.FRAGMENT || node.type === NodeType.DOCUMENT) {
       node.children = parse(content).children
     }
@@ -123,9 +130,9 @@ export class Whiteboard {
             content += `{{${child.value}}}`
             break
           case NodeType.ELEMENT:
-            content += `<${child.tag} `
+            content += `<${child.tag}`
             for (const attr of child.attributes) {
-              content += `${attr.name}="${attr.value}" `
+              content += ` ${attr.name}="${attr.value}"`
             }
             if (child.selfClosing) {
               content += '/>'

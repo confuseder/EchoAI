@@ -1,16 +1,12 @@
-export interface OperationNode {
-  type: string;
-  props: Record<string, string>;
-  content?: string;
-}
+import { Operation } from "@echoai/shared";
 
 interface Range {
   start: number;
   end: number;
 }
 
-export function parse(text: string): OperationNode[] {
-  const result: OperationNode[] = [];
+export function parse(text: string): Operation[] {
+  const result: Operation[] = [];
   const excludedRanges: Range[] = [];
 
   // First handle start-end pairs
@@ -23,8 +19,8 @@ export function parse(text: string): OperationNode[] {
     const matchEnd = matchStart + fullMatch.length;
 
     result.push({
-      type,
-      props: parseProps(propsStr),
+      type: type as Operation['type'],
+      ...(parseProps(propsStr) as any),
       content: content.trim()
     });
 
@@ -51,8 +47,8 @@ export function parse(text: string): OperationNode[] {
 
     if (!isExcluded) {
       result.push({
-        type,
-        props: parseProps(propsStr)
+        type: type as Operation['type'],
+        ...(parseProps(propsStr) as any),
       });
     }
   }
