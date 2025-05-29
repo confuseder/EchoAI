@@ -52,7 +52,7 @@ export function UserPanel({ isOpen, setIsOpen, onLogout }: UserPanelProps) {
       <div
         className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm shadow-xl rounded-2xl py-6 px-4
           transition-all duration-300 ease-in-out
-          ${isOpen ? "opacity-100" : "opacity-0"}
+          ${isOpen ? "block" : "hidden"}
           w-100 z-50 flex flex-col items-center justify-center gap-8`}
       >
         {isLoading && (
