@@ -2,11 +2,7 @@ import { eq } from "drizzle-orm";
 import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { SYSTEM, USER } from "@echoai/workflow/designer";
-import {
-  prompt,
-  UNAUTHORIZED_MODE,
-  UNAUTHORIZED_MODE_USER_ID,
-} from "@echoai/utils";
+import { prompt } from "@echoai/utils";
 
 export interface ChatCreateRequestBody {
   prompt?: string;
@@ -33,11 +29,11 @@ export default defineEventHandler(async (event) => {
           },
           body.prompt
             ? {
-                role: "user",
-                content: prompt(USER, {
-                  prompt: body.prompt,
-                }),
-              }
+              role: "user",
+              content: prompt(USER, {
+                prompt: body.prompt,
+              }),
+            }
             : undefined,
         ],
         context: [

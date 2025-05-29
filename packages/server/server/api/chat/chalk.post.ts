@@ -1,6 +1,4 @@
 import { Operation, Position, startChalkWorkflow } from "@echoai/workflow/chalk";
-import { UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
-import { UNAUTHORIZED_MODE } from "@echoai/utils";
 import { and, eq } from "drizzle-orm";
 import db from "../../../db";
 import { table as chats } from "../../../db/chats";

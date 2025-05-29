@@ -3,7 +3,6 @@ import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { DesignerStep, startDesignerWorkflow, StepBranch } from "@echoai/workflow/designer";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
-import { UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
 export interface DisplayedMessage {
   role: "user" | "speaker" | "processor";
   content: string;

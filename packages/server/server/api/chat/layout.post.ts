@@ -3,7 +3,6 @@ import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import { startLayoutWorkflow } from "@echoai/workflow/layout";
-import { UNAUTHORIZED_MODE, UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
 
 export interface LayoutRequestBody {
   chat_id: string;

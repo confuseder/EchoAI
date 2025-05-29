@@ -1,6 +1,4 @@
 import db from "../../../db/index";
-import { UNAUTHORIZED_MODE } from "@echoai/utils";
-import { UNAUTHORIZED_MODE_USER_ID } from "@echoai/utils";
 import { eq, desc } from "drizzle-orm";
 import { table as chats } from '../../../db/chats'
 
