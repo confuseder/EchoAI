@@ -1,4 +1,7 @@
 export type Position = string
+export type WithId<T> = T & {
+  id: string;
+}
 
 export type AddNodeOperation = {
   type: "add-node";
@@ -26,10 +29,11 @@ export type RemoveNodeOperation = {
   position: Position;
 };
 
-export type Operation =
+export type Operation = WithId<
   | AddNodeOperation
   | SetPropOperation
   | SetContentOperation
   | RemovePropOperation
   | RemoveNodeOperation
+>
   

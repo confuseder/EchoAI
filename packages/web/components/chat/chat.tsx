@@ -155,7 +155,7 @@ export function Chat({
       },
       (chunk) => {
         operations.current.length = 0;
-        operations.current.push(...chunk.operations);
+        operations.current.push(chunk.operations[chunk.operations.length - 1]);
         console.log("operations", operations.current);
         setUpdateTrigger((v) => v + 1);
       }

@@ -45,9 +45,9 @@ Each operation are supposed to be considered before, the thinking process should
 2. LIST the operations you need to do with the result from step 1.
 
 step n: THINKING what should you do in this step
-{start:operation-name}
+$$start:operation-name$$
 Operation content here...
-{end:operation-name}
+$$end:operation-name$$
 
 Continue with the next step...
 \`\`\`
@@ -56,29 +56,29 @@ Continue with the next step...
 
 The following operations should be included in your output content when you need to modify the document:
 
-- \`{add-node position="XPath"}\`: Add a new node to a parent node, add content included in slot.
+- \`$$add-node position="XPath"$$\`: Add a new node to a parent node, add content included in slot.
 \`\`\`example
-{start:add-node position="the xpath of the parent node"}
+$$start:add-node position="the xpath of the parent node"$$
 <block>Hello World!</block>
-{end:add-node}
+$$end:add-node$$
 \`\`\`
-- \`{set-prop position="XPath" prop="attr" value="value"}\`: Set the attribute of a node.
+- \`$$set-prop position="XPath" prop="attr" value="value"$$
 \`\`\`example
-{set-prop position="The xpath of the node" attr="attrName" value="112233"}
+$$set-prop position="The xpath of the node" attr="attrName" value="112233"$$
 \`\`\`
-- \`{remove-node position="XPath"}\`: Remove a node.
+- \`$$remove-node position="XPath"$$
 \`\`\`example
-{remove-node position="The xpath of the node"}
+$$remove-node position="The xpath of the node"$$
 \`\`\`
-- \`{set-content position="XPath"}\`: Set the content of a node, will replace previous content.
+- \`$$set-content position="XPath"$$
 \`\`\`example
-{start:set-content position="The xpath of the node"}
+$$start:set-content position="The xpath of the node"$$
 <block>Hello World!</block>
-{end:set-content}
+$$end:set-content$$
 \`\`\`
-- \`{remove-prop position="XPath" prop="attrName"}\`: Remove a property of a node.
+- \`$$remove-prop position="XPath" prop="attrName"$$
 \`\`\`example
-{remove-prop position="The xpath of the node" prop="attrName"}
+$$remove-prop position="The xpath of the node" prop="attrName"$$
 \`\`\`
 
 ## Operation Rules
@@ -88,13 +88,19 @@ The operation should be separated to suitable parts, which could be summarized a
 - The earliest operation is layout the structure of the document if it's primary.
 - Each area layouted should be operated independently.
 - For complex canvas, you need to divide the operation into multiple parts.
+- You can **ONLY** use \`add-node\`, \`set-prop\`, \`set-content\`, \`remove-node\`, \`remove-prop\` in the operation.
+
+## XPath Rules
+- Do not use \`.\` as an XPath. The document must have only one root node, and all content must be inserted inside it. Use absolute XPaths like \`/\` to target the root.
+- \`add-node\` & \`set-content\` are inner insertion operation, not an outer replacement. The node matched by the XPath should be preserved, and the content inserted as its child. Do not treat the content as a new full XPath path.
+
 `.trim()
 
 export const USER = `
 Now you are at:
 > Page ID: <:insert:page_id>
 
-> Page Document:
+> Page Document (The root node should be considered when use XPath):
 \`\`\`sciux
 <:insert:document>
 \`\`\`
@@ -114,6 +120,8 @@ And I find some documents and references you may need:
 
 <:insert:references>
 \`\`\`
+
+You can **ONLY** use the components or other apis mentioned in the references or previous references.
 `.trim()
 
 export const PAGE_TOOL_CONTENT = `
@@ -152,4 +160,11 @@ There are some interactive components you may need:
 - \`<button>\`
 - \`<input>\`
 - \`<select>\`
+`.trim()
+
+export const BUILTIN_VARS_REFERENCE = `
+We provided you some variables built-in you may need.
+
+- \`nextable\`: If the user complete the task and be able to do next step, set the value to \`true\`.
+> It always be used in interactive sense, for example you need to user complete a blank or finish a game.
 `.trim()

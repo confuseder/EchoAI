@@ -7,7 +7,7 @@ import { SYSTEM, USER } from "./prompts";
 import { chalk, CHALK_MODEL, search, client, embedding } from "@echoai/utils";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Position, Operation } from "@echoai/shared";
-import { OperationNode, parse } from "./parse";
+import { parse } from "./parse";
 
 const provider = chalk()
 const defaultModel = CHALK_MODEL
@@ -30,7 +30,7 @@ export type ChalkWorkflowResult = ChalkWorkflowResultCommon | ReadableStream<str
 export async function startChalkWorkflow(
   context: ChatCompletionMessageParam[],
   options: ChalkWorkflowOptions,
-  callback?: (operations: OperationNode[]) => any
+  callback?: (operations: Operation[]) => any
 ): Promise<ChalkWorkflowResult> {
   const { prompt: userPrompt, components, model: modelOption, document, stream, pageId } = options;
   const model = modelOption ?? defaultModel
@@ -94,6 +94,7 @@ export async function startChalkWorkflow(
   }
   let content = ''
   let latestOperationAmount = 0
+  const results: Operation[] = []
   return new ReadableStream({
     async start(controller) {
       try {
@@ -104,6 +105,10 @@ export async function startChalkWorkflow(
             if (operations.length > latestOperationAmount) {
               latestOperationAmount = operations.length
               console.log('operations', operations)
+              results.push({
+                ...operations[operations.length - 1],
+                id: crypto.randomUUID() as string,
+              })
               controller.enqueue(JSON.stringify({
                 operations
               }))
@@ -118,7 +123,8 @@ export async function startChalkWorkflow(
           role: 'assistant',
           content,
         })
-        callback?.(parse(content))
+        console.log('content', content)
+        callback?.(results)
         controller.close();
       }
     }

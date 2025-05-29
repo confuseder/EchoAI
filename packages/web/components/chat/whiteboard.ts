@@ -1,4 +1,4 @@
-import { DocumentNode, ElementNode, NodeType, parse, querySelectorXPath } from 'sciux-laplace'
+import { ChildNode, DocumentNode, ElementNode, NodeType, parse, querySelectorXPath, ref, Ref } from 'sciux-laplace'
 
 export type WhiteboardPage = {
   id: string
@@ -6,9 +6,18 @@ export type WhiteboardPage = {
   document: DocumentNode
 }
 
+const resolveXPath = (source: string) => {
+  if (source === '/') {
+    return `${source}`
+  } else {
+    return `/root/root${source}`
+  }
+}
 export class Whiteboard {
   pages: WhiteboardPage[] = []
   primaryPageTemp: DocumentNode = parse('<root></root>')
+  // When whiteboard.nextable and chalk workflow request completed status both true, the next function will be allowed.
+  nextable: Ref<boolean> = ref(true)
 
   constructor() { }
 
@@ -37,11 +46,13 @@ export class Whiteboard {
     content: string
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
+    // console.log('node', content)
     const children = parse(content).children
     if (node.type === NodeType.ELEMENT || node.type === NodeType.FRAGMENT || node.type === NodeType.DOCUMENT) {
       node.children.push(...children)
     }
+    console.log('document', page.document)
 
     return this
   }
@@ -51,7 +62,7 @@ export class Whiteboard {
     position: string // XPath
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     node.parent?.children.splice(node.parent.children.indexOf(node), 1)
 
     return this
@@ -64,7 +75,7 @@ export class Whiteboard {
     value: string
   ) { 
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     if (node.type === NodeType.ELEMENT) {
       for (const attr of node.attributes) {
         if (attr.name === prop) {
@@ -84,7 +95,7 @@ export class Whiteboard {
     prop: string
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     if (node.type === NodeType.ELEMENT) {
       node.attributes = node.attributes.filter(attr => attr.name !== prop)
     }
@@ -97,7 +108,7 @@ export class Whiteboard {
     content: string
   ) {
     const page = this.findPage(pageId)!
-    const node = querySelectorXPath(page.document, position)!
+    const node = querySelectorXPath(page.document, resolveXPath(position))!
     if (node.type === NodeType.ELEMENT || node.type === NodeType.FRAGMENT || node.type === NodeType.DOCUMENT) {
       node.children = parse(content).children
     }
@@ -107,8 +118,38 @@ export class Whiteboard {
   // Process
   processToDocumentString(pageId: string): string {
     const page = this.findPage(pageId)!
+    
+    const resolve = (children: ChildNode[]) => {
+      let content = ''
+      for (const child of children) {
+        switch (child.type) {
+          case NodeType.TEXT:
+            content += child.content
+            break
+          case NodeType.VALUE:
+            content += `{{${child.value}}}`
+            break
+          case NodeType.ELEMENT:
+            content += `<${child.tag}`
+            for (const attr of child.attributes) {
+              content += ` ${attr.name}="${attr.value}"`
+            }
+            if (child.selfClosing) {
+              content += '/>'
+              break
+            }
+            content += '>'
+            const childrenContent = resolve(child.children)
+            content += childrenContent
+            content += `</${child.tag}>`
+            break
+        }
+      }
 
-    return ''
+      return content
+    }
+
+    return resolve(page.document.children)
   }
 
   processToSummarizedDocumentString(pageId: string): string {

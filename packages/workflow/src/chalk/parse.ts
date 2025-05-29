@@ -1,20 +1,16 @@
-export interface OperationNode {
-  type: string;
-  props: Record<string, string>;
-  content?: string;
-}
+import { Operation } from "@echoai/shared";
 
 interface Range {
   start: number;
   end: number;
 }
 
-export function parse(text: string): OperationNode[] {
-  const result: OperationNode[] = [];
+export function parse(text: string): Operation[] {
+  const result: Operation[] = [];
   const excludedRanges: Range[] = [];
 
   // First handle start-end pairs
-  const startEndPattern = /{start:([^}\s]+)([^}]*)}(.*?){end:\1}/gs;
+  const startEndPattern = /\$\$start:([a-zA-Z0-9-]+)([^$]*)\$\$(.*?)\$\$end:\1\$\$/gs;
   let startEndMatch;
 
   while ((startEndMatch = startEndPattern.exec(text)) !== null) {
@@ -23,8 +19,8 @@ export function parse(text: string): OperationNode[] {
     const matchEnd = matchStart + fullMatch.length;
 
     result.push({
-      type,
-      props: parseProps(propsStr),
+      type: type as Operation['type'],
+      ...(parseProps(propsStr) as any),
       content: content.trim()
     });
 
@@ -36,7 +32,7 @@ export function parse(text: string): OperationNode[] {
   }
 
   // Then handle single tags, excluding any start: or end: tags
-  const singlePattern = /{(?!start:)(?!end:)([^}\s]+)([^}]*)}/g;
+  const singlePattern = /\$\$(?!start:)(?!end:)([a-zA-Z0-9-]+)([^$]*)\$\$/g;
   let singleMatch;
 
   while ((singleMatch = singlePattern.exec(text)) !== null) {
@@ -51,8 +47,8 @@ export function parse(text: string): OperationNode[] {
 
     if (!isExcluded) {
       result.push({
-        type,
-        props: parseProps(propsStr)
+        type: type as Operation['type'],
+        ...(parseProps(propsStr) as any),
       });
     }
   }
