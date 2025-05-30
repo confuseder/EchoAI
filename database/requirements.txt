@@ -6,4 +6,3 @@ pyarrow
 pandas
 datasets
 toml
-yaml
