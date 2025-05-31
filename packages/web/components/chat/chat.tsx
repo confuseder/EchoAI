@@ -155,7 +155,7 @@ export function Chat({
       },
       (chunk) => {
         operations.current.length = 0;
-        operations.current.push(chunk.operations[chunk.operations.length - 1]);
+        operations.current.push(...chunk.operations);
         console.log("operations", operations.current);
         setUpdateTrigger((v) => v + 1);
       }
@@ -213,7 +213,7 @@ export function Chat({
       <div className="flex flex-col h-full w-2/3 gap-y-2">
         <div className="flex flex-3/4 h-full bg-gray-100 rounded-lg">
           <Board
-            operations={operations.current}
+            operations={operations}
             whiteboard={whiteboard}
             pageId={currentPage.current!}
           />
