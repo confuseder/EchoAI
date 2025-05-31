@@ -10,7 +10,7 @@ const resolveXPath = (source: string) => {
   if (source === '/') {
     return `${source}`
   } else {
-    return `/root/root${source}`
+    return `/root${source}`
   }
 }
 export class Whiteboard {
