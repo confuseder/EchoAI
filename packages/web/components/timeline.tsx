@@ -194,12 +194,50 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
           .attr('fill', 'white')
           .on('mouseenter', () => node.attr('fill', color))
           .on('mouseleave', () => node.attr('fill', 'white'))
-        g.append('text')
+        // problem（字符块）放在节点下方，左上角与节点对齐，自动换行且英文单词不被断开
+        // 支持中英文混合自动换行：英文单词不拆分，中文最多6个字符一行
+        function splitLines(text: string, maxZh: number, maxEn: number) {
+          const lines: string[] = [];
+          let currentLine = '';
+          let zhCount = 0;
+          const tokens = text.match(/([\u4e00-\u9fa5])|([^\u4e00-\u9fa5\s]+)|(\s+)/g) || [];
+          for (const token of tokens) {
+            if (/^[\u4e00-\u9fa5]$/.test(token)) { // 中文
+              currentLine += token;
+              zhCount++;
+              if (zhCount >= maxZh) {
+                lines.push(currentLine);
+                currentLine = '';
+                zhCount = 0;
+              }
+            } else if (/^\s+$/.test(token)) { // 空格
+              currentLine += token;
+            } else { // 英文单词或符号
+              if ((currentLine + token).length > maxEn) {
+                if (currentLine) lines.push(currentLine);
+                currentLine = token;
+              } else {
+                currentLine += token;
+              }
+            }
+          }
+          if (currentLine) lines.push(currentLine);
+          return lines;
+        }
+        const lines = splitLines(step.problem, 6, 25);
+        const textElem = g.append('text')
           .attr('x', cx)
-          .attr('y', y + (index % 2 === 0 ? 10 : -10))
-          .attr('text-anchor', 'middle')
+          .attr('y', y + 7)
+          .attr('text-anchor', 'start')
+          .attr('dominant-baseline', 'hanging')
           .attr('font-size', '10px')
-          .text(`${step.step} ${step.problem}`);
+          .attr('transform', `rotate(45, ${cx}, ${y + 7})`);
+        lines.forEach((line, i) => {
+          textElem.append('tspan')
+            .attr('x', cx)
+            .attr('y', y + 7 + i * 13)
+            .text(i === 0 ? `${step.step} ${line}` : line);
+        });
       });
       parentXScale = xScale;
     });
