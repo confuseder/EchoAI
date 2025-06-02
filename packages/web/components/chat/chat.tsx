@@ -171,6 +171,7 @@ export function Chat({
       chat_id: chatId,
       prompt,
       ...step,
+      page_id_will_be_used: (parseInt(currentPage.current!) + 1).toString(),
     });
     await requestChalk(layoutResponse.content);
     setUpdateTrigger((v) => v + 1);

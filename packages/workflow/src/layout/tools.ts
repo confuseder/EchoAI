@@ -36,3 +36,5 @@ export const switchPage: ChatCompletionTool = {
     }
   }
 }
+
+export default [addPage, switchPage]

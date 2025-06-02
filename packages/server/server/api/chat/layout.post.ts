@@ -12,6 +12,8 @@ export interface LayoutRequestBody {
   knowledge: string;
   explanation: string;
   conclusion: string;
+  interaction: string;
+  page_id_will_be_used?: string;
 }
 
 export interface LayoutResponse {
@@ -50,7 +52,7 @@ export default defineEventHandler(async (event) => {
 
     const layoutResult = await startLayoutWorkflow(context, {
       ...body,
-      interaction: "",
+      pageIdWillBeUsed: body.page_id_will_be_used,
     });
 
     const updateValues = {
@@ -80,7 +82,8 @@ export default defineEventHandler(async (event) => {
     return {
       chat_id: body.chat_id,
       prompt: body.prompt,
-      content: layoutResult,
+      content: layoutResult.content,
+      operation: layoutResult.operation,
     };
   } catch (error) {
     console.error(error);
