@@ -11,12 +11,14 @@ export interface ChalkRequestBody {
   page_id?: string;
   model?: string;
   stream?: boolean;
+  step: string;
 }
 
 export interface ChalkResult {
   input: string;
   components: Position[];
   output: Operation[];
+  step: string;
 }
 
 export interface ChalkResponse {
@@ -73,6 +75,7 @@ export default defineEventHandler(async (event) => {
             input: body.prompt,
             components: body.components,
             output: operations as unknown as Operation[],
+            step: body.step,
           });
           runTask("save-context", {
             payload: {

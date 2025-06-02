@@ -8,7 +8,7 @@ import PromptArea from '../prompt-area'
 import { Timeline } from '../timeline'
 import { createConnection, GetChatResponse } from "@echoai/api";
 import { Operation } from "@echoai/shared";
-import { Board } from "../board";
+import { Board } from "./board";
 import { useClearParamOnLoad } from "@/hooks/use-clear-params-onload";
 import { MessageBoxType, END } from "./types";
 import { convert, findStep, findStepNext } from "./timeline";
@@ -152,6 +152,7 @@ export function Chat({
           currentPage.current!
         ),
         pageId: currentPage.current!,
+        step: currentStep.current as string,
       },
       (chunk) => {
         operations.current.length = 0;
@@ -208,6 +209,18 @@ export function Chat({
     setPrompt("");
   }
 
+  function handleSwitch(operation: "next" | "previous") {
+    const total = whiteboard.getPageCount();
+    const current = parseInt(currentPage.current!)
+    if (operation === "next") {
+      if (current + 1 >= total) return;
+      currentPage.current = (current + 1).toString();
+    } else {
+      if (current - 1 < 1) return;
+      currentPage.current = (current - 1).toString();
+    }
+  }
+
   return (
     <div className="flex w-full gap-2 h-full">
       <div className="flex flex-col h-full w-2/3 gap-y-2">
@@ -216,6 +229,7 @@ export function Chat({
             operations={operations}
             whiteboard={whiteboard}
             pageId={currentPage.current!}
+            onSwitch={handleSwitch}
           />
         </div>
         <div className="flex flex-1/4 h-full bg-gray-100 rounded-lg">

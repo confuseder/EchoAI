@@ -9,6 +9,7 @@ export interface ChalkRequestBody {
   pageId?: string;
   model?: string;
   stream?: boolean;
+  step: string;
 }
 
 export interface ChalkResponse {

@@ -21,8 +21,12 @@ export class Whiteboard {
 
   constructor() { }
 
-  private findPage(id: string) {
+  findPage(id: string) {
     return this.pages.find(page => page.id === id)
+  }
+
+  getPageCount() {
+    return this.pages.length
   }
 
   addPage(title: string) {

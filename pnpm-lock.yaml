@@ -195,8 +195,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       sciux-laplace:
-        specifier: 0.0.1-alpha.6
-        version: 0.0.1-alpha.6
+        specifier: 0.0.1-alpha.8
+        version: 0.0.1-alpha.8
       shiki:
         specifier: ^3.3.0
         version: 3.3.0
@@ -5493,8 +5493,8 @@ packages:
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
-  sciux-laplace@0.0.1-alpha.6:
-    resolution: {integrity: sha512-RY6/TprSGc9eVAN5dWN+QXPkbEmi/NGq2UGd/i4k0p+CKHbZTNWgtHQ+Z6raWRajQWEk0eCro5I6q2s2ticDqw==}
+  sciux-laplace@0.0.1-alpha.8:
+    resolution: {integrity: sha512-4U8zxaS8oPa8vl3LgWLkhtQXWHXsIvA95jdA2sysT08hoEF/GX4A6dDU8iJtO/x/9IT6Qhy6ZgMWW53W+uNSVg==}
 
   scule@1.3.0:
     resolution: {integrity: sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==}
@@ -11906,7 +11906,7 @@ snapshots:
 
   scheduler@0.26.0: {}
 
-  sciux-laplace@0.0.1-alpha.6:
+  sciux-laplace@0.0.1-alpha.8:
     dependencies:
       '@vue/reactivity': 3.5.15
       '@vue/shared': 3.5.15
