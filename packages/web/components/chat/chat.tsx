@@ -1,7 +1,7 @@
 'use client'
 
 import { DesignerStep, StepBranch } from '@echoai/workflow/designer'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, RefObject } from 'react'
 import MessageBox from '../message-box'
 import ToolBox from '../tool-box'
 import PromptArea from '../prompt-area'
@@ -173,6 +173,13 @@ export function Chat({
       ...step,
       page_id_will_be_used: (parseInt(currentPage.current!) + 1).toString(),
     });
+    if (layoutResponse.operation) {
+      if (layoutResponse.operation.type === "new-page") {
+        currentPage.current = whiteboard.addPage(layoutResponse.operation.title).id;
+      } else if (layoutResponse.operation.type === "switch-page") {
+        currentPage.current = layoutResponse.operation.pageId;
+      }
+    }
     await requestChalk(layoutResponse.content);
     setUpdateTrigger((v) => v + 1);
   };
@@ -229,7 +236,7 @@ export function Chat({
           <Board
             operations={operations}
             whiteboard={whiteboard}
-            pageId={currentPage.current!}
+            pageId={currentPage as RefObject<string>}
             onSwitch={handleSwitch}
           />
         </div>

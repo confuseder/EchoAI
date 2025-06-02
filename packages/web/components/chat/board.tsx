@@ -5,7 +5,7 @@ import { useState, useEffect, RefObject, useRef } from 'react'
 import { parse, render, renderRoots } from 'sciux-laplace'
 import PageSwitcher from './page-switcher'
 
-export function Board({ operations, whiteboard, pageId, onSwitch }: { operations: RefObject<Operation[]>, whiteboard: Whiteboard, pageId: string, onSwitch?: (operation: "next" | "previous") => void }) {
+export function Board({ operations, whiteboard, pageId, onSwitch }: { operations: RefObject<Operation[]>, whiteboard: Whiteboard, pageId: RefObject<string>, onSwitch?: (operation: "next" | "previous") => void }) {
   const [documentString, setDocumentString] = useState('')
   const [lastProcessedIndex, setLastProcessedIndex] = useState(-1)
   const whiteboardRef = useRef<Whiteboard>(whiteboard)
@@ -21,19 +21,19 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
       for (const operation of newOperations) {
         switch (operation.type) {
           case 'add-node':
-            whiteboardRef.current.addNode(pageId, operation.position, operation.content)
+            whiteboardRef.current.addNode(pageId.current, operation.position, operation.content)
             break
           case 'remove-node':
-            whiteboardRef.current.removeNode(pageId, operation.position)
+            whiteboardRef.current.removeNode(pageId.current, operation.position)
             break
           case 'set-prop':
-            whiteboardRef.current.setProp(pageId, operation.position, operation.attr, operation.value)
+            whiteboardRef.current.setProp(pageId.current, operation.position, operation.attr, operation.value)
             break
           case 'set-content':
-            whiteboardRef.current.setContent(pageId, operation.position, operation.content)
+            whiteboardRef.current.setContent(pageId.current, operation.position, operation.content)
             break
           case 'remove-prop':
-            whiteboardRef.current.removeProp(pageId, operation.position, operation.attr)
+            whiteboardRef.current.removeProp(pageId.current, operation.position, operation.attr)
             break
           default:
             console.error('Unknown operation:', operation)
@@ -43,10 +43,10 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
       // 更新最后处理的索引
       setLastProcessedIndex(operations.current.length - 1)
       // 更新文档字符串
-      setDocumentString(whiteboardRef.current.processToDocumentString(pageId))
+      setDocumentString(whiteboardRef.current.processToDocumentString(pageId.current))
       // 更新board
       if (boardRef.current) {
-        const ast = whiteboardRef.current.findPage(pageId)?.document
+        const ast = whiteboardRef.current.findPage(pageId.current)?.document
         console.log(ast)
         if (ast) {
           const roots = renderRoots(ast.children)
@@ -56,7 +56,7 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
     }
 
     processNewOperations()
-  }, [operations.current?.length, pageId])
+  }, [operations.current?.length, pageId.current])
 
   return (
     // <div className='flex size-full'>
@@ -71,7 +71,7 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
     <div className='flex relative size-full'>
       <div className='flex size-full' ref={boardRef}></div>
       <div className='absolute bottom-0 right-0 m-4'>
-        <PageSwitcher pageId={pageId} total={whiteboardRef.current.getPageCount().toString()} />
+        <PageSwitcher pageId={pageId.current} total={whiteboardRef.current.getPageCount().toString()} />
       </div>
     </div>
   )

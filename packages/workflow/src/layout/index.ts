@@ -86,6 +86,7 @@ export async function startLayoutWorkflow(
     return result
   }
   result.content = response.choices[0].message.content!
+  context.push(response.choices[0].message)
   return result
 }
 
