@@ -67,5 +67,7 @@ CONCLUSION: <:insert:conclusion>
 
 INTERACTION: <:insert:interaction>
 
-Now, please describe the layout and figures based on the information above. 
+NOW,
+  IF the content you will output is non-related to previous content, please use tools to operate the page,
+  OTHERWISE, please describe the layout and figures based on the information above.
 `
