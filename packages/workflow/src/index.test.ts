@@ -13,11 +13,11 @@ export const main = async () => {
     stream: true
   })
 
-  console.log(res)
+
 
   // for await (const chunk of res as any) {
   //   const data = JSON.parse(chunk)
-  //   console.log(data[data.length - 1])
+  //   
   // }
 
   log += `\n\n${JSON.stringify(res)}`
@@ -26,5 +26,5 @@ export const main = async () => {
 console.time('main')
 main().then(() => {
   console.timeEnd('main')
-  console.log(context)
+
 })

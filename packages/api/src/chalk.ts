@@ -41,7 +41,7 @@ export default async function fetchChalk(
   }
 
   if (body.stream) {
-    console.log('streaming')
+
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error('No reader available');

@@ -104,7 +104,7 @@ export async function startChalkWorkflow(
             const operations = parse(content)
             if (operations.length > latestOperationAmount) {
               latestOperationAmount = operations.length
-              console.log('operations', operations)
+
               results.push({
                 ...operations[operations.length - 1],
                 id: crypto.randomUUID() as string,
@@ -123,7 +123,7 @@ export async function startChalkWorkflow(
           role: 'assistant',
           content,
         })
-        console.log('content', content)
+
         callback?.(results)
         controller.close();
       }

@@ -50,7 +50,7 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
       // 更新board
       if (boardRef.current) {
         const ast = whiteboardRef.current.findPage(pageId.current)?.document
-        console.log(ast)
+
         if (ast) {
           try {
             const roots = renderRoots(ast.children)

@@ -26,7 +26,7 @@ export interface DesignerResponse {
 export default defineEventHandler(async (event) => {
   const body = await readBody<DesignerRequestBody>(event);
 
-  console.log("next", body.next_step);
+
 
   const userId = event["userId"];
 

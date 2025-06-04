@@ -157,7 +157,7 @@ export function Chat({
       (chunk) => {
         operations.current.length = 0;
         operations.current.push(...chunk.operations);
-        console.log("operations", operations.current);
+
         setUpdateTrigger((v) => v + 1);
       }
     );
@@ -201,7 +201,7 @@ export function Chat({
   async function handleNext() {
     setNextAvailablity(false);
     const nextStep = findStepNext(currentStep.current as string, branches);
-    console.log("nextStep", currentStep.current, nextStep);
+
     if (nextStep === END) {
       // handle end
     } else {

@@ -126,7 +126,7 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
       .range([margin.left, svgWidth - margin.right]);
 
     // 绘制每条支线
-    console.log('branches', branches);
+
     branches.forEach((branch, branchIndex) => {
       // 每条支线垂直位置：自上而下分布
       const y = margin.top + branchIndex * branchSpacing + branchSpacing / 2;
@@ -139,7 +139,7 @@ export const Timeline: React.FC<TimelineProps> = ({ branches = TEST_DATA, minGap
         xScale = parentXScale;
       } else if (branch.start && branch.end) {
         const parentSteps = branches[branchIndex - 1].steps;
-        console.log('b', branchIndex, parentSteps, branch.start, branch.end);
+
         const startIndex = parentSteps.findIndex(s => s.step === branch.start);
         const endIndex = parentSteps.findIndex(s => s.step === branch.end);
         if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
