@@ -1,9 +1,12 @@
-import ShikiHighlighter from 'react-shiki'
+// import ShikiHighlighter from 'react-shiki'
 import { Whiteboard } from './whiteboard'
 import { Operation } from '@echoai/shared'
 import { useState, useEffect, RefObject, useRef } from 'react'
-import { parse, render, renderRoots } from 'sciux-laplace'
+import { renderRoots } from 'sciux'
+import initializeSciux from 'sciux'
 import PageSwitcher from './page-switcher'
+
+initializeSciux()
 
 export function Board({ operations, whiteboard, pageId, onSwitch }: { operations: RefObject<Operation[]>, whiteboard: Whiteboard, pageId: RefObject<string>, onSwitch?: (operation: "next" | "previous") => void }) {
   const [documentString, setDocumentString] = useState('')
@@ -49,8 +52,12 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
         const ast = whiteboardRef.current.findPage(pageId.current)?.document
         console.log(ast)
         if (ast) {
-          const roots = renderRoots(ast.children)
-          boardRef.current.append(...roots)
+          try {
+            const roots = renderRoots(ast.children)
+            boardRef.current.append(...roots)
+          } catch (error) {
+            console.error(error)
+          }
         }
       }
     }
@@ -71,7 +78,7 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
     <div className='flex relative size-full'>
       <div className='flex size-full' ref={boardRef}></div>
       <div className='absolute bottom-0 right-0 m-4'>
-        <PageSwitcher pageId={pageId.current} total={whiteboardRef.current.getPageCount().toString()} />
+        <PageSwitcher pageId={pageId.current} total={whiteboardRef.current.getPageCount().toString()} onSwitch={onSwitch} />
       </div>
     </div>
   )

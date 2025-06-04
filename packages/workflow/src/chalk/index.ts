@@ -3,7 +3,7 @@ import {
   KNOWLEDGE_COLLECTION_NAME,
   prompt,
 } from "@echoai/utils";
-import { SYSTEM, USER } from "./prompts";
+import { INTERACTIVE_REFERENCE, LAYOUT_REFERENCE, SYSTEM, USER } from "./prompts";
 import { chalk, CHALK_MODEL, search, client, embedding } from "@echoai/utils";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Position, Operation } from "@echoai/shared";
@@ -38,7 +38,7 @@ export async function startChalkWorkflow(
     search(embedding(), client, {
       collection: API_COLLECTION_NAME,
       query: userPrompt,
-      topK: 30,
+      topK: 12,
     }).then(resolve).catch(reject)
   })
   const knowledgePromise = new Promise<string[]>((resolve, reject) => {
@@ -53,7 +53,7 @@ export async function startChalkWorkflow(
   if (context.length === 0) {
     context.push({
       role: 'system',
-      content: prompt(SYSTEM)
+      content: [prompt(SYSTEM), prompt(INTERACTIVE_REFERENCE), prompt(LAYOUT_REFERENCE)].join('\n\n')
     })
   }
   context.push({

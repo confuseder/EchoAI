@@ -124,11 +124,9 @@ And I find some documents and references you may need:
 You can **ONLY** use the components or other apis mentioned in the references or previous references.
 `.trim()
 
-export const PAGE_TOOL_CONTENT = `
-
-`.trim()
-
 export const LAYOUT_REFERENCE = `
+## Layout Components
+
 There are some layout components you may need:
 
 - \`<block>\`
@@ -155,11 +153,24 @@ Usable Size value:
 `.trim()
 
 export const INTERACTIVE_REFERENCE = `
+## Interactive Components
+
 There are some interactive components you may need:
 
-- \`<button>\`
-- \`<input>\`
-- \`<select>\`
+- \`<button @click="...">...\`
+- \`<input model="">\` \`model\` is the input value of user.
+- \`<checkbox model="">\` \`model\` is the checked value of user with boolean type.
+- \`<slider model="">\` \`model\` is the selected value of user range from 0 to 1.
+
+Before using, you need to define a model variable first.
+
+\`\`\`example
+<let :x="1"/>
+<button @click="x++">X plus 1</button>
+<input model="x"/>
+<checkbox model="x"/>
+<slider model="x"/>
+\`\`\`
 `.trim()
 
 export const BUILTIN_VARS_REFERENCE = `

@@ -1,4 +1,4 @@
-import { ChildNode, DocumentNode, ElementNode, NodeType, parse, querySelectorXPath, ref, Ref } from 'sciux-laplace'
+import { ChildNode, DocumentNode, ElementNode, NodeType, parse, querySelectorXPath, ref, Ref } from 'sciux'
 
 export type WhiteboardPage = {
   id: string

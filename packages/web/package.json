@@ -41,6 +41,7 @@
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
+    "sciux": "^0.0.1",
     "sciux-laplace": "0.0.1-alpha.8",
     "shiki": "^3.3.0",
     "shikiji": "^0.10.2",

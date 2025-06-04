@@ -26,8 +26,8 @@ components = [
     *plane_set,
     *parametric_set,
     *polygon_set,
-    *layout_set,
-    *text_set,
+    # *layout_set,
+    # *text_set,
 ]
 
 animations = []
