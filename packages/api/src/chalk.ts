@@ -1,21 +1,7 @@
 import { API_URL } from "@echoai/utils";
-import { Position, Operation } from "@echoai/shared";
+import { ChalkResponse, ChalkRequestBody } from "@echoai/shared";
 
-export interface ChalkRequestBody {
-  chat_id: string;
-  prompt: string;
-  components?: Position[];
-  document?: string;
-  pageId?: string;
-  model?: string;
-  stream?: boolean;
-  step: string;
-}
 
-export interface ChalkResponse {
-  content: string;
-  operations: Operation[];
-}
 
 export default async function fetchChalk(
   body: ChalkRequestBody,

@@ -1,66 +1,8 @@
 import { eq, and } from "drizzle-orm";
 import { table as chats } from "../../../db/chats";
 import db from "../../../db";
-import { DesignerStep, StepBranch } from "@echoai/workflow/designer";
+import { StepBranch, DesignerResult, SpeakerResult, LayoutResult, ChalkResult, Context, DisplayedMessage, GetChatRequestBody } from '@echoai/shared'
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
-
-export type Message = ChatCompletionMessageParam;
-export type Context = Message[];
-export interface DisplayedMessage {
-  role: "user" | "speaker" | "processor";
-  content: string;
-}
-
-export interface DesignerResult {
-  prompt: string;
-  refs?: string;
-  step?: string;
-  model?: string;
-  result: DesignerStep[];
-}
-
-export interface SpeakerResult {
-  step: string;
-  problem: string;
-  knowledge: string;
-  explanation: string;
-  conclusion: string;
-  prompt?: string;
-  model?: string;
-  result: string;
-}
-
-export interface LayoutResult {
-  step: string;
-  problem: string;
-  knowledge: string;
-  explanation: string;
-  conclusion: string;
-  model?: string;
-  result: string;
-}
-
-export interface ChalkResult {
-  // TODO: chalk
-}
-
-export interface GetChatRequestBody {
-  chat_id: string;
-}
-
-export interface GetChatResponse {
-  chat_id: string;
-  designer_context: Context;
-  designer_results: DesignerResult[];
-  speaker_context: Context;
-  speaker_results: SpeakerResult[];
-  layout_context: Context;
-  layout_results: LayoutResult[];
-  chalk_context: Context;
-  chalk_results: ChalkResult[];
-  branches: StepBranch[];
-  context: DisplayedMessage[];
-}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<GetChatRequestBody>(event);

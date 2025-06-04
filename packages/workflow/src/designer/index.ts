@@ -2,7 +2,7 @@ import { ChatCompletionMessageParam } from "openai/resources/chat/completions"
 import { SYSTEM, USER, SYSTEM_ADDITION, ADDITION } from "./prompts"
 import { prompt } from "@echoai/utils";
 import { designer, DESIGNER_MODEL } from "@echoai/utils";
-import { DesignerStep } from "./types";
+import { DesignerStep } from "@echoai/shared";
 
 const provider = designer()
 const defaultModel = DESIGNER_MODEL
@@ -52,5 +52,4 @@ export async function startDesignerWorkflow(
   return JSON.parse(content?.match(/```json\n([\s\S]*)\n```/)?.[1] ?? '') as DesignerStep[]
 }
 
-export * from './types'
 export * from './prompts'

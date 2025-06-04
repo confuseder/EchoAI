@@ -2,20 +2,12 @@ import { prompt } from "@echoai/utils"
 import { SYSTEM, USER } from "./prompts"
 import { speaker, SPEAKER_MODEL } from "@echoai/utils"
 import { ChatCompletionMessageParam } from "openai/resources.mjs"
+import { SpeakerRequestBody } from "@echoai/shared"
 
 const provider = speaker()
 const defaultModel = SPEAKER_MODEL
 
-export interface SpeakerWorkflowOptions {
-  step: string
-  problem: string
-  knowledge: string
-  explanation: string
-  conclusion: string
-  prompt?: string
-  model?: string
-  stream?: boolean
-}
+export type SpeakerWorkflowOptions = Omit<SpeakerRequestBody, 'chat_id'>
 
 export async function startSpeakerWorkflow(
   context: ChatCompletionMessageParam[],

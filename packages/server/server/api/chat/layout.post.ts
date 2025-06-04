@@ -3,24 +3,7 @@ import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import { startLayoutWorkflow } from "@echoai/workflow/layout";
-
-export interface LayoutRequestBody {
-  chat_id: string;
-  prompt: string;
-  step: string;
-  problem: string;
-  knowledge: string;
-  explanation: string;
-  conclusion: string;
-  interaction: string;
-  page_id_will_be_used?: string;
-}
-
-export interface LayoutResponse {
-  chat_id: string;
-  prompt: string;
-  content: string;
-}
+import { LayoutRequestBody } from '@echoai/shared'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<LayoutRequestBody>(event);
