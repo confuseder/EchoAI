@@ -3,22 +3,7 @@ import { table as chats } from "../../../db/chats";
 import db from "../../../db";
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
 import { startSpeakerWorkflow } from "@echoai/workflow/speaker";
-
-export interface SpeakerRequestBody {
-  chat_id: string;
-  step: string;
-  problem: string;
-  knowledge: string;
-  explanation: string;
-  conclusion: string;
-  prompt?: string;
-  model?: string;
-  stream?: boolean;
-}
-
-export interface SpeakerResponse {
-  content: string;
-}
+import { SpeakerRequestBody } from "@echoai/shared";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<SpeakerRequestBody>(event);

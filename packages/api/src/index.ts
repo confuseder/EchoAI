@@ -1,11 +1,11 @@
 import createChat, { type CreateChatRequestBody, type CreateChatResponse } from "./create"
-import getChat, { type GetChatRequestBody, type GetChatResponse } from "./get-chat"
-import fetchDesigner, { type DesignerRequestBody, type DesignerResponse } from "./designer"
-import fetchSpeaker, { type SpeakerRequestBody, type SpeakerResponse } from "./speaker"
-import fetchLayout, { type LayoutRequestBody, type LayoutResponse } from "./layout"
+import getChat from "./get-chat"
+import fetchDesigner from "./designer"
+import fetchSpeaker from "./speaker"
+import { ChalkRequestBody, ChalkResponse, DesignerRequestBody, DesignerResponse, GetChatRequestBody, GetChatResponse, LayoutRequestBody, LayoutResponse, SpeakerRequestBody, SpeakerResponse } from "@echoai/shared"
+import fetchLayout from "./layout"
 import fetchHistory, { type HistoryResponse } from "./history"
-import fetchChalk, { ChalkResponse } from "./chalk"
-import { ChalkRequestBody } from "./chalk"
+import fetchChalk from "./chalk"
 export interface ConnectionParams {
   token: string
 }

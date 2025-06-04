@@ -1,24 +1,5 @@
-import { PageSwitch } from "@echoai/shared";
+import { LayoutRequestBody, LayoutResponse } from "@echoai/shared";
 import { API_URL } from "@echoai/utils";
-
-export interface LayoutRequestBody {
-  chat_id: string
-  prompt: string
-  step: string
-  problem: string
-  knowledge: string
-  explanation: string
-  conclusion: string
-  interaction: string
-  page_id_will_be_used: string
-}
-
-export interface LayoutResponse {
-  chat_id: string
-  prompt: string
-  content: string
-  operation?: PageSwitch
-}
 
 export default async function fetchLayout(body: LayoutRequestBody, token?: string): Promise<LayoutResponse> {
   const headers: Record<string, string> = {

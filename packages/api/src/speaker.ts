@@ -1,20 +1,5 @@
 import { API_URL } from "@echoai/utils";
-
-export interface SpeakerRequestBody {
-  chat_id: string;
-  step: string
-  problem: string
-  knowledge: string
-  explanation: string
-  conclusion: string
-  prompt?: string
-  model?: string
-  stream?: boolean
-}
-
-export interface SpeakerResponse {
-  content: string
-}
+import { SpeakerRequestBody, SpeakerResponse } from "@echoai/shared";
 
 export default async function fetchSpeaker(
   body: SpeakerRequestBody, 

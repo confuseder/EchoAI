@@ -1,32 +1,14 @@
 import { eq, and } from "drizzle-orm";
 import { table as chats } from "../../../db/chats";
 import db from "../../../db";
-import { DesignerStep, startDesignerWorkflow, StepBranch } from "@echoai/workflow/designer";
+import { StepBranch, DisplayedMessage, DesignerRequestBody } from '@echoai/shared'
 import { ChatCompletionMessageParam } from "openai/resources.mjs";
-export interface DisplayedMessage {
-  role: "user" | "speaker" | "processor";
-  content: string;
-}
+import { startDesignerWorkflow } from "@echoai/workflow";
 
-export interface DesignerRequestBody {
-  chat_id: string;
-  prompt: string;
-  refs?: string;
-  step?: string;
-  next_step?: string;
-  model?: string;
-}
 
-export interface DesignerResponse {
-  steps: DesignerStep[];
-  branches: StepBranch[];
-  displayed_messages: DisplayedMessage[];
-}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<DesignerRequestBody>(event);
-
-
 
   const userId = event["userId"];
 
