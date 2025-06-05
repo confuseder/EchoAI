@@ -110,7 +110,7 @@ export async function startChalkWorkflow(
                 id: crypto.randomUUID() as string,
               })
               controller.enqueue(JSON.stringify({
-                operations
+                operations: results
               }))
             }
           }
