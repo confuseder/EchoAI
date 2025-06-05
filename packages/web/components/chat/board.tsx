@@ -6,13 +6,17 @@ import { renderRoots } from 'sciux'
 import initializeSciux from 'sciux'
 import PageSwitcher from './page-switcher'
 
-initializeSciux()
+// initializeSciux() //渲染bug?
 
 export function Board({ operations, whiteboard, pageId, onSwitch }: { operations: RefObject<Operation[]>, whiteboard: Whiteboard, pageId: RefObject<string>, onSwitch?: (operation: "next" | "previous") => void }) {
   const [documentString, setDocumentString] = useState('')
   const [lastProcessedIndex, setLastProcessedIndex] = useState(-1)
   const whiteboardRef = useRef<Whiteboard>(whiteboard)
   const boardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    initializeSciux();
+  }, []);
 
   useEffect(() => {
     if (!operations.current) return
