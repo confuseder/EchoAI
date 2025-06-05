@@ -57,6 +57,7 @@ export class Whiteboard {
       node.children.push(...children)
     }
 
+    console.log('document', page.document)
 
     return this
   }

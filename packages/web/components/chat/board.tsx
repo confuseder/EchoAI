@@ -5,6 +5,7 @@ import { useState, useEffect, RefObject, useRef } from 'react'
 import { renderRoots } from 'sciux'
 import initializeSciux from 'sciux'
 import PageSwitcher from './page-switcher'
+// import ShikiHighlighter from 'react-shiki
 
 // initializeSciux() //渲染bug?
 
@@ -67,7 +68,7 @@ export function Board({ operations, whiteboard, pageId, onSwitch }: { operations
     }
 
     processNewOperations()
-  }, [operations.current?.length, pageId.current])
+  }, [operations.current.length, pageId.current, lastProcessedIndex])
 
   return (
     // <div className='flex size-full'>

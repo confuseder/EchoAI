@@ -1,8 +1,6 @@
 import { API_URL } from "@echoai/utils";
 import { ChalkResponse, ChalkRequestBody } from "@echoai/shared";
 
-
-
 export default async function fetchChalk(
   body: ChalkRequestBody,
   callback?: (chunk: ChalkResponse) => void,

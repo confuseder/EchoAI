@@ -1,12 +1,13 @@
 'use client'
 
-import { DesignerStep, StepBranch } from '@echoai/workflow/designer'
+import { DesignerStep, StepBranch } from '@echoai/shared'
 import { useState, useEffect, useRef, RefObject } from 'react'
 import MessageBox from '../message-box'
 import ToolBox from '../tool-box'
 import PromptArea from '../prompt-area'
 import { Timeline } from '../timeline'
-import { createConnection, GetChatResponse } from "@echoai/api";
+import { GetChatResponse } from "@echoai/shared";
+import { createConnection } from "@echoai/api";
 import { Operation } from "@echoai/shared";
 import { Board } from "./board";
 import { useClearParamOnLoad } from "@/hooks/use-clear-params-onload";
@@ -151,10 +152,11 @@ export function Chat({
         document: whiteboard.processToSummarizedDocumentString(
           currentPage.current!
         ),
-        pageId: currentPage.current!,
+        page_id: currentPage.current!,
         step: currentStep.current as string,
       },
       (chunk) => {
+        console.log(chunk)
         operations.current.length = 0;
         operations.current.push(...chunk.operations);
 
@@ -218,13 +220,16 @@ export function Chat({
   }
 
   function handleSwitch(operation: "next" | "previous") {
+    console.log(currentPage.current, operation)
     const total = whiteboard.getPageCount();
     const current = parseInt(currentPage.current!)
     if (operation === "next") {
-      if (current + 1 >= total) return;
+      if (current + 1 > total) return;
+      console.log(current + 1)
       currentPage.current = (current + 1).toString();
     } else {
       if (current - 1 < 1) return;
+      console.log(current - 1)
       currentPage.current = (current - 1).toString();
     }
   }

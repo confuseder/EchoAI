@@ -176,6 +176,8 @@ Before using, you need to define a model variable first.
 <checkbox model="x"/>
 <slider model="x"/>
 \`\`\`
+
+NOTICE: No matter what components, the self-closing tag must be with \`/>\` in the end, the \`/\` CANNOT be omitted.
 `.trim()
 
 export const BUILTIN_VARS_REFERENCE = `
