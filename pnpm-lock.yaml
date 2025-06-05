@@ -195,8 +195,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       sciux:
-        specifier: ^0.0.1
-        version: 0.0.1
+        specifier: ^0.0.2
+        version: 0.0.2
       sciux-laplace:
         specifier: 0.0.1-alpha.8
         version: 0.0.1-alpha.8
@@ -1809,14 +1809,14 @@ packages:
   '@rushstack/eslint-patch@1.11.0':
     resolution: {integrity: sha512-zxnHvoMQVqewTJr/W4pKjF0bMGiKJv1WX7bSrkl46Hg0QjESbzBROWK0Wg4RphzSOS5Jiy7eFimmM3UgMrMZbQ==}
 
-  '@sciux/layout@0.0.1':
-    resolution: {integrity: sha512-Ocnu4+BIhMpWDhlVG9ifeQy8EKZlbC+EPQNjuZGzjoYvjBy3Xa1erQ/brYH6oy1T3bjSE6cZDEfPBG7Z7ErPRw==}
+  '@sciux/layout@0.0.2':
+    resolution: {integrity: sha512-MueVEgP+VB6TGJe1DxK2R7g+0+gHH/RUd3AS1z43Jk6vgzLZ0VVmNhHXU+ssHKf5Y1kTXpKYwUGWhkx9R5tTCg==}
 
-  '@sciux/model@0.0.1':
-    resolution: {integrity: sha512-Nc4RIPemf8S+3V6FtUFSHy2kN7A4WtgJGMYWuf94NQIZlhnAEVOHvPYQrkzRDaKdakOIxx1jfjpxF8dRAuuQ6A==}
+  '@sciux/model@0.0.2':
+    resolution: {integrity: sha512-Fdk6X213XyQp0Lcza8B8YqRYQM0uIQs9NizmzKKjIgopgH8eNfz/J7q/tLEe2aX7eww/JP0bdDg9CBlr4NccCg==}
 
-  '@sciux/widget@0.0.1':
-    resolution: {integrity: sha512-y/y0paLvRQ0G6LI/Nc8WlZoHOPuaVmC9Ep9sHEauBky64filb/LgOfKrNRWBv7cWgVNP2Wf85Wh+boe+7a5bNg==}
+  '@sciux/widget@0.0.2':
+    resolution: {integrity: sha512-T3Qqz6TQKVhp+5Qr4YFCTjZ6ak0IjwtjejYOIR9P04CCi4SUJSA2xJN5ONRhvklor5iTnW+5KVmWPFm6T+dwfg==}
 
   '@sevinf/maybe@0.5.0':
     resolution: {integrity: sha512-ARhyoYDnY1LES3vYI0fiG6e9esWfTNcXcO6+MPJJXcnyMV3bim4lnFt45VXouV7y82F4x3YH8nOQ6VztuvUiWg==}
@@ -5532,8 +5532,11 @@ packages:
   sciux-laplace@0.0.1-alpha.8:
     resolution: {integrity: sha512-4U8zxaS8oPa8vl3LgWLkhtQXWHXsIvA95jdA2sysT08hoEF/GX4A6dDU8iJtO/x/9IT6Qhy6ZgMWW53W+uNSVg==}
 
-  sciux@0.0.1:
-    resolution: {integrity: sha512-TxCw/A7fbAD3G6prFG+/DoK+/prX1YfQm4fz7KWwYIzvUq1pCNegmgxrAtoRt49ZxGR7eaarVlmJOvKmxrI2Iw==}
+  sciux-laplace@0.0.1-alpha.9:
+    resolution: {integrity: sha512-vummZkORRnUUTP0LyLesw7wcKtOjNTPUInGmGsfr/RJ58I2cY85L+YakIuijduwyMEROT7i/MKoIUXGSQDd9oA==}
+
+  sciux@0.0.2:
+    resolution: {integrity: sha512-hpSeTg9lBFfzHNFbsu9VBljG6mP4SNkMo17z1ObbCb9hiiyLfAx+RT1pcb++B6yWczgqVGje8zMzMlAABX4i3Q==}
 
   scule@1.3.0:
     resolution: {integrity: sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==}
@@ -7498,24 +7501,24 @@ snapshots:
 
   '@rushstack/eslint-patch@1.11.0': {}
 
-  '@sciux/layout@0.0.1':
+  '@sciux/layout@0.0.2':
     dependencies:
       '@vue/reactivity': 3.5.15
       arktype: 2.1.20
-      sciux-laplace: 0.0.1-alpha.8
+      sciux-laplace: 0.0.1-alpha.9
 
-  '@sciux/model@0.0.1':
+  '@sciux/model@0.0.2':
     dependencies:
       '@vue/reactivity': 3.5.15
       arktype: 2.1.20
-      sciux-laplace: 0.0.1-alpha.8
+      sciux-laplace: 0.0.1-alpha.9
 
-  '@sciux/widget@0.0.1':
+  '@sciux/widget@0.0.2':
     dependencies:
-      '@sciux/layout': 0.0.1
+      '@sciux/layout': 0.0.2
       '@vue/reactivity': 3.5.15
       arktype: 2.1.20
-      sciux-laplace: 0.0.1-alpha.8
+      sciux-laplace: 0.0.1-alpha.9
       shiki: 3.5.0
 
   '@sevinf/maybe@0.5.0': {}
@@ -12019,12 +12022,24 @@ snapshots:
       parse-entities: 4.0.2
       xpath: 0.0.34
 
-  sciux@0.0.1:
+  sciux-laplace@0.0.1-alpha.9:
     dependencies:
-      '@sciux/layout': 0.0.1
-      '@sciux/model': 0.0.1
-      '@sciux/widget': 0.0.1
-      sciux-laplace: 0.0.1-alpha.8
+      '@vue/reactivity': 3.5.15
+      '@vue/shared': 3.5.15
+      '@xmldom/xmldom': 0.9.8
+      arktype: 2.1.20
+      clsx: 2.1.1
+      css-what: 6.1.0
+      morphdom: 2.7.5
+      parse-entities: 4.0.2
+      xpath: 0.0.34
+
+  sciux@0.0.2:
+    dependencies:
+      '@sciux/layout': 0.0.2
+      '@sciux/model': 0.0.2
+      '@sciux/widget': 0.0.2
+      sciux-laplace: 0.0.1-alpha.9
 
   scule@1.3.0: {}
 

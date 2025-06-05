@@ -1,21 +1,5 @@
-import { DesignerStep, StepBranch } from "@echoai/workflow/designer";
+import { DesignerRequestBody, DesignerResponse } from '@echoai/shared'
 import { API_URL } from "@echoai/utils";
-import { DisplayedMessage } from "./get-chat";
-
-export interface DesignerRequestBody {
-  chat_id: string;
-  prompt: string
-  refs?: string
-  step?: string
-  next_step?: string
-  model?: string
-}
-
-export interface DesignerResponse {
-  steps: DesignerStep[]
-  branches: StepBranch[]
-  displayed_messages: DisplayedMessage[]
-}
 
 export default async function fetchDesigner(body: DesignerRequestBody, token?: string): Promise<DesignerResponse> {
   const headers: Record<string, string> = {

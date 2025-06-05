@@ -232,7 +232,7 @@ export function Chat({
   return (
     <div className="flex w-full gap-2 h-full">
       <div className="flex flex-col h-full w-2/3 gap-y-2">
-        <div className="flex flex-3/4 h-full bg-gray-100 rounded-lg">
+        <div className="flex flex-3/4 max-h-3/4 min-h-3/4 h-3/4 bg-gray-100 rounded-lg">
           <Board
             operations={operations}
             whiteboard={whiteboard}

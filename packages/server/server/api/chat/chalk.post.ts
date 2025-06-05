@@ -3,31 +3,8 @@ import { and, eq } from "drizzle-orm";
 import db from "../../../db";
 import { table as chats } from "../../../db/chats";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
-export interface ChalkRequestBody {
-  chat_id: string;
-  prompt: string;
-  components?: Position[];
-  document?: string;
-  page_id?: string;
-  model?: string;
-  stream?: boolean;
-  step: string;
-}
+import { ChalkResult, ChalkRequestBody } from '@echoai/shared/'
 
-export interface ChalkResult {
-  input: string;
-  components: Position[];
-  output: Operation[];
-  step: string;
-}
-
-export interface ChalkResponse {
-  content: string;
-  operations: Operation[];
-  delta?: {
-    operation: Operation;
-  };
-}
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<ChalkRequestBody>(event);
